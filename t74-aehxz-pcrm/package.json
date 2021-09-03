@@ -1,0 +1,15 @@
+{
+  "name": "t74-aehxz-pcrm",
+  "version": "1.0.0",
+  "description": "A Personal CRM Project Designed for the subject COMP30022 IT Project of the university of Melbourne.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Chuyue Liu, Emily Zhou, Haiyao Yan, Xintao Chen, Zhengtian Lu",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
