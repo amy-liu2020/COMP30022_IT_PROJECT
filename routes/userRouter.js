@@ -1,14 +1,14 @@
 const express = require("express");
 
 const userRouter = express.Router();
-var userRouter = require("../controller/userController");
+var userController = require("../controller/userController.js");
 
 
 // user login
-userRouter.post("/login", userRouter.userLogin);
+userRouter.get("/", userController.userLogin);
 
 // new user registration
-userRouter.post("/register", userRouter.userRegister);
+//userRouter.post("/register", userController.userRegister);
 
 // show user profile
 userRouter.get("/profile", (req,res) =>
@@ -16,9 +16,10 @@ userRouter.get("/profile", (req,res) =>
 );
 
 // user change password
-userRouter.post("/changePassword", userRouter.changePassword);
+//userRouter.post("/changePassword", userController.changePassword);
 
 // user change details
-userRouter.post("/changeDetails", userRouter.changeDetails);
+//userRouter.post("/changeDetails", userController.changeDetails);
+
 //export the router
 module.exports = userRouter;

@@ -1,23 +1,33 @@
 const express = require("express");
 
 const meetingRouter = express.Router();
-var meetingRouter = require("../controller/meetingController");
+var meetingController = require("../controller/meetingController");
 
 // get the meeting list page
-meetingRouter.get("/contacts", (req,res) =>
-    meetingRouter.getFullContact(req,res)
+meetingRouter.get("/", (req,res) =>
+    meetingController.getFullMeeting(req,res)
 );
 
 // get a single meeting page
-meetingRouter.get("/contacts/:id", (req,res) =>
-    meetingRouter.getSingleContact(req,res)
+meetingRouter.get("/:id", (req,res) =>
+    meetingController.getSingleMeeting(req,res)
 );
 
 // create single meeting
-meetingRouter.post("/contacts/create", meetingRouter.contactCreate);
+meetingRouter.post("/create", meetingController.meetingCreate);
 
 // edit single meeting
-meetingRouter.post("/contacts/create", meetingRouter.contactEdit);
+meetingRouter.post("/edit", meetingController.meetingEdit);
+
+// present the searching results 
+meetingRouter.get("/searching/:type/:searchingawords", (req,res) =>
+    meetingController.searching(req,res)
+);
+
+// present the bin page
+meetingRouter.get("/bin", (req,res) =>
+    meetingController.getDeletedItems(req,res)
+);
 
 //export the router
 module.exports = meetingRouter;
