@@ -13,12 +13,13 @@ app.use(express.json());
 
 // link to routes 
 const contactRouter = require("./routes/contactRouter");
-app.use("/contact", contactRouter);
-
 const meetingRouter = require("./routes/meetingRouter");
-app.use("/meeting", meetingRouter);
-
 const userRouter = require("./routes/userRouter");
+
+
+
+app.use("/contact", contactRouter);
+app.use("/meeting", meetingRouter);
 app.use("/", userRouter);
 
 // 'default' route to catch user errors

@@ -12,7 +12,7 @@ userRouter.get("/", userController.userLogin);
 
 // show user profile
 userRouter.get("/profile", (req,res) =>
-    userRouter.getProfile(req,res)
+    userController.getProfile(req,res)
 );
 
 // user change password
