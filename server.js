@@ -11,6 +11,9 @@ const server = require("http").createServer(app);
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
+// link to database
+require('./models/db.js')
+
 // link to routes 
 const contactRouter = require("./routes/contactRouter");
 const meetingRouter = require("./routes/meetingRouter");

@@ -12,6 +12,11 @@ exports.contactEdit = function (req, res){
     res.send("contactEdit")
     console.log("contactEdit")
 };
+
+exports.contactCreate = function (req, res){
+    res.send("contactCreate")
+    console.log("contactCreate")
+}
 exports.searching = function (req, res){
     res.send("searching")
     console.log("searching")

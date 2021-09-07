@@ -13,6 +13,6 @@ const ContactSchema = new mongoose.Schema({
     Tags:[String]
 });
 
-var Contact = mongoose.model("Contact", UserSchema, "ContactList");
+var Contact = mongoose.model("Contact", ContactSchema, "ContactList");
 
 module.exports = Contact
