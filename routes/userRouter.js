@@ -8,7 +8,7 @@ var userController = require("../controller/userController.js");
 userRouter.get("/", userController.userLogin);
 
 // new user registration
-//userRouter.post("/register", userController.userRegister);
+userRouter.post("/register", userController.userRegister);
 
 // show user profile
 userRouter.get("/profile", (req,res) =>
@@ -16,10 +16,10 @@ userRouter.get("/profile", (req,res) =>
 );
 
 // user change password
-//userRouter.post("/changePassword", userController.changePassword);
+userRouter.post("/changePassword", userController.changePassword);
 
 // user change details
-//userRouter.post("/changeDetails", userController.changeDetails);
+userRouter.post("/changeDetails", userController.changeDetails);
 
 //export the router
 module.exports = userRouter;
