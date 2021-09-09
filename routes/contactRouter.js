@@ -21,6 +21,7 @@ contactRouter.post("/create", contactController.contactCreate);
 contactRouter.post("/edit", contactController.contactEdit);
 
 // present the searching results 
+
 contactRouter.get("/searching/:type/:searchingawords", (req,res) => {
     contactController.searching(req,res)
 });
