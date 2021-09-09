@@ -4,13 +4,20 @@
   "description": "A Personal CRM Project Designed for the subject COMP30022 IT Project of the university of Melbourne.",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amy-liu2020/COMP30022_IT_PROJECT.git"
+  },
+  "keywords": ["web app", "project", "CRM", "COMP30022"],
   "author": "Chuyue Liu, Emily Zhou, Haiyao Yan, Xintao Chen, Zhengtian Lu",
   "license": "ISC",
+  "homepage": "https://github.com/amy-liu2020/COMP30022_IT_PROJECT#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "express-handlebars": "^5.3.3",
     "mongoose": "^5.13.8"
   }
 }
