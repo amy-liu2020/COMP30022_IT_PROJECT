@@ -7,11 +7,6 @@ const app = express();
 const port = process.env.PORT || 5000;
 const server = require("http").createServer(app);
 
-// import mongodb
-const mongodb = require("mongodb");
-const mongoClient = mongodb.mongoClient
-let connectionURL = 'mongodb+srv://<AEHXZ>:<aehxz123456>@cluster0.0vlpa.mongodb.net/Cluster0?retryWrites=true&w=majority'
-
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
