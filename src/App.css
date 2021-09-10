@@ -1,8 +1,23 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* remove all link text decoration */
+a {
+    text-decoration: none;
+    color: black;
+}
+
+/*
+navigation
+*/
+
 .navigation {
     background-color: #8BE8DA;
-    font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
     padding-left: 30px;
+    height: 7vh;
 }
 
 #logo {
@@ -84,4 +99,48 @@ input[type="search"]::-webkit-search-results-decoration {
     background-color: white;
     outline: none;
     border-style: none;
+}
+
+/* 
+side menu section
+*/
+
+.sideMenu {
+    background-color: #77CFC3;
+    position: fixed;
+    width: 180px;
+    height: 93vh;
+}
+
+.sideMenu button {
+    border: none;
+    border-radius: 20px;
+    display: block;
+    width: 150px;
+    margin-left: 10%;
+
+    background-color: inherit;
+    text-align: left;
+    padding: 5% 16px;
+}
+
+.sideMenu button:hover {
+    background-color: white;
+}
+
+#createContact {
+    background-color: white;
+    border: gray 2px solid;
+    display: inline-flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#createContact:hover {
+    opacity: 80%;
+}
+
+.functions {
+    position: fixed;
+    bottom: 30px;
 }

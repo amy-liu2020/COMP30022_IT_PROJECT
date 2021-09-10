@@ -30,13 +30,13 @@ const Avatar = () => {
 
 export const NavigationBar = () => {
     return (
-        <header className="navigation">
+        <div className="navigation">
             <Logo/>
             <a href="#contact">contact</a>
             <a href="#meeting">meeting</a>
             <SearchBar />
             <button type="button"><MdSettings id="setting" size={32}/></button>
             <Avatar />
-        </header>
+        </div>
     )
 }
