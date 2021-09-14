@@ -3,7 +3,8 @@ const mongoose = require("mongoose")
 const UserSchema = new mongoose.Schema({
     AccountID:String,
     Password:String,
-    DateOfRegister:Date
+    DateOfRegister:Date,
+    AccountName:String
 });
 
 var User = mongoose.model("User", UserSchema, "UserAccount");
