@@ -6,12 +6,12 @@ var contactController = require("../controller/contactController");
 // get the main contact page
 contactRouter.get("/", (req,res) => {
     // res.send（'<h1> Contact List </h1>')
-    contactRouter.getFullContact(req,res)
+    contactController.getFullContact(req,res)
 });
 
 // get a single contact
 contactRouter.get("/:id", (req,res) => {
-    contactRouter.getSingleContact(req,res)
+    contactController.getSingleContact(req,res)
 });
 
 // create single Contact

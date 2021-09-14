@@ -7,11 +7,18 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 5000;
 const server = require("http").createServer(app);
+const bodyParser = require("body-parser");
+
+app.use(bodyParser.urlencoded({extended : false}));
+app.use(bodyParser.json());
 
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
+
+
+
 
 // link to database
 require('./models/db.js')
