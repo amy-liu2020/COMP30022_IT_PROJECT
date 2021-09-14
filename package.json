@@ -11,11 +11,17 @@
     "type": "git",
     "url": "git+https://github.com/amy-liu2020/COMP30022_IT_PROJECT.git"
   },
-  "keywords": ["web app", "project", "CRM", "COMP30022"],
+  "keywords": [
+    "web app",
+    "project",
+    "CRM",
+    "COMP30022"
+  ],
   "author": "Chuyue Liu, Emily Zhou, Haiyao Yan, Xintao Chen, Zhengtian Lu",
   "license": "ISC",
   "homepage": "https://github.com/amy-liu2020/COMP30022_IT_PROJECT#readme",
   "dependencies": {
+    "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "mongoose": "^5.13.8"
