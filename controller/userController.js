@@ -1,8 +1,11 @@
-exports.userLogin = function (req, res){
-    res.send("login")
-    console.log("login")
-};
 
+
+exports.userLogin = function (req, res){
+    res.render("login", {});
+};
+exports.doLogin = function (req, res){
+    res.send("login");
+};
 exports.userRegister = function (req, res){
     res.send("Register")
     console.log("Register")
