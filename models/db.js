@@ -21,4 +21,6 @@ db.once("open", async () => {
   console.log("Mongo connection started on " + db.host + ":" + db.port)
 })
 
-require("./User.js")
+
+
+module.exports = db.uri;

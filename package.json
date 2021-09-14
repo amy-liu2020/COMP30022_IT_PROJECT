@@ -21,9 +21,14 @@
   "license": "ISC",
   "homepage": "https://github.com/amy-liu2020/COMP30022_IT_PROJECT#readme",
   "dependencies": {
+    "@types/core-js": "^2.5.5",
+    "body-parser": "^1.19.0",
+    "connect-mongo": "^4.5.0",
+    "cookie-parser": "^1.4.5",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
+    "express-session": "^1.17.2",
     "mongoose": "^5.13.8"
   }
 }

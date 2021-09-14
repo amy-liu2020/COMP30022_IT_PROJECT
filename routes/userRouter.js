@@ -7,6 +7,10 @@ var userController = require("../controller/userController.js");
 // user login
 userRouter.get("/", userController.userLogin);
 
+userRouter.get("/conflict",userController.conflictLogin);
+
+userRouter.post("/login", userController.doLogin);
+
 // new user registration
 userRouter.post("/register", userController.userRegister);
 
