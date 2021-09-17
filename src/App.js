@@ -1,13 +1,38 @@
 import './App.css';
-import { NavigationBar } from './components/NavigationBar'
-import { SideMenu } from './components/SideMenu'
+import { Contact } from './components/Contact';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+const Login = () => {
+  return (
+  <div>
+    <p>Login page</p>
+  </div>)
+}
+
+const Meeting = () => {
+  return (
+  <div>
+    <p>Meeting page</p>
+  </div>)
+}
 
 function App() {
   return (
+    <Router>
+      <Contact/>
+    </Router>
+
+    /*
+    <Router>
     <div className="App">
-      <NavigationBar />
-      <SideMenu />
+     <Switch>
+       <Route exact path='/' component={Login}></Route>
+       <Route exact path='/contact' component={Contact}></Route>
+       <Route exact path='/meeting' component={Meeting}></Route>
+     </Switch>
     </div>
+  </Router>
+  */
   );
 }
 

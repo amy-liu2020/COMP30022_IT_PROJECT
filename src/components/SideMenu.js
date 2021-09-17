@@ -1,41 +1,18 @@
 import { MdAdd } from "react-icons/md"
 
-const groups = [
-    {
-        id: 1,
-        name: "all"
-    },
-    {
-        id: 2,
-        name: "family"
-    },
-    {
-        id: 3,
-        name: "friend"
-    }
-]
+export const SideMenu = ({groups, tab}) => {
 
-const ContactGroup = () => {
     return (
-        <>
-            {groups.map((group) => (
-                <button type="button"><a href={`#${group.id}`}>{group.name}</a></button>
-            ))}
-            <br />
-        </>
-    )
-}
-
-export const SideMenu = () => {
-    return (
-        <div className="sideMenu">
-            <button type="button" id="createContact"><MdAdd/>create contact</button>
-            <ContactGroup />
-            <button type="button">add new group</button>
-            <div className="functions">
-                <button type="button">import</button>
+        <div className="sideM">
+            <div className="sideM-elements">
+                <button type="button" id="sideM-create"><MdAdd/>create {tab}</button>
+                {
+                    groups.map((group) => <button>{group.name}</button>)
+                }
+                <button id="sideM-addGroup" type="button">add new group</button>
+                <button id="sideM-import" type="button">import</button>
                 <button type="button">export</button>
-                <button type="button">bin</button>
+                <button id="sideM-bin" type="button">bin</button>
             </div>
         </div>
     )
