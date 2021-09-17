@@ -62,7 +62,14 @@ const Edit = ({meeting}) => {
 
             <div class="record">
                 <label>Repeat: </label>
-                <input type="text"/>
+                <input list="frequency" name="frequency" id="frequency"/>
+                <datalist id="frequency">
+                    <option value="every day"/>
+                    <option value="every week"/>
+                    <option value="every month"/>
+                    <option value="every year"/>
+                    <option value="never"/>
+                </datalist>
             </div>
 
             <div class="record">
