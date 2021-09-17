@@ -82,7 +82,7 @@ const Edit = ({contact}) => {
 
             </div>
 
-            <div class="note">
+            <div class="notes">
             <label>Notes: </label>
             <textarea id="note" maxlength ="140" placeholder="write something..."></textarea>
             </div>
