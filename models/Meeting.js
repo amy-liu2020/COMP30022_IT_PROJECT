@@ -11,7 +11,7 @@ const MeetingSchema = new mongoose.Schema({
     Notes:String,
     Participants:[mongoose.Schema.Types.ObjectId],
     Tags:[String]
-});
+}, {versionKey:false});
 
 var Meeting = mongoose.model("Meeting", MeetingSchema, "MeetingList");
 

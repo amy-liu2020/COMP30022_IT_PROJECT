@@ -46,7 +46,14 @@ const meetingRouter = require("./routes/meetingRouter");
 const userRouter = require("./routes/userRouter");
 
 // Interceptor
-
+app.all('*', (req, res, next) => {
+    if(req.session.loginState == 1){
+        req.session.destroy();
+        console.log("you are taken")
+        res.redirect("/")
+    }
+    next();
+})
 
 app.use("/contact", contactRouter);
 app.use("/meeting", meetingRouter);
@@ -77,19 +84,16 @@ exports.conflictLoginCheck = async function (req, res) {
                 if (strs[i]._id == req.session.id) {
                     return false;
                 } else {
-                    Ses.findOneAndDelete({ _id: strs[i]._id }, function (err, doc) {
+                    Ses.findOneAndUpdate({ _id: strs[i]._id }, {loginState: 1}, function (err, doc) {
                         if (err) {
                             console.log(err);
                             return;
                         }
                     })
                     return true;
-
-
                 }
             }
         }
     }
     return false;
-
 }

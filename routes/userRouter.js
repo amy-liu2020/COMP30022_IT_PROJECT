@@ -12,7 +12,9 @@ userRouter.get("/conflict",userController.conflictLogin);
 userRouter.post("/login", userController.doLogin);
 
 // new user registration
-userRouter.post("/register", userController.userRegister);
+userRouter.get("/register", userController.userRegister);
+
+userRouter.post("/doRegister", userController.userDoRegister);
 
 // show user profile
 userRouter.get("/profile", (req,res) => {

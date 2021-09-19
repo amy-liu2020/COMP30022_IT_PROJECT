@@ -5,7 +5,7 @@ const BinSchema = new mongoose.Schema({
     DeleteDate:Date,
     ID:mongoose.Schema.Types.ObjectId,
     Type:String
-});
+}, {versionKey:false});
 
 var Bin = mongoose.model("Bin", BinSchema, "Bin");
 
