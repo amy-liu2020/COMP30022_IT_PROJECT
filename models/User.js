@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
     Password:String,
     DateOfRegister:Date,
     AccountName:String
-});
+}, {versionKey:false});
 
 var User = mongoose.model("User", UserSchema, "UserAccount");
 

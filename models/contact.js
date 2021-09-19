@@ -11,7 +11,7 @@ const ContactSchema = new mongoose.Schema({
     Notes:String,
     PhoneNumber:String,
     Tags:[String]
-});
+}, {versionKey:false});
 
 var Contact = mongoose.model("Contact", ContactSchema, "ContactList");
 
