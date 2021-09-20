@@ -161,3 +161,79 @@ body {
 .contact-list-record:hover {
     background-color: var(--button-hover-lightGrey);
 }
+
+.contact-form {
+    margin: 20px;
+}
+
+.form-avatar {
+    display: inline-block;
+    border-radius: 50%;
+    background-color: white;
+    width: 150px;
+    height: 150px;
+}
+
+#form-addPhoto {
+    margin-top: 32%;
+    margin-left: 32%;
+    opacity: 60%;
+}
+
+.form-keyInfo {
+    position: fixed;
+    float: left;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 5px;
+    margin-left: 40px;
+}
+
+.form-name > *{
+    background-color: inherit;
+    border: none;
+    outline: none;
+    font-size: 25px;
+    width: 180px;
+}
+
+.form-record {
+    display: flex;
+    width: 300px;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+.form-record > input {
+    border: none;
+}
+
+.form-record > input:focus {
+    outline: 2px solid gray;
+}
+
+.form-Info {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+#form-noteArea {
+    display: block;
+    width: 200px;
+    height: 100px;
+    resize: none;
+}
+
+.form-note {
+    margin-top: 20px;
+}
+
+.contact-form > button[type="submit"] {
+    float: right;
+    border-radius: 20px;
+    border: 2px solid gray;
+    background-color: white;
+    padding: 2px 10px;
+}

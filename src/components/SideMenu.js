@@ -1,11 +1,11 @@
 import { MdAdd } from "react-icons/md"
 
-export const SideMenu = ({groups, tab}) => {
+export const SideMenu = ({groups, tab, createNew}) => {
 
     return (
         <div className="sideM">
             <div className="sideM-elements">
-                <button type="button" id="sideM-create"><MdAdd/>create {tab}</button>
+                <button type="button" id="sideM-create" onClick={() => createNew(1)}><MdAdd/>create {tab}</button>
                 {
                     groups.map((group) => <button>{group.name}</button>)
                 }
