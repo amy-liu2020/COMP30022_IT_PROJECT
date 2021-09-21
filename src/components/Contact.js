@@ -204,7 +204,7 @@ export const Contact = () => {
                 </Route>
             </Switch>
         </div>
-    )
+        )
 }
 
 
@@ -229,7 +229,7 @@ const contacts = [
 // if contactId is specified, return single contact with requested id.
 // Otherwise, return all contacts
 const getOneContact = (contactId) => {
-    return contacts.find(({ id }) => id === contactId);
+    return contacts.find(({ id }) => id == contactId);
 }
 
 const getAllContact = () => {
