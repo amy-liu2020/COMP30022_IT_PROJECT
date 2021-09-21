@@ -5,7 +5,7 @@ import { Tag } from "./Tag"
 import { Switch, Route, useRouteMatch, useHistory, useParams} from "react-router-dom";
 import { useEffect, useState } from "react/cjs/react.development";
 
-const List = ({meetings}) => {
+const List = () => {
     let history = useHistory();
 
     return (
@@ -18,7 +18,7 @@ const List = ({meetings}) => {
                     <th>Invitees</th>
                 </tr>
                 {
-                    meetings.length === 0 ? <p>no meeting</p> :
+                    meetings.length ?
                     meetings.map((meeting) => 
                     <tr className="meeting-list-record">
                         <td>{meeting.name}</td>
@@ -26,7 +26,7 @@ const List = ({meetings}) => {
                         <td>{meeting.date}</td>
                         <td>{meeting.invitees}</td>
                     </tr>
-                    )
+                    ) : <p>no meeting</p>
                 }
 
             </table>
