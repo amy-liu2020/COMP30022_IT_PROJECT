@@ -207,63 +207,60 @@ export const Meeting = () => {
 
 
 // sample meetings data
-export const Meeting = () => {
-    const [meetings, setMeetings] = useState(
-        [
-            {
-                id: 1,
-                Name: "COMP30022 Lecture",
-                Location: "Zoom",
-                Date: "20-09-2021",
-                Invitees: "John Doe, Jane Doe",
-            },
-            {
-                id: 2,
-                Name: "COMP30019 Lecture",
-                Location: "Sydney Myer G01",
-                Date: "22-09-2021",
-                Invitees: "Tony Gilbert, Ivy Wong, Chris Collins",
-            }
-        ]
-    )
+const meetings = [
+    {
+        id: 1,
+        Name: "COMP30022 Lecture",
+        Location: "Zoom",
+        Date: "20-09-2021",
+        Invitees: "John Doe, Jane Doe",
+    },
+    {
+        id: 2,
+        Name: "COMP30019 Lecture",
+        Location: "Sydney Myer G01",
+        Date: "22-09-2021",
+        Invitees: "Tony Gilbert, Ivy Wong, Chris Collins",
+    }
+]
     
-    const [groups, setGroups] = useState(
-        [
-            {
-                id: 1,
-                name: "all"
-            },
-            {
-                id: 2,
-                name: "party"
-            },
-            {
-                id: 3,
-                name: "business"
-            },
-            {
-                id: 4,
-                name: "date"
-            }
+    
+const groups= [
+    {
+            id: 1,
+        name: "all"
+    },
+    {
+        id: 2,
+        name: "party"
+    },
+    {
+        id: 3,
+        name: "business"
+    },
+    {
+        id: 4,
+        name: "date"
+    }
         
-        ]
-    )
+]
+    
 
-    return (
-        <div className="three-part-layout">
-            <NavigationBar/>
-            <SideMenu groups={groups} tab="meeting"/>
-            <List meetings={meetings}/>
-        </div>
-    )
-}
+    // return (
+    //     <div className="three-part-layout">
+    //         <NavigationBar/>
+    //         <SideMenu groups={groups} tab="meeting"/>
+    //         <List meetings={meetings}/>
+    //     </div>
+    // )
+
 
 
 
 // if meetingID is specified, return single meeting with requested id.
 // Otherwise, return all meetings
 const getOneMeeting = (meetingID) => {
-    return meetings.find(({ id }) => id === contactId);
+    return meetings.find(({ id }) => id === meetingID);
 }
 
 const getAllMeeting = () => {

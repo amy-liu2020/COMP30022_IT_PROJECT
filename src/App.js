@@ -1,8 +1,10 @@
 import './App.css';
 import { Contact } from './components/Contact';
+import { Meeting } from './components/Meeting';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { SideMenu } from './components/SideMenu';
 import { NavigationBar } from './components/NavigationBar'
+
 
 const Login = () => {
   return (
@@ -11,13 +13,13 @@ const Login = () => {
   </div>)
 }
 
-const Meeting = () => {
-  return (
-  <div className="three-part-layout">
-    <NavigationBar/>
-    <SideMenu tab={"meeting"}/>
-  </div>)
-}
+// const Meeting = () => {
+//   return (
+//   <div className="three-part-layout">
+//     <NavigationBar/>
+//     <SideMenu groups = {groups} tab={"meeting"}/>
+//   </div>)
+// }
 
 function App() {
 
