@@ -11,12 +11,12 @@ const List = () => {
     return (
         <div className="content">
             <table className="meeting-list">
-                <tr className="meeting-list-head">
+                <thead className="meeting-list-head">
                     <th>Meeting Name</th>
                     <th>Location</th>
                     <th>Date</th>
                     <th>Invitees</th>
-                </tr>
+                </thead>
                 {
                     meetings.length ?
                     meetings.map((meeting) => 
@@ -52,38 +52,39 @@ const Detail = () => {
             <form className="meeting-form">
                 <button className="detail-edit" type="button" onClick={() => history.push(`/meeting/edit/${meeting.id}`)}>edit meeting</button>
 
-                <div class="form-keyInfo">
-                    <div class="form-name">
+                <div class="meetingForm-keyInfo">
+                    <div class="meetingForm-name">
                         <text type="text" name="name" maxLength="20" placeholder="name">{meeting.name}</text>
                     </div>
                     <button type="button">
                         <MdAdd size={15}/>
                     </button>
-                    <div class="form-record">
-                        <label>Location: </label>
+                    <div class="meetingForm-record">
+                        <label>Location: </label>meeting
                         <text type="text" name="location">{meeting.location}</text>
                     </div>
                 </div>
 
-                <div class="form-Info">
-                    <div class="form-record">
+                <div class="meetingForm-Info">
+                    <div class="meetingForm-record">
                         <label>Date: </label>
                         <text type="date" name="date">{meeting.date}</text>
                     </div>
 
-                    <div class="form-record">
+                    <div class="meetingForm-record">
                         <label>Time: </label>
                         <text type="time" name="time">{meeting.time}</text>
                     </div>
 
-                    <div class="form-record">
+                    <div class="meetingForm-record">
                         <label>Repeat: </label>
                         <text type="frequency" name="frequency">{meeting.frequency}</text>
                     </div>
 
-                    <div class="form-record">
+                    <div class="meetingForm-record">
                         <label>URL: </label>
-                        <text type="text" name="url">{meeting.url}</text>
+                        <text type="url" name="url">{meeting.url}</text>
+                        
                     </div>
                 </div>
 
@@ -92,9 +93,9 @@ const Detail = () => {
                     <textarea id="form-attachmentArea" placeholder="add files..." name="attachment">{meeting.attachment}</textarea>
                 </div>
 
-                <div class="form-attachment">
+                <div class="meetingForm-note">
                     <label>Notes: </label>
-                    <textarea id="form-notesArea" placeholder="add notes..." name="notes">{meeting.notes}</textarea>
+                    <textarea id="meetingForm-noteArea" placeholder="add notes..." name="notes">{meeting.notes}</textarea>
                 </div>
             </form>
         </div>
@@ -123,55 +124,55 @@ const Edit = () => {
 
                 <button type="submit" onClick={() => history.goBack()}>save</button>
 
-                <div class="form-keyInfo">
-                    <div class="meetingName">
-                        <input type="text" placeholder="name"/>
+                <div class="meetingForm-keyInfo">
+                    <div class="meetingForm-name">
+                        <input type="text" placeholder="TITLE"/>
                     </div>
                     <Tag/>
-                    <div class="form-record">
+                    <div class="meetingForm-record">
                         <label>Location: </label>
                         <input type="text" onChange={e => onChangeHandler(e)} value={meeting.location}/>
                     </div>
                 </div>
 
 
-                <div class="form-Info">
+                <div class="meetingForm-Info">
                 
-                    <div class="form-record">
+                    <div class="meetingForm-record">
                         <label>Date: </label>
                         <input type="date" onChange={e => onChangeHandler(e)} value={meeting.date}/>
                     </div>
 
-                    <div class="form-record">
+                    <div class="meetingForm-record">
                         <label>Time: </label>
                         <input type="time" onChange={e => onChangeHandler(e)} value={meeting.time}/>
                     </div>
 
-                    <div class="form-record">
+                    <div class="meetingForm-record">
                         <label>Repeat: </label>
-                        <input list="frequency" name="frequency" id="frequencyList"/>
-                            <datalist id="frequency">
-                                <option value="every day"/>
-                                <option value="every week"/>
-                                <option value="every month"/>
-                                <option value="every year"/>
-                                <option value="never"/>
-                            </datalist>
+                        <select name="frequency">
+                            <option disabled selected>--select--</option>
+                            <option>every day</option>
+                            <option>every week</option>
+                            <option>every month</option>
+                            <option>every year</option>
+                            <option>never</option>
+                        </select>
                     </div>
 
-                    <div class="form-record">
+                    <div class="meetingForm-record">
                         <label>URL: </label>
-                        <input type="text" onChange={e => onChangeHandler(e)} value={meeting.url}/>
+                        <input type="url" onChange={e => onChangeHandler(e)} value={meeting.url}/>
                     </div>
 
                 </div>
 
-                <div class="form-attachment">
+                <div class="meetingForm-attachment">
                 <label>Attachment: </label>
-                <textarea id="attachment" maxlength ="140" placeholder="add files..." onChange={e => onChangeHandler(e)} value={meeting.attachment}></textarea>
+                <input type="file" onChange={e => onChangeHandler(e)} value={meeting.attachment}/>
                 </div>
 
-                <div class="form-notes">
+                <div class="meetingForm-notes">
                 <label>Notes: </label>
                 <textarea id="notes" maxlength ="140" placeholder="add notes..." onChange={e => onChangeHandler(e)} value={meeting.notes}></textarea>
                 </div>
@@ -210,52 +211,20 @@ export const Meeting = () => {
 const meetings = [
     {
         id: 1,
-        Name: "COMP30022 Lecture",
-        Location: "Zoom",
-        Date: "20-09-2021",
-        Invitees: "John Doe, Jane Doe",
+        name: "COMP30022 Lecture",
+        location: "Zoom",
+        date: "20-09-2021",
+        invitees: "John Doe, Jane Doe",
     },
     {
         id: 2,
-        Name: "COMP30019 Lecture",
-        Location: "Sydney Myer G01",
-        Date: "22-09-2021",
-        Invitees: "Tony Gilbert, Ivy Wong, Chris Collins",
+        name: "COMP30019 Lecture",
+        location: "Sydney Myer G01",
+        date: "22-09-2021",
+        invitees: "Tony Gilbert, Ivy Wong, Chris Collins",
     }
 ]
     
-    
-const groups= [
-    {
-            id: 1,
-        name: "all"
-    },
-    {
-        id: 2,
-        name: "party"
-    },
-    {
-        id: 3,
-        name: "business"
-    },
-    {
-        id: 4,
-        name: "date"
-    }
-        
-]
-    
-
-    // return (
-    //     <div className="three-part-layout">
-    //         <NavigationBar/>
-    //         <SideMenu groups={groups} tab="meeting"/>
-    //         <List meetings={meetings}/>
-    //     </div>
-    // )
-
-
-
 
 // if meetingID is specified, return single meeting with requested id.
 // Otherwise, return all meetings
