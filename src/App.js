@@ -1,5 +1,5 @@
 import './App.css';
-//import { Contact } from './components/Contact';
+import { Contact } from './components/Contact';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { SideMenu } from './components/SideMenu';
 import { NavigationBar } from './components/NavigationBar'
@@ -16,14 +16,6 @@ const Meeting = () => {
   <div className="three-part-layout">
     <NavigationBar/>
     <SideMenu tab={"meeting"}/>
-  </div>)
-}
-
-const Contact = () => {
-  return (
-  <div className="three-part-layout">
-    <NavigationBar/>
-    <SideMenu tab={"contact"}/>
   </div>)
 }
 

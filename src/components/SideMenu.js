@@ -17,7 +17,7 @@ export const SideMenu = ({tab}) => {
 
     return (
         <div className="sideM">
-            <button className="sideM-create" onClick={() => history.push(`/${tab}/create`)}><MdAdd/>create {tab}</button>
+            <button className="sideM-create" onClick={() => history.push(`/${tab}/edit`)}><MdAdd/>create {tab}</button>
             {groups.map((group) => <Link className="sideM-group" to={`/${tab}?group=${group.name}`}>{group.name}</Link>)}
             <button className="sideM-addGroup">add new group</button>
             <button className="sideM-import">import</button>
