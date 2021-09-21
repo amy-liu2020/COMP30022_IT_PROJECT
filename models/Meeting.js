@@ -13,7 +13,7 @@ const MeetingSchema = new mongoose.Schema({
     Tags:[String]
 }, {versionKey:false});
 
-var Meeting = mongoose.model("Meeting", MeetingSchema, "MeetingList");
+const Meeting = mongoose.model("Meeting", MeetingSchema, "MeetingList");
 
 Meeting.find({},function(err, doc){
     if(err){

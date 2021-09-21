@@ -1,27 +1,42 @@
-exports.getFullContact = function (req, res){
-    res.send("getFullContact")
-    console.log("getFullContact")
+const Contact = require("../models/contact");
+
+const getFullContact = async (req, res) => {
+    try {
+        const contacts = await Contact.find().lean();
+        res.json(contacts);
+    } catch (err){
+        console.log(err)
+    }
 };
 
-exports.getSingleContact = function (req, res){
-    res.send("getSingleContact")
-    console.log("getSingleContact")
+
+const getSingleContact = async (req, res) => {
+    try {
+        const contact = await Contact.findOne(
+            {_id: req.params.id} 
+        ).lean();
+        res.json(contact);
+    } catch (err){
+        console.log(err)
+    }
 };
 
-exports.contactEdit = function (req, res){
+const contactEdit = async (req, res) => {
     res.send("contactEdit")
     console.log("contactEdit")
 };
 
-exports.contactCreate = function (req, res){
+const contactCreate = async (req, res) => {
     res.send("contactCreate")
     console.log("contactCreate")
 }
-exports.searching = function (req, res){
+const searching = async (req, res) => {
     res.send("searching")
     console.log("searching")
 };  
-exports.getDeletedItems = function (req, res){
+const getDeletedItems = async (req, res)=> {
     res.send("getDeletedItems")
     console.log("getDeletedItems")
 };
+
+module.exports = {getFullContact, getSingleContact,contactEdit,contactCreate,searching,getDeletedItems}

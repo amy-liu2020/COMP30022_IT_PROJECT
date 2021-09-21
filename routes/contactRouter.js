@@ -15,10 +15,14 @@ contactRouter.get("/:id", (req,res) => {
 });
 
 // create single Contact
-contactRouter.post("/create", contactController.contactCreate);
+contactRouter.post("/create", (req,res) => 
+    contactController.contactCreate(req,res)
+);
 
 // edit single Contact
-contactRouter.post("/edit", contactController.contactEdit);
+contactRouter.post("/edit/:id", (req,res) => 
+contactController.contactEdit(req,res)
+);
 
 // present the searching results 
 

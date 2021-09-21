@@ -1,26 +1,41 @@
-exports.getFullMeeting = function (req, res){
-    res.send("FullMeeting")
-    console.log("FullMeeting")
+const Meeting = require("../models/meeting");
+const getFullMeeting = async (req, res) => {
+    try {
+        const meetings = await Meeting.find().lean();
+        res.json(meetings);
+    } catch (err){
+        console.log(err);
+    }
 };
 
-exports.getSingleMeeting = function (req, res){
-    res.send("SingleMeeting")
-    console.log("SingleMeeting")
+
+const getSingleMeeting = async(req, res) =>{
+    try {
+        const meeting = await Meeting.findOne(
+            {_id: req.params.id} 
+        ).lean();
+        res.json(meeting);
+    } catch (err){
+        console.log(err)
+    }
 };
-exports.meetingCreate = function (req, res){
+const meetingCreate = async (req, res)=>{
     res.send("meetingCreate")
     console.log("meetingCreate")
 };
 
-exports.meetingEdit = function (req, res){
+const meetingEdit = async(req, res) =>{
     res.send("meetingEdit")
     console.log("meetingEdit")
 };
-exports.searching = function (req, res){
+
+const searching = async(req, res) =>{
     res.send("searching")
     console.log("searching")
 };
-exports.getDeletedItems = function (req, res){
+
+const getDeletedItems = async(req, res) =>{
     res.send("getDeletedItems")
     console.log("getDeletedItems")
 };
+module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,searching,getDeletedItems}
