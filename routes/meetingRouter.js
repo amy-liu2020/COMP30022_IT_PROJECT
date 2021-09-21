@@ -14,10 +14,14 @@ meetingRouter.get("/:id", (req,res) => {
 });
 
 // create single meeting
-meetingRouter.post("/create", meetingController.meetingCreate);
+meetingRouter.post("/create", (req,res) => 
+    meetingController.meetingCreate(req,res)
+);
 
 // edit single meeting
-meetingRouter.post("/edit", meetingController.meetingEdit);
+meetingRouter.post("/edit/:id", (req,res) => 
+meetingController.meetingEdit(req,res)
+);
 
 // present the searching results 
 meetingRouter.get("/searching/:type/:searchingawords", (req,res) =>

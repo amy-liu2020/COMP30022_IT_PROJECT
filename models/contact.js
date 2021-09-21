@@ -13,6 +13,6 @@ const ContactSchema = new mongoose.Schema({
     Tags:[String]
 }, {versionKey:false});
 
-var Contact = mongoose.model("Contact", ContactSchema, "ContactList");
+const Contact = mongoose.model("Contact", ContactSchema, "ContactList");
 
 module.exports = Contact

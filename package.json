@@ -30,5 +30,9 @@
     "express-handlebars": "^5.3.3",
     "express-session": "^1.17.2",
     "mongoose": "^5.13.8"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/amy-liu2020/COMP30022_IT_PROJECT/issues"
+  },
+  "devDependencies": {}
 }
