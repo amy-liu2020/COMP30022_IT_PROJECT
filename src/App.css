@@ -22,20 +22,14 @@ body {
 
 .nav {
     background-color: var(--nav-bg-color);
+    display: flex;
+    column-gap: 10px;
+    padding: 5px 20px;
     grid-area: nav;
 }
 
-.nav-element {
-    margin: 5px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    height: 40px;
-    column-gap: 20px;
-}
-
 .nav-logo {
-    padding-right: 40px;
+    margin-right: 50px;
 }
 
 .nav-tab {
@@ -48,36 +42,31 @@ body {
     background-color: #77CFC3;
 }
 
-.nav-searchBar {
+.nav-search {
     margin-left: auto;
+    display: flex;
+    justify-items: center;
+    column-gap: 5px;
+    padding: 5px;
     background-color: white;
     border-radius: 20px;
 }
 
-.nav-search-element {
-    display: flex;
-    column-gap: 5px;
-    align-items: center;
+.nav-search > * {
+    border-radius: 20px;
+    border: none;
 }
 
 .nav-search-input {
     outline: none;
-    border: none;
 }
 
-#nav-search-filter, #nav-search-submit {
-    border-radius: 20px;
-    padding: 8px 12px;
-    border: none;
+.nav-search > button {
+    padding: 0px 12px;
     background-color: inherit;
 }
 
-#nav-search-filter:hover, #nav-search-submit:hover, #nav-setting:hover {
-    opacity: 60%;
-    cursor: pointer;
-}
-
-#nav-search-filter:hover, #nav-search-submit:hover {
+.nav-search > button:hover {
     background-color: var(--button-hover-lightGrey);
 }
 
@@ -93,57 +82,56 @@ body {
     cursor: pointer;
 }
 
+.nav-setting:hover, .nav-search > button:hover {
+    opacity: 60%;
+    cursor: pointer;
+}
+
+/* sideMenu section */
+
 .sideM {
     background-color: var(--sideM-bg-color);
     grid-area: sideM;
-}
-
-.sideM-elements {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    margin: 0px 25px;
-    row-gap: 5px;
+    row-gap: 20px;
+    padding: 20px;
 }
 
-.sideM-elements > button {
-    background-color: inherit;
+.sideM > * {
     border: none;
-    padding: 10px 15px;
+    padding: 10px 16px;
     text-align: left;
-    border-radius: 30px;
+    border-radius: 20px;
+    background-color: inherit;
 }
 
-.sideM-elements > button:hover {
+.sideM-group {
+    text-decoration: none;
+    color: black;
+}
+
+.sideM > *:hover, .sideM-create, .sideM-addGroup {
     background-color: #EBF8F6;
 }
 
-#sideM-import {
+.sideM-create:hover, .sideM-addGroup:hover {
+    background-color: lightgray;
+}
+
+.sideM-import {
     margin-top: auto;
 }
 
-#sideM-create {
-    margin-top: 10px;
-    border: 2px solid gray;
-    background-color: white;
-}
-
-#sideM-create:hover, #sideM-addGroup:hover {
-    background-color: var(--button-hover-lightGrey);
-}
-
-#sideM-addGroup {
-    background-color: var(--content-bg-color);
-}
-
-#sideM-bin {
-    margin-bottom: 20px;
-}
+/* content section */
 
 .content {
     background-color: var(--content-bg-color);
     grid-area: content;
 }
+
+
+/* contact section */
 
 .contact-list {
     width: 100%;

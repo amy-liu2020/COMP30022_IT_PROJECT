@@ -2,6 +2,7 @@ import { FaSearch, FaFilter } from "react-icons/fa"
 import { MdSettings } from "react-icons/md"
 import { Link } from 'react-router-dom'
 
+// logo for website
 const Logo = () => {
     return (
         <svg className="nav-logo" width={70} viewBox="166.125 209.984 62.563 29.219" xmlns="http://www.w3.org/2000/svg">
@@ -11,35 +12,34 @@ const Logo = () => {
     )
 }
 
+// allow user search contact(s)/meeting(s)
 const SearchBar = () => {
     return (
-        <div className="nav-searchBar">
-            <form class="nav-search-element">
-                <button id="nav-search-filter"><FaFilter size={14}/></button>
-                <input class="nav-search-input" type="search"/>
-                <button id="nav-search-submit"><FaSearch size={14}/></button> 
-            </form>
-        </div>
+        <form className="nav-search">
+            <button className="nav-search-filter"><FaFilter size={14}/></button>
+            <input className="nav-search-input" type="search"/>
+            <button className="nav-search-submit"><FaSearch size={14}/></button> 
+        </form>
     )
 }
 
+// display user's profile photo
 const Avatar = () => {
     return (
-        <div className="nav-avatar"></div>
+        <div class="nav-avatar"></div>
     )
 }
 
+// navigate user to selected tab
 export const NavigationBar = () => {
     return (
         <div className="nav">
-            <div className="nav-element">
-                <Logo/>
-                <Link className="nav-tab" to="/contact">contact</Link>
-                <Link className="nav-tab" to="/meeting">meeting</Link>
-                <SearchBar />
-                <MdSettings id="nav-setting" size={40}/>
-                <Avatar />
-            </div>
+            <Logo/>
+            <Link className="nav-tab" to="/contact">contact</Link>
+            <Link className="nav-tab" to="/meeting">meeting</Link>
+            <SearchBar class="nav-search"/>
+            <MdSettings className="nav-setting" size={40}/>
+            <Avatar/>
         </div>
     )
 }
