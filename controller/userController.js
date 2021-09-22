@@ -3,7 +3,6 @@ const MAX_ATTEMPT_TIME = 5;
 const User = require("../models/user")
 const server = require("../server")
 const fs = require('fs');
-const { Mongoose } = require("mongoose");
 
 exports.userLogin = function (req, res) {
     res.render("login", {});
