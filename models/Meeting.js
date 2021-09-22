@@ -15,13 +15,5 @@ const MeetingSchema = new mongoose.Schema({
 
 const Meeting = mongoose.model("Meeting", MeetingSchema, "MeetingList");
 
-Meeting.find({},function(err, doc){
-    if(err){
-        console.log(err);
-        return;
-    }
-    console.log(doc);
-
-});
 
 module.exports = Meeting

@@ -1,4 +1,3 @@
-
 // //const mongoose = require("mongoose");
 
 // // import backend framwork
@@ -9,6 +8,8 @@
 // const bodyParser = require("body-parser");
 // const cookieParser = require('cookie-parser');
 // const MongoStore = require('connect-mongo');
+// const URL = require('url');
+// const multer = require('multer');
 
 
 // const app = express();
@@ -26,10 +27,10 @@
 // app.use(session({
 //     secret: "She could fade and wither - I didn't care.",
 //     name: "UserAccount",
-//     resave: false,
-//     saveUninitialized: true,
+//     resave: true,
+//     saveUninitialized: false,
 //     cookie: {
-//         maxAge: 1000 * 60 * 2,
+//         maxAge: 1000 * 60 *1,
 //         secure: false
 //     },
 //     store: MongoStore.create({ mongoUrl: "mongodb+srv://AEHXZ:aehxz123456@cluster0.0vlpa.mongodb.net/CRM?retryWrites=true&w=majority" }),
@@ -48,12 +49,43 @@
 
 // // Interceptor
 // app.all('*', (req, res, next) => {
-//     if(req.session.loginState == 1){
-//         req.session.destroy();
-//         console.log("you are taken")
-//         res.redirect("/")
+//     console.log(URL.parse(req.url).path)
+//     var url = URL.parse(req.url).path;
+//     var isIntecepted = true;
+//     switch (url) {
+//         case "/":
+//         case "/login":
+//         case "/register?":
+//         case "/doRegister":
+//             isIntecepted = false;
+//             break;
+//         default:
+//             break;
+
 //     }
+
+
+//     if (isIntecepted) {
+//         console.log("interceptor works")
+//         switch (req.session.loginState) {
+//             case 1:
+//                 req.session.destroy();
+//                 console.log("you are taken by someone else")
+//                 res.redirect("/")
+//                 return;
+//             case undefined:
+//                 console.log("login expired")
+//                 res.redirect("/")
+//                 return;
+//             default:
+//                 break;
+//         }
+
+//     };
+
+
 //     next();
+
 // })
 
 // app.use("/contact", contactRouter);
@@ -85,7 +117,7 @@
 //                 if (strs[i]._id == req.session.id) {
 //                     return false;
 //                 } else {
-//                     Ses.findOneAndUpdate({ _id: strs[i]._id }, {loginState: 1}, function (err, doc) {
+//                     Ses.findOneAndUpdate({ _id: strs[i]._id }, { loginState: 1 }, function (err, doc) {
 //                         if (err) {
 //                             console.log(err);
 //                             return;
@@ -98,6 +130,7 @@
 //     }
 //     return false;
 // }
+
 
 const path = require('path');
 const express = require('express');
