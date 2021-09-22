@@ -125,8 +125,9 @@ exports.changePassword = async function (req, res) {
     
 
 };
-exports.uploadPhoto = function (req, res) {
-    User.findOneAndUpdate({_id:req.session.userid}, {Photo:res.body.uploadPhoto})
+exports.savePhoto = function (req, res) {
+    var thisAccount = await User.findById(req.session.userid);
+    User.findByIdAndUpdate({UserID:thisAccount.UserID},{Photo:req.file.buffer})
 };
 exports.changeDetails = function (req, res) {
     res.send("Details")

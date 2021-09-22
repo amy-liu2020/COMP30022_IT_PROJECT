@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
 const URL = require('url');
+const multer = require('multer');
 
 
 const app = express();
@@ -29,7 +30,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 6,
+        maxAge: 1000 * 60 *1,
         secure: false
     },
     store: MongoStore.create({ mongoUrl: "mongodb+srv://AEHXZ:aehxz123456@cluster0.0vlpa.mongodb.net/CRM?retryWrites=true&w=majority" }),
