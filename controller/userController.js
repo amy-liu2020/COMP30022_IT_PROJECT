@@ -4,7 +4,6 @@ const User = require("../models/user")
 const server = require("../server")
 const fs = require('fs');
 const { Mongoose } = require("mongoose");
-const { Z_BINARY } = require("zlib");
 
 exports.userLogin = function (req, res) {
     res.render("login", {});
