@@ -310,10 +310,24 @@ body {
   resize: none;
 }
 
-.meetingForm-notes {
+.meetingForm-notes, meetingForm-keyWords {
   position: inherit;
   margin-top: 20px;
   margin-left: 45px;
+}
+
+.meetingForm-keyWords {
+  position: inherit;
+  margin-top: 20px;
+  margin-left: 45px;
+}
+
+#meetingForm-keyWordsArea {
+  position: inherit;
+  display: block;
+  width: 200px;
+  height: 20px;
+  resize: none;
 }
 
 .meeting-form > button[type="submit"], .detail-edit{
