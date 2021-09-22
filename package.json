@@ -1,0 +1,38 @@
+{
+  "name": "t74-aehxz-pcrm",
+  "version": "1.0.0",
+  "description": "A Personal CRM Project Designed for the subject COMP30022 IT Project of the university of Melbourne.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amy-liu2020/COMP30022_IT_PROJECT.git"
+  },
+  "keywords": [
+    "web app",
+    "project",
+    "CRM",
+    "COMP30022"
+  ],
+  "author": "Chuyue Liu, Emily Zhou, Haiyao Yan, Xintao Chen, Zhengtian Lu",
+  "license": "ISC",
+  "homepage": "https://github.com/amy-liu2020/COMP30022_IT_PROJECT#readme",
+  "dependencies": {
+    "@types/core-js": "^2.5.5",
+    "body-parser": "^1.19.0",
+    "connect-mongo": "^4.5.0",
+    "cookie-parser": "^1.4.5",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.3",
+    "express-session": "^1.17.2",
+    "mongoose": "^5.13.8"
+  },
+  "bugs": {
+    "url": "https://github.com/amy-liu2020/COMP30022_IT_PROJECT/issues"
+  },
+  "devDependencies": {}
+}
