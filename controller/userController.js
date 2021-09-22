@@ -1,7 +1,8 @@
 const MAX_ATTEMPT_TIME = 5;
 
-var User = require("../models/user")
-var server = require("../server")
+const User = require("../models/user")
+const server = require("../server")
+const fs = require('fs');
 
 exports.userLogin = function (req, res) {
     res.render("login", {});
@@ -121,13 +122,20 @@ exports.changePassword = async function (req, res) {
     if(thisAccount.password != res.body.oldPassword){
         return;
     }
-    User.findOneAndUpdate({UserID:thisAccount.UserID}, {Password:req.session.newPassword})
+    User.findByIdAndUpdate(req.session.userid, {Password:req.session.newPassword})
     
 
 };
-exports.savePhoto = function (req, res) {
-    var thisAccount = await User.findById(req.session.userid);
-    User.findByIdAndUpdate({UserID:thisAccount.UserID},{Photo:req.file.buffer})
+exports.savePhoto = async function (req, res) {
+    let photoFile = req.body.photo;
+    let photoData = fs.readFileSync(photoFile.path)
+    User.findByIdAndUpdate(req.session.userid,{Photo:photoData}, (err)=>{
+        if(err){
+            console.log(err)
+        }
+    })
+
+    res.send("upload success")
 };
 exports.changeDetails = function (req, res) {
     res.send("Details")

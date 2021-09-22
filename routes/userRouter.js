@@ -1,6 +1,9 @@
 const express = require("express");
 
 const userRouter = express.Router();
+
+const multer = require('multer');
+const path=require('path')
 var userController = require("../controller/userController.js");
 
 
@@ -22,13 +25,27 @@ userRouter.get("/profile", userController.getProfile);
 userRouter.post("/upload", uploadFile, userController.savePhoto);
 
 function uploadFile (req, res, next) {
-    let upload = multer({dest: "attachment/"}).single("photo");
+    let fullPath = path.resolve("attachment");
+    let filename = "";
+    let storage = multer.diskStorage({
+        destination:(req,file,cb)=>{
+            cb(null,fullPath);
+        },
+        filename:(req,file,cb)=>{
+            let extname = path.extname(file.originalname);
+            filename=file.filename+"-"+Date.now()+extname;
+            cb(null,filename);
+        }
+    })
+
+    let upload = multer({storage}).single("photo");
     upload(req, res, (err) => {
-        console.log(req.file);
-        if(err){
-            res.send(err);
+        if(err instanceof multer.MulterError) {
+            res.send("multererr" + err);
+        } else if (err){
+            res.send("other err:"+ err)
         } else {
-            req.body.photo = req.file.filename;
+            req.body.photo = req.file;
             next();
         }
     })
