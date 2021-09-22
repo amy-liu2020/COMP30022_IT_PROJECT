@@ -17,9 +17,7 @@ userRouter.get("/register", userController.userRegister);
 userRouter.post("/doRegister", userController.userDoRegister);
 
 // show user profile
-userRouter.get("/profile", (req,res) => {
-    userController.getProfile(req,res)
-});
+userRouter.get("/profile", userController.getProfile);
 
 // user change password
 userRouter.post("/changePassword", userController.changePassword);
