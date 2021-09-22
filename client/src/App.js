@@ -2,9 +2,6 @@ import './App.css';
 import { Contact } from './components/Contact';
 import { Meeting } from './components/Meeting';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { SideMenu } from './components/SideMenu';
-import { NavigationBar } from './components/NavigationBar'
-
 
 const Login = () => {
   return (

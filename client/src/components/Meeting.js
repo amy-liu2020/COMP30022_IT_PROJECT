@@ -210,24 +210,24 @@ export const Meeting = () => {
 const meetings = [
     {
         id: 1,
-        Name: "COMP30022 Lecture",
-        Location: "Zoom",
-        Date: "20-09-2021",
-        Invitees: "John Doe, Jane Doe",
+        name: "COMP30022 Lecture",
+        location: "Zoom",
+        date: "20-09-2021",
+        invitees: "John Doe, Jane Doe",
     },
     {
         id: 2,
-        Name: "COMP30019 Lecture",
-        Location: "Sydney Myer G01",
-        Date: "22-09-2021",
-        Invitees: "Tony Gilbert, Ivy Wong, Chris Collins",
+        name: "COMP30019 Lecture",
+        location: "Sydney Myer G01",
+        date: "22-09-2021",
+        invitees: "Tony Gilbert, Ivy Wong, Chris Collins",
     }
 ]
     
     
 const groups= [
     {
-            id: 1,
+        id: 1,
         name: "all"
     },
     {
@@ -245,22 +245,10 @@ const groups= [
         
 ]
     
-
-    // return (
-    //     <div className="three-part-layout">
-    //         <NavigationBar/>
-    //         <SideMenu groups={groups} tab="meeting"/>
-    //         <List meetings={meetings}/>
-    //     </div>
-    // )
-
-
-
-
 // if meetingID is specified, return single meeting with requested id.
 // Otherwise, return all meetings
 const getOneMeeting = (meetingID) => {
-    return meetings.find(({ id }) => id === meetingID);
+    return meetings.find(({ id }) => id == meetingID);
 }
 
 const getAllMeeting = () => {
