@@ -174,7 +174,7 @@ const Edit = () => {
 
                 <div class="meetingForm-notes">
                 <label>Notes: </label>
-                <textarea id="notes" maxlength ="140" placeholder="add notes..." onChange={e => onChangeHandler(e)} value={meeting.notes}></textarea>
+                <textarea id="meetingForm-noteArea" maxlength ="140" placeholder="add notes..." onChange={e => onChangeHandler(e)} value={meeting.notes}></textarea>
                 </div>
             </form>
         </div>
