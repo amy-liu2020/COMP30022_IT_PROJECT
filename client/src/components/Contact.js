@@ -44,13 +44,6 @@ const Detail = () => {
         setContact(getOneContact(contactId));
     }, [contactId])
 
-
-    //   <div>
-    //         {contact == null
-    //         ? <p>requested id is not exist</p>
-    //         : <p>detail page, current contact name is: {contact.fName}</p>}
-    //   </div>
-
     return (
         <div className="content">
             <form className="contact-form">
@@ -120,6 +113,11 @@ const Edit = () => {
         setContact((prevContact) => ({...prevContact, [e.target.name] : e.target.value}))
     }
 
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        history.push('/contact');
+    }
+
     // fetch contact from data
     useEffect(() => {
         getOneContact(contactId) !== undefined && setContact(getOneContact(contactId))
@@ -128,7 +126,7 @@ const Edit = () => {
     return (
         <div className="content">
             <form className="contact-form">
-                <button type="submit" onClick={() => history.goBack()}>save</button>
+                <button type="submit" onClick={onSubmitHandler}>save</button>
                 <div class="form-avatar">
                     <MdAdd id="form-addPhoto" size={50}/>
                 </div>

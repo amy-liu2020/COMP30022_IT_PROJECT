@@ -113,6 +113,12 @@ const Edit = () => {
         setMeeting((prevMeeting) => ({...prevMeeting, [e.target.name] : e.target.value}))
     }
 
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        history.push('/contact');
+    }
+
+
     // fetch meeting from data
     useEffect(() => {
         getOneMeeting(meetingID) !== undefined && setMeeting(getOneMeeting(meetingID))
@@ -122,7 +128,7 @@ const Edit = () => {
         <div className = "content">
             <form className="meeting-form">
 
-                <button type="submit" onClick={() => history.goBack()}>save</button>
+                <button type="submit" onClick={onSubmitHandler}>save</button>
 
                 <div class="meetingForm-keyInfo">
                     <div class="meetingForm-name">
