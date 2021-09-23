@@ -1,8 +1,4 @@
-import './App.css';
-import { Contact } from './components/Contact';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { SideMenu } from './components/SideMenu';
-import { NavigationBar } from './components/NavigationBar'
+import { NavigationBar } from './NavigationBar'
 import { useHistory } from "react-router-dom";
 
 const Logo = () => {
@@ -14,7 +10,7 @@ const Logo = () => {
   )
 }
 
-const Login = () => {
+export const Login = () => {
   let history = useHistory();
 
   return (
@@ -33,7 +29,7 @@ const Login = () => {
   )
 }
 
-const Register = () => {
+export const Register = () => {
   let history = useHistory();
 
   return (
@@ -56,7 +52,7 @@ const Register = () => {
   )
 }
 
-const Forget = () => {
+export const Forget = () => {
   return (
     <div>
       <NavigationBar/>
@@ -66,28 +62,3 @@ const Forget = () => {
     </div>
   )
 }
-
-const Meeting = () => {
-  return (
-  <div className="three-part-layout">
-    <NavigationBar/>
-    <SideMenu tab={"meeting"}/>
-  </div>)
-}
-
-function App() {
-
-  return (
-    <Router>
-      <Switch>
-        <Route path='/contact' component={Contact}></Route>
-        <Route path='/meeting' component={Meeting}></Route>
-        <Route path='/register' component={Register}></Route>
-        <Route path='/forget' component={Forget}></Route>
-        <Route path='/' component={Login}></Route>
-      </Switch>
-    </Router>
-  );
-}
-
-export default App;

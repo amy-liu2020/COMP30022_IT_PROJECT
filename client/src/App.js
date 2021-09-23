@@ -1,6 +1,7 @@
 import './App.css';
 import { Contact } from './components/Contact';
 import { Meeting } from './components/Meeting';
+import { Login, Register, Forget } from './components/Login';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // const Test = () => {
@@ -68,7 +69,9 @@ function App() {
       <Switch>
         <Route path="/contact"><Contact/></Route>
         <Route path="/meeting"><Meeting/></Route>
-        <Route exact path="/"><p>login page</p></Route>
+        <Route path='/register' component={Register}></Route>
+        <Route path='/forget' component={Forget}></Route>
+        <Route exact path='/' component={Login}></Route>
         <Route path="/"><p>404 not found</p></Route>
       </Switch>
     </Router>
