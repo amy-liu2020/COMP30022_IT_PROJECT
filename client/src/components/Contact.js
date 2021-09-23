@@ -20,7 +20,7 @@ const List = () => {
                 {
                     contacts.length ? 
                     contacts.map((contact) => 
-                    <tr className="contact-list-record" onClick={() => {history.push(`/contact/${contact.id}`) }}>
+                    <tr className="contact-list-record" onClick={() => {history.push(`/contact/${contact.id}`)}}>
                         <td>{contact.fName + " " + contact.lName}</td>
                         <td>{contact.mNum}</td>
                         <td>{contact.email}</td>
@@ -111,6 +111,7 @@ const Edit = () => {
 
     const onChangeHandler = (e) => {
         setContact((prevContact) => ({...prevContact, [e.target.name] : e.target.value}))
+        console.log(contact);
     }
 
     const onSubmitHandler = (e) => {
@@ -135,7 +136,7 @@ const Edit = () => {
                         <input type="text" name="fName" maxLength="20" placeholder="FirstName" onChange={e => onChangeHandler(e)} value={contact.fName}/>
                         <input type="text" name="lName" maxLength="20" placeholder="LastName" onChange={e => onChangeHandler(e)} value={contact.lName}/>
                     </div>
-                    <Tag/>
+                    <Tag setTagText={onChangeHandler}/>
                     <div class="form-record">
                         <label>Home: </label>
                         <input type="tel" name="hNum" onChange={e => onChangeHandler(e)} value={contact.hNum}/>

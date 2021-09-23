@@ -20,7 +20,7 @@ const List = () => {
                 {
                     meetings.length ?
                     meetings.map((meeting) => 
-                    <tr className="meeting-list-record">
+                    <tr className="meeting-list-record" onClick={() => {history.push(`/meeting/${meeting.id}`)}}>
                         <td>{meeting.name}</td>
                         <td>{meeting.location}</td>
                         <td>{meeting.date}</td>
@@ -97,6 +97,11 @@ const Detail = () => {
                     <label>Notes: </label>
                     <textarea id="meetingForm-noteArea" placeholder="add notes..." name="notes">{meeting.notes}</textarea>
                 </div>
+
+                <div class="meetingForm-keyWords">
+                    <label>Key words:</label>
+                    <textarea id="meetingForm-keyWordsArea" placeholder="add key words..."name="keyWords"></textarea>
+                </div>
             </form>
         </div>
     )
@@ -115,9 +120,8 @@ const Edit = () => {
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        history.push('/contact');
+        history.push('/meeting');
     }
-
 
     // fetch meeting from data
     useEffect(() => {
@@ -174,14 +178,20 @@ const Edit = () => {
                 </div>
 
                 <div class="meetingForm-attachment">
-                <label>Attachment: </label>
-                <input type="file" onChange={e => onChangeHandler(e)} value={meeting.attachment}/>
+                    <label>Attachment: </label>
+                    <input type="file" onChange={e => onChangeHandler(e)} value={meeting.attachment}/>
                 </div>
 
                 <div class="meetingForm-notes">
-                <label>Notes: </label>
-                <textarea id="notes" maxlength ="140" placeholder="add notes..." onChange={e => onChangeHandler(e)} value={meeting.notes}></textarea>
+                    <label>Notes: </label>
+                    <textarea id="meetingForm-noteArea" maxlength ="140" placeholder="add notes..." onChange={e => onChangeHandler(e)} value={meeting.notes}></textarea>
                 </div>
+
+                <div class="meetingForm-keyWords">
+                    <label>Key words:</label>
+                    <textarea id="meetingForm-keyWordsArea" maxlength ="60" placeholder="add key words..." onChange={e => onChangeHandler(e)} value={meeting.notes}></textarea>
+                </div>
+
             </form>
         </div>
     )
