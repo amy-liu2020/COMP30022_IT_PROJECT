@@ -285,6 +285,11 @@ body {
 
 .meetingForm-record select {
   border: none;
+  cursor: pointer;
+  width: 200px;
+  height: 22px;
+  position: inherit;
+  justify-content: space-between;
 }
 
 .meetingForm-record input[type = "text"],[type = "url"] {
@@ -310,7 +315,7 @@ body {
   resize: none;
 }
 
-.meetingForm-notes, meetingForm-keyWords {
+.meetingForm-notes {
   position: inherit;
   margin-top: 20px;
   margin-left: 45px;
@@ -350,6 +355,7 @@ body {
   padding: 2px 5px;
   border-radius: 20px;
   border: 2px solid gray;
+  cursor: pointer;
 }
 
 .tag > * {
