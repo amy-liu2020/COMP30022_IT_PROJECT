@@ -215,6 +215,7 @@ body {
 
 .contact-list-record:hover {
   background-color: var(--button-hover-lightGrey);
+  cursor: pointer;
 }
 
 .contact-form {
@@ -294,7 +295,6 @@ body {
 }
 
 
-/*  meeting section */
 /* meeting section */
 
 .meeting-list {
@@ -312,6 +312,11 @@ body {
 
 .meeting-list-record:hover {
   background-color: var(--button-hover-lightGrey);
+  cursor: pointer;
+}
+
+.meeting {
+  background-color: var(--content-bg-color);
 }
 
 .meeting-form {
@@ -326,6 +331,7 @@ body {
   align-items: flex-start;
   row-gap: 5px;
   margin-left: 45px;
+  font-size: 22px;
 }
 
 .meetingForm-name > *{
@@ -338,7 +344,7 @@ body {
 
 .meetingForm-record {
   position: inherit;
-  width: 300px;
+  width: 400px;
   justify-content: space-between;
   margin: 15px;
 }
@@ -348,13 +354,23 @@ body {
 }
 
 .meetingForm-record select {
+  height: 20px;
+  width: 200px;
   border: none;
+  cursor: pointer;
 }
 
 .meetingForm-record input[type = "text"],[type = "url"] {
   height: 20px;
   width: 200px;
   border: none;
+}
+
+.meetingForm-record input[type = "time"],[type = "date"] {
+  height: 20px;
+  width: 200px;
+  border: none;
+  cursor: text;
 }
 
 .meetingForm-record input:focus {
@@ -374,7 +390,7 @@ body {
   resize: none;
 }
 
-.meetingForm-notes, meetingForm-keyWords {
+.meetingForm-notes {
   position: inherit;
   margin-top: 20px;
   margin-left: 45px;
@@ -400,11 +416,13 @@ body {
   border: 2px solid gray;
   background-color: white;
   padding: 2px 10px;
+  cursor: pointer;
 }
 
 .meetingForm-attachment {
   margin-left: 45px;
 }
+
 
 /*  tag section */
 
@@ -413,6 +431,7 @@ body {
   padding: 2px 5px;
   border-radius: 20px;
   border: 2px solid gray;
+  cursor: pointer;
 }
 
 .tag > * {

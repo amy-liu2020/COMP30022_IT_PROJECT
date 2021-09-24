@@ -60,7 +60,7 @@ const Detail = () => {
                         <MdAdd size={15}/>
                     </button>
                     <div class="meetingForm-record">
-                        <label>Location: </label>meeting
+                        <label>Location: </label>
                         <text type="text" name="location">{meeting.location}</text>
                     </div>
                 </div>
@@ -88,12 +88,12 @@ const Detail = () => {
                     </div>
                 </div>
 
-                <div class="form-attachment">
+                <div class="meetingForm-attachment">
                     <label>Attachment: </label>
-                    <textarea id="form-attachmentArea" placeholder="add files..." name="attachment">{meeting.attachment}</textarea>
+                    <file id="form-attachmentArea" placeholder="add files..." name="attachment">{meeting.attachment}</file>
                 </div>
 
-                <div class="meetingForm-note">
+                <div class="meetingForm-notes">
                     <label>Notes: </label>
                     <textarea id="meetingForm-noteArea" placeholder="add notes..." name="notes">{meeting.notes}</textarea>
                 </div>

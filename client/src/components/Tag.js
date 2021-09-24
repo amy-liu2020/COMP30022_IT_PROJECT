@@ -1,4 +1,4 @@
-import { FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa"
 import { MdAdd } from "react-icons/md"
 import { useState } from "react/cjs/react.development"
 
@@ -19,3 +19,4 @@ export const Tag = ({setTagText}) => {
         </div>
     )
 }
+
