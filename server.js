@@ -46,45 +46,45 @@ const meetingRouter = require("./routes/meetingRouter");
 const userRouter = require("./routes/userRouter");
 
 // Interceptor
-app.all('*', (req, res, next) => {
-    console.log(URL.parse(req.url).path)
-    var url = URL.parse(req.url).path;
-    var isIntecepted = true;
-    switch (url) {
-        case "/":
-        case "/login":
-        case "/register?":
-        case "/doRegister":
-            isIntecepted = false;
-            break;
-        default:
-            break;
+// app.all('*', (req, res, next) => {
+//     console.log(URL.parse(req.url).path)
+//     var url = URL.parse(req.url).path;
+//     var isIntecepted = true;
+//     switch (url) {
+//         case "/":
+//         case "/login":
+//         case "/register?":
+//         case "/doRegister":
+//             isIntecepted = false;
+//             break;
+//         default:
+//             break;
 
-    }
-
-
-    if (isIntecepted) {
-        console.log("interceptor works")
-        switch (req.session.loginState) {
-            case 1:
-                req.session.destroy();
-                console.log("you are taken by someone else")
-                res.redirect("/")
-                return;
-            case undefined:
-                console.log("login expired")
-                res.redirect("/")
-                return;
-            default:
-                break;
-        }
-
-    };
+//     }
 
 
-    next();
+//     if (isIntecepted) {
+//         console.log("interceptor works")
+//         switch (req.session.loginState) {
+//             case 1:
+//                 req.session.destroy();
+//                 console.log("you are taken by someone else")
+//                 res.redirect("/")
+//                 return;
+//             case undefined:
+//                 console.log("login expired")
+//                 res.redirect("/")
+//                 return;
+//             default:
+//                 break;
+//         }
 
-})
+//     };
+
+
+//     next();
+
+// })
 
 app.use("/contact", contactRouter);
 app.use("/meeting", meetingRouter);
