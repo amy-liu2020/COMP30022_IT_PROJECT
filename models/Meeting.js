@@ -6,22 +6,14 @@ const MeetingSchema = new mongoose.Schema({
     Location:String,
     StartTime:Date,
     EndTime:Date,
-    OtherParticipants:String,
+    OtherInvitees:String,
     IsActive:Boolean,
     Notes:String,
-    Participants:[mongoose.Schema.Types.ObjectId],
+    Invitees:[mongoose.Schema.Types.ObjectId],
     Tags:[String]
 }, {versionKey:false});
 
 const Meeting = mongoose.model("Meeting", MeetingSchema, "MeetingList");
 
-Meeting.find({},function(err, doc){
-    if(err){
-        console.log(err);
-        return;
-    }
-    console.log(doc);
-
-});
 
 module.exports = Meeting

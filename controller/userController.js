@@ -1,10 +1,8 @@
 const MAX_ATTEMPT_TIME = 5;
 
-const { text } = require("body-parser");
-const bodyParser = require("body-parser");
-
-var User = require("../models/User")
-var server = require("../server")
+const User = require("../models/user")
+const server = require("../server")
+const fs = require('fs');
 
 exports.userLogin = function (req, res) {
     res.render("login", {});
@@ -31,7 +29,7 @@ exports.doLogin = function (req, res) {
         console.log("password can not be empty")
         res.redirect("/");
     }
-    User.find({ AccountID: body.userId }, function (err, doc) {
+    User.find({UserID: body.userId }, function (err, doc) {
         let result = {};
         if (err) {
             result = {
@@ -84,7 +82,7 @@ exports.userDoRegister = async function (req, res) {
         res.redirect("/doRegister");
     }
 
-    var output = await User.findOne({ AccountID: body.username })
+    var output = await User.findOne({UserID: body.username })
     if (output) {
         console.log("userId exists")
         res.redirect("/doRegister")
@@ -94,7 +92,9 @@ exports.userDoRegister = async function (req, res) {
         AccountID: body.userId,
         Password: body.password,
         DateOfRegister: new Date(),
-        AccountName: body.username
+        AccountName: body.username,
+        SecurityQuestion: body.securityQuestion,
+        SecurityAnswer: body.securityAnswer
     })
 
     newUser.save((err) => {
@@ -106,7 +106,7 @@ exports.userDoRegister = async function (req, res) {
 
     req.session.userid = newUser._id;
     req.session.loginState = 0;
-    
+
     res.redirect("/conflict")
 
 }
@@ -115,12 +115,27 @@ exports.userRegister = function (req, res) {
     res.render("register", {});
 };
 exports.getProfile = function (req, res) {
-    res.send("Profile")
-    console.log("Profile")
+    res.render("userProfile", {})
 };
-exports.changePassword = function (req, res) {
-    res.send("Password")
-    console.log("Password")
+exports.changePassword = async function (req, res) {
+    var thisAccount = await User.findById(req.session.userid);
+    if(thisAccount.password != res.body.oldPassword){
+        return;
+    }
+    User.findByIdAndUpdate(req.session.userid, {Password:req.session.newPassword})
+    
+
+};
+exports.savePhoto = async function (req, res) {
+    let photoFile = req.body.photo;
+    let photoData = fs.readFileSync(photoFile.path)
+    User.findByIdAndUpdate(req.session.userid,{Photo:photoData}, (err)=>{
+        if(err){
+            console.log(err)
+        }
+    })
+
+    res.send("upload success")
 };
 exports.changeDetails = function (req, res) {
     res.send("Details")
@@ -132,5 +147,5 @@ exports.conflictLogin = async function (req, res) {
         console.log("you take someone")
     }
     console.log("still you")
-    res.redirect("/contact/");
+    res.redirect("/profile");
 }
