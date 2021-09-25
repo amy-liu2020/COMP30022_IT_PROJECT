@@ -20,7 +20,7 @@ const List = () => {
                 {
                     contacts.length ? 
                     contacts.map((contact) => 
-                    <tr className="contact-list-record" onClick={() => {history.push(`/contact/${contact.id}`)}}>
+                    <tr className="contact-list-record" onClick={() => {history.push(`/contact/${contact.id}`) }}>
                         <td>{contact.fName + " " + contact.lName}</td>
                         <td>{contact.mNum}</td>
                         <td>{contact.email}</td>
@@ -43,6 +43,13 @@ const Detail = () => {
     useEffect(() => {
         setContact(getOneContact(contactId));
     }, [contactId])
+
+
+    //   <div>
+    //         {contact == null
+    //         ? <p>requested id is not exist</p>
+    //         : <p>detail page, current contact name is: {contact.fName}</p>}
+    //   </div>
 
     return (
         <div className="content">
@@ -111,12 +118,6 @@ const Edit = () => {
 
     const onChangeHandler = (e) => {
         setContact((prevContact) => ({...prevContact, [e.target.name] : e.target.value}))
-        console.log(contact);
-    }
-
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-        history.push('/contact');
     }
 
     // fetch contact from data
@@ -127,7 +128,7 @@ const Edit = () => {
     return (
         <div className="content">
             <form className="contact-form">
-                <button type="submit" onClick={onSubmitHandler}>save</button>
+                <button type="submit" onClick={() => history.goBack()}>save</button>
                 <div class="form-avatar">
                     <MdAdd id="form-addPhoto" size={50}/>
                 </div>
@@ -136,7 +137,7 @@ const Edit = () => {
                         <input type="text" name="fName" maxLength="20" placeholder="FirstName" onChange={e => onChangeHandler(e)} value={contact.fName}/>
                         <input type="text" name="lName" maxLength="20" placeholder="LastName" onChange={e => onChangeHandler(e)} value={contact.lName}/>
                     </div>
-                    <Tag setTagText={onChangeHandler}/>
+                    <Tag/>
                     <div class="form-record">
                         <label>Home: </label>
                         <input type="tel" name="hNum" onChange={e => onChangeHandler(e)} value={contact.hNum}/>
@@ -203,7 +204,7 @@ export const Contact = () => {
                 </Route>
             </Switch>
         </div>
-        )
+    )
 }
 
 
@@ -228,9 +229,9 @@ const contacts = [
 // if contactId is specified, return single contact with requested id.
 // Otherwise, return all contacts
 const getOneContact = (contactId) => {
-    return contacts.find(({ id }) => id == contactId);
+    return contacts.find(({ id }) => id === contactId);
 }
 
-const getAllContact = () => {
-    return contacts;
-}
+// const getAllContact = () => {
+//     return contacts;
+// }
