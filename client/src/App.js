@@ -5,62 +5,35 @@ import { Login, Register, Forget } from './components/Login';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // const Test = () => {
-// 	const [selectedFile, setSelectedFile] = useState();
-	
-//   // toggle when selected file changed
-//   const onChangeHandler = (e) => {
-//     setSelectedFile(e.target.files[0]);
-//   }
-
-//   const onSubmit = () => {
-//     const data = new FormData() 
-//     data.append('file', selectedFile);
-//     console.warn(selectedFile);
-//     let url = "api/upload";
-
-//     axios.post(url, data, { // receive two parameter endpoint url ,form data 
-//     })
-//     .then(res => { // then print response status
-//         console.warn(res);
-//     })
-//   }
-
+//   const { register, formState: { errors }, handleSubmit } = useForm({
+//     criteriaMode: 'all',
+//   });
+//   const onSubmit = data => console.log(data);
+   
 //   return (
-//   <div>
-//     <p>Login page</p>
-//     <input type="file" onChange={onChangeHandler}/>
-//     <button type="submit" onClick={onSubmit}>submit</button>
-//   </div>)
+//     <form onSubmit={handleSubmit(onSubmit)}>
+//       <input name="userId" placeholder="userId" defaultValue="admin" {...register("userId", { 
+//         required: "userId is required", 
+//         maxLength: {value: 16, message: "userId is too long"},
+//         minLength: {value: 8, message: "userId is too short"},})}/>
+//       <ErrorMessage
+//         errors={errors}
+//         name="userId"
+//         render={({ messages }) => {
+//           return messages 
+//             ? Object.entries(messages).map(([type, message]) => (
+//                 <p key={type}>{message}</p>
+//               ))
+//             : null;
+//         }}
+//       />
 
+//       <input type="password" placeholder="password" /><br/>
+//       <button type="submit">login</button>
+//     </form>
+//   );
 // }
 
-// const Login = () => {
-
-//   const [user, setUser] = useState([]);
-
-//   const onChangeHandler = (e) => {
-//     setUser((prev) => ({...prev, [e.target.name] : e.target.value}));
-//   }
-
-//   const onSubmitHandler = (e) => {
-//     e.preventDefault();
-//     axios.post('/login', user)
-//     .then(function (response) {
-//       console.log(response);
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
-//   }
-
-//   return (
-//       <form>
-//           <input type="text" name="userId" onChange={onChangeHandler} value={user.userId}/>
-//           <input type="password" name="password" onChange={onChangeHandler} value={user.password}/>
-//           <button type="submit" onClick={onSubmitHandler}>submit</button>
-//       </form>
-//   )
-// }
 
 function App() {
 

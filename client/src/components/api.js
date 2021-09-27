@@ -1,5 +1,26 @@
 import axios from 'axios'
 
+// Temporary data before connect with server
+const contacts = [
+    {
+        id: 1,
+        fName: "Haiyao",
+        lName: "Yan",
+        mNum: "351465315",
+        email: "sample@gmail.com"
+    },
+    {
+        id: 2,
+        fName: "Jane",
+        lName: "Andy",
+        mNum: "351465315",
+        email: "sample@gmail.com"
+    }
+]
+
+
+// don't forget to add Interceptors!
+
 function getOneContact(contactId) {
     axios.get(`/api/contact/${contactId}`)
     .then(res => console.log(res.data))
