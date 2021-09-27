@@ -286,6 +286,11 @@ body {
   margin-top: 20px;
 }
 
+.input-error {
+  color: tomato;
+  font-size: 0.8em;
+}
+
 .contact-form > button[type="submit"], .detail-edit{
   float: right;
   border-radius: 20px;
