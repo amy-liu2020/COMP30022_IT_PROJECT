@@ -50,15 +50,22 @@ const userRouter = require("./routes/userRouter");
 
 
 // Interceptor
+app.use(function (req, res, next) {
+    let arr = req.url.split("/")
+    console.log(arr)
+    if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
+        console.log("white list")
+        next()
+    } else {
+        var bearerHeader = req.headers["authorization"]
+        console.log("intercept")
+        if (!bearerHeader) {
+            res.status(403)
+        }
+        next()
+    }
 
-// const expressJWT = require('express-jwt');
-// const PRIVATE_KEY = "APriVatekEy"
-// app.use(expressJWT({
-//     secret: PRIVATE_KEY,
-//     algorithms: ['RS256']
-// }).unless({
-//     path: ['/', '/doRegister', '/register?', '/login'] 
-// }));
+})
 
 
 app.use("/api/contact", contactRouter);
@@ -109,9 +116,12 @@ app.use(function (err, req, res, next) {
         // 这个需要根据⾃自⼰己的业务逻辑来处理理
         res.status(401).send({ code: -1, msg: 'token验证失败' });
     } else {
-        
+
         res.status(err.status || 500);
-        res.json('error');
+        res.json({
+            msg: 'error',
+            error: err.name
+        });
     }
 });
 

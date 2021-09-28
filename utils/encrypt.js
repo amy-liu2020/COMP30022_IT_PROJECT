@@ -1,27 +1,25 @@
-const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 
-function encrypt(word) {
-  const key = CryptoJS.enc.Utf8.parse('aeHxz123456EkT27');//16位随机公钥
-  const srcs = CryptoJS.enc.Utf8.parse(word);
-  const encrypted = CryptoJS.AES.encrypt(srcs, key, {
-    mode: CryptoJS.mode.ECB,
-    padding: CryptoJS.pad.Pkcs7
-  });
-  return encrypted.toString();
+const key = '0123456789abcdef'
+const iv = 'fedcba9876543210'
+
+function encrypt(str){
+    try{
+        const cipher = crypto.createCipheriv('aes-128-cbc', key, iv)
+        return cipher.update(str, 'utf8', 'hex') + cipher.final('hex')
+    }catch(err){
+        console.log(err)
+    }
 }
 
-function decrypt(word) {
-
-  const key = CryptoJS.enc.Utf8.parse('aeHxz123456EkT27');//16位随机公钥
-  const srcs = CryptoJS.enc.Utf8.stringify(word);
-  const decrypt = CryptoJS.AES.decrypt(srcs, key, {
-    mode: CryptoJS.mode.ECB,
-    padding: CryptoJS.pad.Pkcs7
-  });
-  console.log(decrypt);
-  return CryptoJS.enc.Utf8.stringify(decrypt).toString();
+function decrypt(str){
+    try{
+        const decipher = crypto.createDecipheriv('aes-128-cbc', key, iv)
+        return decipher.update(str, 'hex', 'utf8') + decipher.final('utf8')
+    }catch(err){
+        console.log(err)
+    }
 }
-
 module.exports = {
   encrypt,
   decrypt

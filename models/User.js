@@ -9,7 +9,9 @@ const UserSchema = new mongoose.Schema({
     UserName:String,
     SecurityQuestion: Number,
     SecurityAnswer: String,
-    Photo: Buffer
+    Photo: Buffer,
+    Email: String,
+    PhoneNumber: String
 }, {versionKey:false});
 
 var User = mongoose.model("User", UserSchema, "UserAccount");

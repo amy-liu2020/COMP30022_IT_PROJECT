@@ -2,15 +2,14 @@ const express = require("express");
 
 const userRouter = express.Router();
 
-const multer = require('multer');
 const path=require('path')
-var userController = require("../controller/userController.js");
+const userController = require("../controller/userController.js");
+const {ensureAuthorized} = require("../utils/token.js");
+const {uploadFile} = require('../utils/multer.js')
 
 
 // user login
 userRouter.get("/", userController.userLogin);
-
-userRouter.get("/conflict",userController.conflictLogin);
 
 userRouter.post("/login", userController.doLogin);
 
@@ -20,42 +19,23 @@ userRouter.get("/register", userController.userRegister);
 userRouter.post("/doRegister", userController.userDoRegister);
 
 // show user profile
-userRouter.get("/profile", userController.getProfile);
+userRouter.get("/profile", ensureAuthorized, userController.getProfile);
 
-userRouter.post("/upload", uploadFile, userController.savePhoto);
+userRouter.get("/uploadPhoto", (req,res)=>{
+    res.render("userProfile",{})
+})
 
-function uploadFile (req, res, next) {
-    let fullPath = path.resolve("attachment");
-    let filename = "";
-    let storage = multer.diskStorage({
-        destination:(req,file,cb)=>{
-            cb(null,fullPath);
-        },
-        filename:(req,file,cb)=>{
-            let extname = path.extname(file.originalname);
-            filename=file.filename+"-"+Date.now()+extname;
-            cb(null,filename);
-        }
-    })
-
-    let upload = multer({storage}).single("photo");
-    upload(req, res, (err) => {
-        if(err instanceof multer.MulterError) {
-            res.send("multererr" + err);
-        } else if (err){
-            res.send("other err:"+ err)
-        } else {
-            req.body.photo = req.file;
-            next();
-        }
-    })
-};
+userRouter.post("/upload", uploadFile, ensureAuthorized, userController.savePhoto);
 
 // user change password
-userRouter.post("/changePassword", userController.changePassword);
+userRouter.post("/changePassword", ensureAuthorized, userController.changePassword);
+
+userRouter.post("/forgetPassword", ensureAuthorized, userController.forgetPassword);
+
+userRouter.post("/doChangeForgottenPassword", ensureAuthorized, userController.changeForgottenPassword);
 
 // user change details
-userRouter.post("/changeDetails", userController.changeDetails);
+userRouter.post("/changeDetails", ensureAuthorized, userController.changeDetails);
 
 //export the router
 module.exports = userRouter;
