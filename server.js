@@ -61,9 +61,9 @@ const userRouter = require("./routes/userRouter");
 // }));
 
 
-app.use("/contact", contactRouter);
-app.use("/meeting", meetingRouter);
-app.use("/", userRouter);
+app.use("/api/contact", contactRouter);
+app.use("/api/meeting", meetingRouter);
+app.use("/api", userRouter);
 
 // 'default' route to catch user errors
 app.all('*', (req, res) => {
