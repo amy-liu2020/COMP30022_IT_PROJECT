@@ -2,6 +2,7 @@ import './App.css';
 import { Contact } from './components/Contact';
 import { Meeting } from './components/Meeting';
 import { Setting } from './components/Setting';
+import { Profile } from './components/Profile';
 import { Login, Register, Forget } from './components/Login';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -35,7 +36,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 //   );
 // }
 
-
 function App() {
 
   return (
@@ -44,6 +44,7 @@ function App() {
         <Route path="/contact"><Contact/></Route>
         <Route path="/meeting"><Meeting/></Route>
         <Route path='/register' component={Register}></Route>
+        <Route path='/profile' component={Profile}></Route>
         <Route path='/forget' component={Forget}></Route>
         <Route exact path='/' component={Login}></Route>
         <Route path="/setting"><Setting/></Route>
