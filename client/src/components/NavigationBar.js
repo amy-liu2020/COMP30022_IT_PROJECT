@@ -46,7 +46,9 @@ export const NavigationBar = () => {
             <Link className="nav-tab" to="/contact">contact</Link>
             <Link className="nav-tab" to="/meeting">meeting</Link>
             <SearchBar className="nav-search"/>
-            <MdSettings className="nav-setting" size={40}/>
+            <Link className="nav-setting" to="/setting">
+                <MdSettings size={40}/>
+            </Link>
             <div
                 className="avatar-buttons"
                 onClick={() => setShow(!show)}

@@ -258,7 +258,7 @@ body {
 }
 
 .nav-tab:hover{
-  background-color: #77CFC3;
+  background-color: var(--sideM-bg-color);
 }
 
 .nav-search {
@@ -492,7 +492,7 @@ input:valid {
 }
 
 .meetingForm-keyInfo {
-  position:inline;
+  position: inline;
   float: left;
   display: inline-flex;
   flex-direction: column;
@@ -511,7 +511,7 @@ input:valid {
 }
 
 .meetingForm-record {
-  position: inherit;
+  position: flex;
   width: 400px;
   justify-content: space-between;
   margin: 15px;
@@ -609,4 +609,46 @@ input:valid {
 .tag > input {
   outline: none;
   border: none;
+}
+
+
+/*  setting section */
+
+.setting {
+  background-color: var(--content-bg-color);
+}
+
+.setting-form {
+  margin: 50px;
+  font-size: 30px;
+}
+
+.box {
+  position: relative;
+  left: 90px;
+  padding: 110px 70px;
+  float: left;
+  text-align: center;
+  margin: 25px;
+  border: none;
+}
+
+.box:hover {
+  cursor: pointer;
+}
+
+.blue {
+  background: #63ADB8;
+}
+
+.green {
+  background: #77CFC3;
+}
+
+.red {
+  background: #C97070;
+}
+
+.dark {
+  background: #2F4656;
 }

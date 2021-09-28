@@ -18,7 +18,7 @@ const Reset = () => {
             <input type="password" placeholder=""/>
           </div>
           <div class="input">
-            <label>Verity</label>
+            <label>Verify</label>
             <input type="password" placeholder=""/>
           </div>
           <div class="buttons">
