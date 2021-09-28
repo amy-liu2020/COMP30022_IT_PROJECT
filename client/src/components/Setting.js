@@ -60,7 +60,7 @@ const setTheme = (color) => {
     if( color === "dark" ) {
         document.documentElement.style.setProperty("--nav-bg-color", "#6E7F8A");
         document.documentElement.style.setProperty("--sideM-bg-color", "#2F4656");
-        document.documentElement.style.setProperty("--content-bg-color", "#FAFEFF");
+        document.documentElement.style.setProperty("--content-bg-color", "#d3e5fa");
         
     } else if ( color === "red" ) {
         document.documentElement.style.setProperty("--nav-bg-color", "#EDCACA");
@@ -69,7 +69,7 @@ const setTheme = (color) => {
     } else if ( color === "blue" ) {
         document.documentElement.style.setProperty("--nav-bg-color", "#D0EBEE");
         document.documentElement.style.setProperty("--sideM-bg-color", "#63ADB8");
-        document.documentElement.style.setProperty("--content-bg-color", "#FAFEFF");
+        document.documentElement.style.setProperty("--content-bg-color", "#d4f4f8");
     } else {
         document.documentElement.style.setProperty("--nav-bg-color", "#8BE8DA");
         document.documentElement.style.setProperty("--sideM-bg-color", "#77CFC3");
