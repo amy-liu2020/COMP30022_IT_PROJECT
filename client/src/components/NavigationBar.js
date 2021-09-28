@@ -1,6 +1,6 @@
 import { FaSearch, FaFilter } from "react-icons/fa"
 import { MdSettings } from "react-icons/md"
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useState } from "react/cjs/react.development";
 
 // logo for website
@@ -36,6 +36,7 @@ const Avatar = () => {
 // navigate user to selected tab
 export const NavigationBar = () => {
     const [show, setShow] = useState(false)
+    let history = useHistory();
 
     function handleShowMenu() {
         setShow(true)
@@ -46,9 +47,9 @@ export const NavigationBar = () => {
             <Link className="nav-tab" to="/contact">contact</Link>
             <Link className="nav-tab" to="/meeting">meeting</Link>
             <SearchBar className="nav-search"/>
-            <Link className="nav-setting" to="/setting">
-                <MdSettings size={40}/>
-            </Link>
+            <div className="nav-setting">
+                <MdSettings size={40} onClick={() => history.push('/setting')}/>
+            </div>
             <div
                 className="avatar-buttons"
                 onClick={() => setShow(!show)}
