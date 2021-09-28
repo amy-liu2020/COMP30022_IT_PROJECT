@@ -19,9 +19,29 @@ const getSingleMeeting = async(req, res) =>{
         console.log(err)
     }
 };
+
 const meetingCreate = async (req, res)=>{
-    res.send("meetingCreate")
-    console.log("meetingCreate")
+    const meeting = new Meeting({
+        AccountID:req.body.AccountID,
+        Title:req.body.Title,
+        Location:req.body.Location,
+        StartTime:req.body.StartTime,
+        EndTime:req.body.EndTime,
+        OtherParticipants:req.body.OtherParticipants,
+        IsActive:req.body.IsActive,
+        Notes:req.body.Notes,
+        Participants:req.body.Participants,
+        Tags:req.body.Tags
+    });
+
+    meeting.save((err,res)=>{
+        if (err){
+            console.log({success:false,err})
+        }
+        else {
+            console.log({success:true,res})
+        }
+    });
 };
 
 const meetingEdit = async(req, res) =>{
