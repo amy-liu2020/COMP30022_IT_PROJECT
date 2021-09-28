@@ -50,3 +50,15 @@ function deleteContact(contact) {
     .then(res => console.log(res.data))
     .catch(err => console.log(err));
 }
+
+function setTheme(color) {
+    axios.put(`/api/edit/${color.id}`, color)
+    .then(res => console.log(res.data))
+    .catch(err => console.log(err));
+}
+
+function getTheme(color) {
+    axios.get(`/api/edit/${color.id}`, color)
+    .then(res => console.log(res.data))
+    .catch(err => console.log(err));
+}
