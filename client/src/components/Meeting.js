@@ -48,7 +48,6 @@ const Detail = () => {
 
     return (
         <div className="meeting">
-
             <form className="meeting-form">
                 <button className="detail-edit" type="button" onClick={() => history.push(`/meeting/edit/${meeting.id}`)}>edit meeting</button>
 
@@ -179,7 +178,7 @@ const Edit = () => {
 
                 <div class="meetingForm-attachment">
                     <label>Attachment: </label>
-                    <input type="file" onChange={e => onChangeHandler(e)} value={meeting.attachment}/>
+                    <input class="attach" type="file" onChange={e => onChangeHandler(e)} value={meeting.attachment}/>
                 </div>
 
                 <div class="meetingForm-notes">

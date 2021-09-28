@@ -54,10 +54,14 @@ var meetingGroups =
     },
     {
         id: 2,
-        name: "formal"
+        name: "party"
     },
     {
         id: 3,
-        name: "casual"
+        name: "business"
+    },
+    {
+        id: 4,
+        name: "date"
     }
 ]

@@ -5,6 +5,27 @@
   --button-hover-lightGrey: #ddd;
 }
 
+:root-red {
+  --nav-bg-color: #EDCACA;
+  --sideM-bg-color: #C97070;
+  --content-bg-color: #FFF8F9;
+  --button-hover-lightGrey: #ddd;
+}
+
+:root-blue {
+  --nav-bg-color: #D0EBEE;
+  --sideM-bg-color: #63ADB8;
+  --content-bg-color: #FAFEFF;
+  --button-hover-lightGrey: #ddd;
+}
+
+:root-dark {
+  --nav-bg-color: #6E7F8A;
+  --sideM-bg-color: #2F4656;
+  --content-bg-color: #FAFEFF;
+  --button-hover-lightGrey: #ddd;
+}
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -102,7 +123,7 @@ body {
 }
 
 .nav-tab:hover{
-  background-color: #77CFC3;
+  background-color: var(--sideM-bg-color);
 }
 
 .nav-search {
@@ -329,7 +350,7 @@ body {
 }
 
 .meetingForm-keyInfo {
-  position:inline;
+  position: inline;
   float: left;
   display: inline-flex;
   flex-direction: column;
@@ -348,7 +369,7 @@ body {
 }
 
 .meetingForm-record {
-  position: inherit;
+  position: flex;
   width: 400px;
   justify-content: space-between;
   margin: 15px;
