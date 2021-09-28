@@ -27,9 +27,28 @@ const contactEdit = async (req, res) => {
 };
 
 const contactCreate = async (req, res) => {
-    res.send("contactCreate")
-    console.log("contactCreate")
+    const contact = new Contact({
+        AccountID:req.body.AccountID,
+        Company:req.body.Company,
+        Email:req.body.Email,
+        FullName:req.body.FullName,
+        Home:req.body.Home,
+        IsActive:req.body.IsActive,
+        JobTitle:req.body.JobTitle,
+        Notes:req.body.Notes,
+        PhoneNumber:req.body.PhoneNumber,
+        Tags:req.body.Tags
+    });
+    contact.save((err,res)=>{
+        if (err){
+            console.log({success:false,err})
+        }
+        else {
+            console.log({success:true,res})
+        }
+    });
 }
+
 const searching = async (req, res) => {
     res.send("searching")
     console.log("searching")

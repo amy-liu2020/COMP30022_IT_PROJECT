@@ -28,7 +28,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 *1,
+        maxAge: 1000 * 60 * 1,
         secure: false
     },
     store: MongoStore.create({ mongoUrl: "mongodb+srv://AEHXZ:aehxz123456@cluster0.0vlpa.mongodb.net/CRM?retryWrites=true&w=majority" }),
@@ -45,46 +45,21 @@ const contactRouter = require("./routes/contactRouter");
 const meetingRouter = require("./routes/meetingRouter");
 const userRouter = require("./routes/userRouter");
 
+
+
+
+
 // Interceptor
-// app.all('*', (req, res, next) => {
-//     console.log(URL.parse(req.url).path)
-//     var url = URL.parse(req.url).path;
-//     var isIntecepted = true;
-//     switch (url) {
-//         case "/":
-//         case "/login":
-//         case "/register?":
-//         case "/doRegister":
-//             isIntecepted = false;
-//             break;
-//         default:
-//             break;
 
-//     }
+// const expressJWT = require('express-jwt');
+// const PRIVATE_KEY = "APriVatekEy"
+// app.use(expressJWT({
+//     secret: PRIVATE_KEY,
+//     algorithms: ['RS256']
+// }).unless({
+//     path: ['/', '/doRegister', '/register?', '/login'] 
+// }));
 
-
-//     if (isIntecepted) {
-//         console.log("interceptor works")
-//         switch (req.session.loginState) {
-//             case 1:
-//                 req.session.destroy();
-//                 console.log("you are taken by someone else")
-//                 res.redirect("/")
-//                 return;
-//             case undefined:
-//                 console.log("login expired")
-//                 res.redirect("/")
-//                 return;
-//             default:
-//                 break;
-//         }
-
-//     };
-
-
-//     next();
-
-// })
 
 app.use("/contact", contactRouter);
 app.use("/meeting", meetingRouter);
@@ -100,32 +75,43 @@ app.listen(port, () => {
     console.log(`App is running at ${port}`)
 })
 
-exports.conflictLoginCheck = async function (req, res) {
-    let strs = await Ses.find({}, async function (err, doc) {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        return doc;
-    });
-    for (i = 0; i < strs.length; i++) {
-        let keywords = strs[i].session.split(/"/);
-        for (j = 0; j < keywords.length - 2; j++) {
-            if (keywords[j] == "userid" && keywords[j + 2] == req.session.userid) {
-                if (strs[i]._id == req.session.id) {
-                    return false;
-                } else {
-                    Ses.findOneAndUpdate({ _id: strs[i]._id }, { loginState: 1 }, function (err, doc) {
-                        if (err) {
-                            console.log(err);
-                            return;
-                        }
-                    })
-                    return true;
-                }
-            }
-        }
+// exports.conflictLoginCheck = async function (req, res) {
+//     let strs = await Ses.find({}, async function (err, doc) {
+//         if (err) {
+//             console.log(err);
+//             return;
+//         }
+//         return doc;
+//     });
+//     for (i = 0; i < strs.length; i++) {
+//         let keywords = strs[i].session.split(/"/);
+//         for (j = 0; j < keywords.length - 2; j++) {
+//             if (keywords[j] == "userid" && keywords[j + 2] == req.session.userid) {
+//                 if (strs[i]._id == req.session.id) {
+//                     return false;
+//                 } else {
+//                     Ses.findOneAndUpdate({ _id: strs[i]._id }, { loginState: 1 }, function (err, doc) {
+//                         if (err) {
+//                             console.log(err);
+//                             return;
+//                         }
+//                     })
+//                     return true;
+//                 }
+//             }
+//         }
+//     }
+//     return false;
+// }
+
+app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        // 这个需要根据⾃自⼰己的业务逻辑来处理理
+        res.status(401).send({ code: -1, msg: 'token验证失败' });
+    } else {
+        
+        res.status(err.status || 500);
+        res.json('error');
     }
-    return false;
-}
+});
 
