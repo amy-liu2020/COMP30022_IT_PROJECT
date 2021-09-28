@@ -1,9 +1,9 @@
 import './App.css';
 import { Contact } from './components/Contact';
 import { Meeting } from './components/Meeting';
-import { Setting } from './components/Setting';
 import { Profile } from './components/Profile';
-import { Login, Register, Forget } from './components/Login';
+import { Setting } from './components/Setting';
+import { Login, Register, Forget, ForgetInputPassword } from './components/Login';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // const Test = () => {
@@ -18,17 +18,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 //         required: "userId is required", 
 //         maxLength: {value: 16, message: "userId is too long"},
 //         minLength: {value: 8, message: "userId is too short"},})}/>
-//       <ErrorMessage
-//         errors={errors}
-//         name="userId"
-//         render={({ messages }) => {
-//           return messages 
-//             ? Object.entries(messages).map(([type, message]) => (
-//                 <p key={type}>{message}</p>
-//               ))
-//             : null;
-//         }}
-//       />
+//         {errors.userId && <p className="error">error</p>}
 
 //       <input type="password" placeholder="password" /><br/>
 //       <button type="submit">login</button>
@@ -37,14 +27,34 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // }
 
 function App() {
+  // const contact = {
+  //   AccountID: "",
+  //   Company: "",
+  //   Email: "",
+  //   FullName: "",
+  //   Home: "",
+  //   JobTitle: "",
+  //   Notes: "",
+  //   PhoneNumber: "",
+  //   Tags: []
+  // }
+
+  // const Demo = () => {
+  //   for (const [key, value] of Object.entries(contact)) {
+  //     console.log(`${key}: ${value}`);
+  //   }
+  // }
+
+  // useEffect(Demo);
 
   return (
     <Router>
       <Switch>
         <Route path="/contact"><Contact/></Route>
         <Route path="/meeting"><Meeting/></Route>
-        <Route path='/register' component={Register}></Route>
         <Route path='/profile' component={Profile}></Route>
+        <Route path='/register' component={Register}></Route>
+        <Route path='/fgpassword' component={ForgetInputPassword}></Route>
         <Route path='/forget' component={Forget}></Route>
         <Route exact path='/' component={Login}></Route>
         <Route path="/setting"><Setting/></Route>

@@ -1,4 +1,4 @@
-import { Switch, Route, useRouteMatch, useHistory, useParams} from "react-router-dom";
+import { Switch, Route, useRouteMatch, useHistory } from "react-router-dom";
 import { NavigationBar } from "./NavigationBar";
 
 const Reset = () => {
