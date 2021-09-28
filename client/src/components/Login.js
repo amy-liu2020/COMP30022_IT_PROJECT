@@ -1,5 +1,5 @@
-import { NavigationBar } from './NavigationBar'
 import { useHistory } from "react-router-dom";
+import { NavigationBar } from "./NavigationBar";
 
 const Logo = () => {
   return (
@@ -45,7 +45,7 @@ export const Register = () => {
         <input type="text" placeholder="answer"/>
         <div className="login-buttons">
           <button onClick={() => history.push(`/`)}>cancel</button>
-          <button onClick={() => history.push(`/login`)}>confirm</button>
+          <button onClick={() => history.push(`/`)}>confirm</button>
         </div>
       </div>
     </div>
@@ -53,11 +53,56 @@ export const Register = () => {
 }
 
 export const Forget = () => {
+  let history = useHistory();
   return (
     <div>
       <NavigationBar/>
-      <div>
-        aaa
+      <div class="container">
+        <div class="forget-form">
+          <span>Reset Password</span>
+          <div class="input">
+            <label>username</label>
+            <input type="text" placeholder="username"/>
+          </div>
+          <div class="buttons">
+            <button onClick={() => history.push(`/fgpassword`)}>next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export const ForgetInputPassword = () => {
+  let history = useHistory();
+  return (
+    <div>
+      <NavigationBar/>
+      <div class="container">
+        <div class="forget-form">
+          <span>Reset Password</span>
+          <div class="input">
+            <label>security question</label>
+            <select placeholder="security question">
+              <option>How old are you?</option>
+            </select>
+          </div>
+          <div class="input">
+            <label>answer</label>
+            <input type="text" placeholder="password"/>
+          </div>
+          <div class="input">
+            <label>new password</label>
+            <input type="password" placeholder="password"/>
+          </div>
+          <div class="input">
+            <label>password</label>
+            <input type="password" placeholder="password"/>
+          </div>
+          <div class="buttons">
+            <button onClick={() => history.push(`/profile`)}>save</button>
+          </div>
+        </div>
       </div>
     </div>
   )
