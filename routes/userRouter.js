@@ -1,13 +1,15 @@
 const express = require("express");
 
 const userRouter = express.Router();
-var userController = require("../controller/userController.js");
+
+const path=require('path')
+const userController = require("../controller/userController.js");
+const {ensureAuthorized} = require("../utils/token.js");
+const {uploadFile} = require('../utils/multer.js')
 
 
 // user login
 userRouter.get("/", userController.userLogin);
-
-userRouter.get("/conflict",userController.conflictLogin);
 
 userRouter.post("/login", userController.doLogin);
 
@@ -17,15 +19,23 @@ userRouter.get("/register", userController.userRegister);
 userRouter.post("/doRegister", userController.userDoRegister);
 
 // show user profile
-userRouter.get("/profile", (req,res) => {
-    userController.getProfile(req,res)
-});
+userRouter.get("/profile", ensureAuthorized, userController.getProfile);
+
+userRouter.get("/uploadPhoto", (req,res)=>{
+    res.render("userProfile",{})
+})
+
+userRouter.post("/upload", uploadFile, ensureAuthorized, userController.savePhoto);
 
 // user change password
-userRouter.post("/changePassword", userController.changePassword);
+userRouter.post("/changePassword", ensureAuthorized, userController.changePassword);
+
+userRouter.post("/forgetPassword", ensureAuthorized, userController.forgetPassword);
+
+userRouter.post("/doChangeForgottenPassword", ensureAuthorized, userController.changeForgottenPassword);
 
 // user change details
-userRouter.post("/changeDetails", userController.changeDetails);
+userRouter.post("/changeDetails", ensureAuthorized, userController.changeDetails);
 
 //export the router
 module.exports = userRouter;
