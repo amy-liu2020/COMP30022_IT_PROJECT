@@ -33,11 +33,19 @@ exports.doLogin = function (req, res) {
         let { userId, password } = req.body;
         if (userId == "") {
             console.log("userId can not be empty")
-            res.status(403).json("userId can not be empty");
+            res.json({
+                status:403,
+                msg:"userId can not be empty"
+            });
+            return;
         }
         if (password == "") {
             console.log("password can not be empty")
-            res.status(403).json("password can not be empty");
+            res.json({
+                status:403,
+                msg:"password can not be empty"
+            });
+            return;
         }
         let ePassword = encrypt(password)
         console.log({userId,ePassword})
@@ -80,18 +88,36 @@ exports.userDoRegister = async function (req, res) {
         securityAnswer
     } = req.body;
     try {
-        // 查询当前用户名在不在数据库中(使用async方法后必须使用await方法才有值返回，不然返回promise对象)
+        if (userId == "") {
+            console.log("userId can not be empty")
+            res.json({
+                status:403,
+                msg:"userId can not be empty"
+            });
+            return;
+        }
+        if (password == "") {
+            console.log("password can not be empty")
+            res.json({
+                status:403,
+                msg:"password can not be empty"
+            });
+            return;
+        }
+
+
+    
         let user = await User.findOne({ UserID: userId })
-        // 存在res即是数据库中有数据
+        
         if (user && user.length != 0) {
             res.json({
                 status: 403,
                 msg: "user exists"
             })
         } else {
-            // 对密码进行加密
+            
             ePassword = encrypt(password);
-            // async 和 await 向数据库插入数据
+            
             var newUser = new User({
                 UserID: userId,
                 Password: ePassword,
