@@ -20,7 +20,7 @@ const List = () => {
                 {
                     meetings.length ?
                     meetings.map((meeting) => 
-                    <tr className="meeting-list-record">
+                    <tr className="meeting-list-record" onClick={() => {history.push(`/meeting/${meeting.id}`)}}>
                         <td>{meeting.name}</td>
                         <td>{meeting.location}</td>
                         <td>{meeting.date}</td>
@@ -48,7 +48,6 @@ const Detail = () => {
 
     return (
         <div className="meeting">
-
             <form className="meeting-form">
                 <button className="detail-edit" type="button" onClick={() => history.push(`/meeting/edit/${meeting.id}`)}>edit meeting</button>
 
@@ -60,7 +59,7 @@ const Detail = () => {
                         <MdAdd size={15}/>
                     </button>
                     <div class="meetingForm-record">
-                        <label>Location: </label>meeting
+                        <label>Location: </label>
                         <text type="text" name="location">{meeting.location}</text>
                     </div>
                 </div>
@@ -88,12 +87,12 @@ const Detail = () => {
                     </div>
                 </div>
 
-                <div class="form-attachment">
+                <div class="meetingForm-attachment">
                     <label>Attachment: </label>
-                    <textarea id="form-attachmentArea" placeholder="add files..." name="attachment">{meeting.attachment}</textarea>
+                    <file id="form-attachmentArea" placeholder="add files..." name="attachment">{meeting.attachment}</file>
                 </div>
 
-                <div class="meetingForm-note">
+                <div class="meetingForm-notes">
                     <label>Notes: </label>
                     <textarea id="meetingForm-noteArea" placeholder="add notes..." name="notes">{meeting.notes}</textarea>
                 </div>
@@ -118,6 +117,11 @@ const Edit = () => {
         setMeeting((prevMeeting) => ({...prevMeeting, [e.target.name] : e.target.value}))
     }
 
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        history.push('/meeting');
+    }
+
     // fetch meeting from data
     useEffect(() => {
         getOneMeeting(meetingID) !== undefined && setMeeting(getOneMeeting(meetingID))
@@ -127,7 +131,7 @@ const Edit = () => {
         <div className = "content">
             <form className="meeting-form">
 
-                <button type="submit" onClick={() => history.goBack()}>save</button>
+                <button type="submit" onClick={onSubmitHandler}>save</button>
 
                 <div class="meetingForm-keyInfo">
                     <div class="meetingForm-name">
@@ -174,7 +178,7 @@ const Edit = () => {
 
                 <div class="meetingForm-attachment">
                     <label>Attachment: </label>
-                    <input type="file" onChange={e => onChangeHandler(e)} value={meeting.attachment}/>
+                    <input class="attach" type="file" onChange={e => onChangeHandler(e)} value={meeting.attachment}/>
                 </div>
 
                 <div class="meetingForm-notes">

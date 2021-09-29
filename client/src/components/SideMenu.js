@@ -64,5 +64,4 @@ var meetingGroups =
         id: 4,
         name: "date"
     }
-        
 ]

@@ -1,6 +1,7 @@
 import { FaSearch, FaFilter } from "react-icons/fa"
 import { MdSettings } from "react-icons/md"
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import { useState } from "react/cjs/react.development";
 
 // logo for website
 const Logo = () => {
@@ -26,20 +27,49 @@ const SearchBar = () => {
 // display user's profile photo
 const Avatar = () => {
     return (
-        <div class="nav-avatar"></div>
+        <div class="nav-avatar">
+            
+        </div>
     )
 }
 
 // navigate user to selected tab
 export const NavigationBar = () => {
+    const [show, setShow] = useState(false)
+    let history = useHistory();
+
+    function handleShowMenu() {
+        setShow(true)
+    }
     return (
         <div className="nav">
             <Logo/>
             <Link className="nav-tab" to="/contact">contact</Link>
             <Link className="nav-tab" to="/meeting">meeting</Link>
-            <SearchBar class="nav-search"/>
-            <MdSettings className="nav-setting" size={40}/>
-            <Avatar/>
+            <SearchBar className="nav-search"/>
+            <div className="nav-setting">
+                <MdSettings size={40} onClick={() => history.push('/setting')}/>
+            </div>
+            <div
+                className="avatar-buttons"
+                onClick={() => setShow(!show)}
+            >
+                <Avatar/>
+                {
+                    show ? (
+                        <ul>
+                            <li>
+                                <a>PROFILE</a></li>
+                            <li>
+                                <a>SETTING</a>
+                            </li>
+                            <li>
+                                <a>LOG OUT</a>
+                            </li>
+                        </ul>
+                    ) : null
+                }
+            </div>
         </div>
     )
 }
