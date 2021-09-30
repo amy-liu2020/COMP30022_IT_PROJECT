@@ -55,6 +55,7 @@ exports.doLogin = function (req, res) {
                     status: 403,
                     msg: "Error occured: " + err
                 });
+                return;
             } else {
                 if (account) {
                     res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
@@ -64,11 +65,13 @@ exports.doLogin = function (req, res) {
                         msg: "login success",
                         token: token
                     });
+                    return;
                 } else {
                     res.json({
                         status: 403,
                         msg: "Incorrect userId/password"
                     });
+                    return;
                 }
             }
         });
