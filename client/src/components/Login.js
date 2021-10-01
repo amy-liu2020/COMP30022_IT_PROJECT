@@ -1,5 +1,7 @@
 import { useHistory } from "react-router-dom";
 import { NavigationBar } from "./NavigationBar";
+import { loginUser, registerUser } from "./api";
+import { useState } from "react";
 
 const Logo = () => {
   return (
@@ -12,16 +14,28 @@ const Logo = () => {
 
 export const Login = () => {
   let history = useHistory();
+  const [user, setUser] = useState({userId: "", password: ""});
+
+  const onChangeHandler = (e) => {
+    setUser((prev) => ({...prev, [e.target.name] : e.target.value}))
+  }
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+
+    console.log(user);
+    loginUser(user);
+  }
 
   return (
     <div className="login-bg">
       <div className="login-form">
         <Logo></Logo>
-        <input type="text" placeholder="username"/>
-        <input type="password" placeholder="password"/>
+        <input name="userId" type="text" placeholder="username" onChange={onChangeHandler}/>
+        <input name="password" type="password" placeholder="password" onChange={onChangeHandler}/>
         <div className="login-buttons">
           <button onClick={() => history.push(`/register`)}>register</button>
-          <button onClick={() => history.push(`/contact`)}>login</button>
+          <button type="submit" onClick={onSubmitHandler}>login</button>
         </div>
         <a href="/forget">forget password?</a>
       </div>
