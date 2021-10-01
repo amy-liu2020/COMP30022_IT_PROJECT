@@ -2,16 +2,45 @@ const mongoose = require("mongoose")
 
 const UserSchema = new mongoose.Schema({
     //userID: used in login
-    UserID:String,
-    Password:String,
+    UserID:{
+        type:String,
+        unique:true,
+        required:true
+    },
+    Password:{
+        type:String,
+        required:true
+    },
     DateOfRegister:Date,
     //just a name
-    UserName:String,
-    SecurityQuestion: Number,
-    SecurityAnswer: String,
-    Photo: Buffer,
-    Email: String,
-    PhoneNumber: String
+    UserName:{
+        type:String,
+        required:true
+    },
+    SecurityQuestion:{
+        type:Number,
+        required:true
+    },
+    SecurityAnswer: {
+        type:String,
+        required:true
+    },
+    Photo: {
+        type: Buffer,
+        default: ""
+    },
+    Email: {
+        type: String,
+        default: ""
+    },
+    PhoneNumber: {
+        type: String,
+        default: ""
+    },
+    Color: {
+        type: String,
+        default: "Green"
+    }
 }, {versionKey:false});
 
 var User = mongoose.model("User", UserSchema, "UserAccount");

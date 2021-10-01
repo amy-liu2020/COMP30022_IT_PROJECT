@@ -34,21 +34,21 @@ exports.doLogin = function (req, res) {
         if (userId == "") {
             console.log("userId can not be empty")
             res.json({
-                status:403,
-                msg:"userId can not be empty"
+                status: 403,
+                msg: "userId can not be empty"
             });
             return;
         }
         if (password == "") {
             console.log("password can not be empty")
             res.json({
-                status:403,
-                msg:"password can not be empty"
+                status: 403,
+                msg: "password can not be empty"
             });
             return;
         }
         let ePassword = encrypt(password)
-        console.log({userId,ePassword})
+        console.log({ userId, ePassword })
         User.findOne({ UserID: userId, Password: ePassword }, function (err, account) {
             if (err) {
                 res.json({
@@ -82,7 +82,7 @@ exports.doLogin = function (req, res) {
 };
 exports.userDoRegister = async function (req, res) {
 
-
+    console.log("1")
     let {
         userId,
         password,
@@ -91,36 +91,20 @@ exports.userDoRegister = async function (req, res) {
         securityAnswer
     } = req.body;
     try {
-        if (userId == "") {
-            console.log("userId can not be empty")
-            res.json({
-                status:403,
-                msg:"userId can not be empty"
-            });
-            return;
-        }
-        if (password == "") {
-            console.log("password can not be empty")
-            res.json({
-                status:403,
-                msg:"password can not be empty"
-            });
-            return;
-        }
 
 
-    
+
         let user = await User.findOne({ UserID: userId })
-        
+
         if (user && user.length != 0) {
             res.json({
                 status: 403,
                 msg: "user exists"
             })
         } else {
-            
-            ePassword = encrypt(password);
-            
+
+            let ePassword = encrypt(password);
+
             var newUser = new User({
                 UserID: userId,
                 Password: ePassword,
@@ -136,12 +120,12 @@ exports.userDoRegister = async function (req, res) {
                         status: 503,
                         msg: "Error occured: " + err
                     });
-                } 
-            })
-
-            res.json({
-                status: 200,
-                msg: "register success"
+                } else {
+                    res.json({
+                        status: 200,
+                        msg: "register success"
+                    })
+                }
             })
         }
     } catch (error) {
@@ -151,16 +135,37 @@ exports.userDoRegister = async function (req, res) {
 
 }
 
-exports.userRegister = function (req, res) {
-    res.render("register", {});
+exports.userPreferredColor = async function (req, res) {
+    try {
+        let uid = req.token.userId
+
+        let thisAccount = await User.findOne({ UserID: uid }).lean();
+        let color = thisAccount.Color;
+        if (!color) {
+            color = "Green"
+            User.findOneAndUpdate({ UserID: uid }, { Color: color }, (err) => {
+                res.json({
+                    status: 503,
+                    msg: "Error occur: " + err
+                })
+            })
+        }
+        res.json({
+            status: 200,
+            msg: "success",
+            color: color
+        })
+    } catch (err) {
+        console.log(err)
+    }
 };
 
 
 exports.getProfile = async function (req, res) {
     try {
         let uid = req.token.userId
-        var thisAccount = await User.findOne({UserID:uid},(err)=>{
-            if(err){
+        var thisAccount = await User.findOne({ UserID: uid }, (err) => {
+            if (err) {
                 res.status(503)
             }
         });
@@ -168,7 +173,7 @@ exports.getProfile = async function (req, res) {
         let p = thisAccount.Password
         console.log(encrypt(p))
         res.json({
-            status:200,
+            status: 200,
             info: {
                 userId: thisAccount.UserID,
                 username: thisAccount.UserName,
@@ -182,11 +187,11 @@ exports.getProfile = async function (req, res) {
     }
 };
 
-exports.forgetPassword = async function(req,res){
-    try{
+exports.forgetPassword = async function (req, res) {
+    try {
         let uid = req.body.userId
-        let thisAccount = await User.findOne({UserID:uid}, (err)=>{
-            if(err){
+        let thisAccount = await User.findOne({ UserID: uid }, (err) => {
+            if (err) {
                 res.json({
                     status: 503,
                     msg: "Error occured: " + err
@@ -194,21 +199,21 @@ exports.forgetPassword = async function(req,res){
             }
         })
         res.json({
-            status:200,
+            status: 200,
             securityQuestion: thisAccount.SecurityQuestion
         })
 
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 }
 
 exports.changeForgottenPassword = async function (req, res) {
     try {
-        let {userId, sa, np} = req.body
+        let { userId, sa, np } = req.body
 
-        let thisAccount = await User.findOne({UserID:userId}, (err)=>{
-            if(err){
+        let thisAccount = await User.findOne({ UserID: userId }, (err) => {
+            if (err) {
                 res.json({
                     status: 503,
                     msg: "Error occured: " + err
@@ -216,27 +221,27 @@ exports.changeForgottenPassword = async function (req, res) {
             }
         })
         console.log(thisAccount.SecurityAnswer)
-        if(sa !== thisAccount.SecurityAnswer){
+        if (sa !== thisAccount.SecurityAnswer) {
             res.json({
                 status: 403,
                 msg: "Fail to pass security question"
             });
-        } else{
-            User.findOneAndUpdate({UserID:userId},{Password:encrypt(np)},(err)=>{
-                if(err){
+        } else {
+            User.findOneAndUpdate({ UserID: userId }, { Password: encrypt(np) }, (err) => {
+                if (err) {
                     res.json({
                         status: 503,
                         msg: "Error occured: " + err
                     });
                 }
             })
-    
+
             res.json({
                 status: 200,
                 msg: "password has been changed successfully"
             })
         }
-        
+
     } catch (err) {
         console.log(err)
     }
@@ -244,11 +249,11 @@ exports.changeForgottenPassword = async function (req, res) {
 
 exports.changePassword = async function (req, res) {
     try {
-        let {sa, np} = req.body
+        let { sa, np } = req.body
         let uid = req.token.userId
 
-        let thisAccount = await User.findOne({UserID:uid}, (err)=>{
-            if(err){
+        let thisAccount = await User.findOne({ UserID: uid }, (err) => {
+            if (err) {
                 res.json({
                     status: 503,
                     msg: "Error occured: " + err
@@ -256,27 +261,27 @@ exports.changePassword = async function (req, res) {
             }
         })
         console.log(thisAccount.SecurityAnswer)
-        if(sa !== thisAccount.SecurityAnswer){
+        if (sa !== thisAccount.SecurityAnswer) {
             res.json({
                 status: 403,
                 msg: "Fail to pass security question"
             });
-        } else{
-            User.findOneAndUpdate({UserID:uid},{Password:encrypt(np)},(err)=>{
-                if(err){
+        } else {
+            User.findOneAndUpdate({ UserID: uid }, { Password: encrypt(np) }, (err) => {
+                if (err) {
                     res.json({
                         status: 503,
                         msg: "Error occured: " + err
                     });
                 }
             })
-    
+
             res.json({
                 status: 200,
                 msg: "password has been changed successfully"
             })
         }
-        
+
     } catch (err) {
         console.log(err)
     }
@@ -290,7 +295,7 @@ exports.savePhoto = async function (req, res) {
 
 
         let uid = req.token.userId;
-        User.findOneAndUpdate({UserID: uid}, { Photo: photoData }, (err) => {
+        User.findOneAndUpdate({ UserID: uid }, { Photo: photoData }, (err) => {
             if (err) {
                 res.json({
                     status: 503,

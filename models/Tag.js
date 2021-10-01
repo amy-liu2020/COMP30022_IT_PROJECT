@@ -1,9 +1,18 @@
 const mongoose = require("mongoose");
 
 const TagSchema = new mongoose.Schema({
-    AccountID:String,
-    TagName:String,
-    TagOf:String
+    AccountID:{
+        type:String,
+        required:true
+    },
+    TagName:{
+        type:String,
+        required:true
+    },
+    TagOf:{
+        type:String,
+        required:true
+    }
 }, {versionKey:false});
 
 var Tag = mongoose.model("Tag", TagSchema, "TagList");
