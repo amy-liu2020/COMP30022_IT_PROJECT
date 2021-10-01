@@ -34,12 +34,18 @@ const meetingCreate = async (req, res)=>{
         Tags:req.body.Tags
     });
 
-    meeting.save((err,res)=>{
+    meeting.save((err)=>{
         if (err){
-            console.log({success:false,err})
+            res.json({
+                status: 400,
+                msg: "create fail"
+            });
         }
         else {
-            console.log({success:true,res})
+            res.json({
+                status: 200,
+                msg: "create success"
+            });
         }
     });
 };
