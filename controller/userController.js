@@ -52,7 +52,7 @@ exports.doLogin = function (req, res) {
         User.findOne({ UserID: userId, Password: ePassword }, function (err, account) {
             if (err) {
                 res.json({
-                    status: 403,
+                    status: 503,
                     msg: "Error occured: " + err
                 });
                 return;
@@ -133,7 +133,7 @@ exports.userDoRegister = async function (req, res) {
             newUser.save((err) => {
                 if (err) {
                     res.json({
-                        status: 403,
+                        status: 503,
                         msg: "Error occured: " + err
                     });
                 }

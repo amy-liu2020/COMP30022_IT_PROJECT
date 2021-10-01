@@ -7,7 +7,9 @@ function ensureAuthorized(req, res, next) {
         req.token = decoded.payload;
         next();
     } else {
-        res.send(403);
+        res.json({
+            
+        });
     }
 }
 

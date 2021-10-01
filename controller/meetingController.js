@@ -28,19 +28,19 @@ const meetingCreate = async (req, res)=>{
         StartTime:req.body.StartTime,
         EndTime:req.body.EndTime,
         OtherParticipants:req.body.OtherParticipants,
-        IsActive:req.body.IsActive,
+        IsActive:true,
         Notes:req.body.Notes,
         Participants:req.body.Participants,
         Tags:req.body.Tags
     });
 
     meeting.save((err,res)=>{
-        if (err){
-            console.log({success:false,err})
-        }
-        else {
-            console.log({success:true,res})
-        }
+        if (err) {
+            res.json({
+                status: 503,
+                msg: "Error occured: " + err
+            });
+        } 
     });
 };
 
