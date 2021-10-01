@@ -2,7 +2,8 @@ const Contact = require("../models/contact");
 
 const getFullContact = async (req, res) => {
     try {
-        const contacts = await Contact.find().lean();
+        let uid = req.body.userId
+        const contacts = await Contact.find({AccountID:uid, IsActive:true}).lean();
         res.json(contacts);
     } catch (err){
         console.log(err)
@@ -27,13 +28,14 @@ const contactEdit = async (req, res) => {
 };
 
 const contactCreate = async (req, res) => {
+
     const contact = new Contact({
         AccountID:req.body.AccountID,
         Company:req.body.Company,
         Email:req.body.Email,
         FullName:req.body.FullName,
         Home:req.body.Home,
-        IsActive:req.body.IsActive,
+        IsActive:false,
         JobTitle:req.body.JobTitle,
         Notes:req.body.Notes,
         PhoneNumber:req.body.PhoneNumber,

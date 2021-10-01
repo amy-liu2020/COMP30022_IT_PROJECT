@@ -28,7 +28,7 @@ const meetingCreate = async (req, res)=>{
         StartTime:req.body.StartTime,
         EndTime:req.body.EndTime,
         OtherParticipants:req.body.OtherParticipants,
-        IsActive:req.body.IsActive,
+        IsActive:true,
         Notes:req.body.Notes,
         Participants:req.body.Participants,
         Tags:req.body.Tags
