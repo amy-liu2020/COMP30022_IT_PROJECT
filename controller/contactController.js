@@ -41,13 +41,19 @@ const contactCreate = async (req, res) => {
         PhoneNumber:req.body.PhoneNumber,
         Tags:req.body.Tags
     });
-    contact.save((err,res)=>{
-        if (err) {
+    contact.save((err)=>{
+        if (err){
             res.json({
-                status: 503,
-                msg: "Error occured: " + err
+                status: 400,
+                msg: "create fail"
             });
-        } 
+        }
+        else {
+            res.json({
+                status: 200,
+                msg: "create success"
+            });
+        }
     });
 }
 

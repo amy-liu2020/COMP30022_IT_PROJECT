@@ -113,8 +113,7 @@ app.listen(port, () => {
 
 app.use(function (err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
-        // 这个需要根据⾃自⼰己的业务逻辑来处理理
-        res.status(401).send({ code: -1, msg: 'token验证失败' });
+        res.status(401).send({ code: -1, msg: 'token failed' });
     } else {
 
         res.status(err.status || 500);
