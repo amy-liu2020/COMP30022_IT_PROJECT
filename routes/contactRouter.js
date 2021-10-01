@@ -1,10 +1,11 @@
 const express = require("express");
+const {ensureAuthorized} = require("../utils/token.js");
 
 const contactRouter = express.Router();
 var contactController = require("../controller/contactController");
 
 // get the main contact page
-contactRouter.get("/", (req,res) => {
+contactRouter.get("/", ensureAuthorized, (req,res) => {
     // res.send（'<h1> Contact List </h1>')
     contactController.getFullContact(req,res)
 });

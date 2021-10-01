@@ -136,7 +136,7 @@ exports.userDoRegister = async function (req, res) {
                         status: 503,
                         msg: "Error occured: " + err
                     });
-                }
+                } 
             })
 
             res.json({

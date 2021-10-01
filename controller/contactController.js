@@ -2,7 +2,8 @@ const Contact = require("../models/contact");
 
 const getFullContact = async (req, res) => {
     try {
-        const contacts = await Contact.find().lean();
+        let uid = req.body.userId
+        const contacts = await Contact.find({AccountID:uid, IsActive:true}).lean();
         res.json(contacts);
     } catch (err){
         console.log(err)
@@ -34,19 +35,19 @@ const contactCreate = async (req, res) => {
         Email:req.body.Email,
         FullName:req.body.FullName,
         Home:req.body.Home,
-        IsActive:req.body.IsActive,
+        IsActive:false,
         JobTitle:req.body.JobTitle,
         Notes:req.body.Notes,
         PhoneNumber:req.body.PhoneNumber,
         Tags:req.body.Tags
     });
     contact.save((err,res)=>{
-        if (err){
-            console.log({success:false,err})
-        }
-        else {
-            console.log({success:true,res})
-        }
+        if (err) {
+            res.json({
+                status: 503,
+                msg: "Error occured: " + err
+            });
+        } 
     });
 }
 
