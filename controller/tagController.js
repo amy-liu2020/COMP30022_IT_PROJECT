@@ -32,8 +32,16 @@ deleteTag = async function(req, res){
         var decodedID = jwt.decode(req.token,{complete:true})
         Tag.findOneAndDelete({TagName:tagName, TagOf:tagOf, AccountID:decodedID})
 
-        res.json("success")
+        res.json({
+            status:200,
+            msg:"success"
+    })
     }catch(err){
         console.log(err)
     }
+}
+
+module.exports = {
+    addTag,
+    deleteTag
 }
