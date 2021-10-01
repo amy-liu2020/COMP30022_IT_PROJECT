@@ -6,7 +6,7 @@ const getFullContact = async (req, res) => {
         const contacts = await Contact.find({AccountID:uid, IsActive:true}).lean();
         res.json({
             status:200,
-            msg:"Get full meetings successfully",
+            msg:"Get full contact list successfully",
             contacts
         });
     } catch (err){
