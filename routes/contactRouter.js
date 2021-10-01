@@ -16,7 +16,7 @@ contactRouter.get("/:id", (req,res) => {
 });
 
 // create single Contact
-contactRouter.post("/create", (req,res) => 
+contactRouter.post("/create", ensureAuthorized, (req,res) => 
     contactController.contactCreate(req,res)
 );
 

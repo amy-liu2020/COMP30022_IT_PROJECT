@@ -1,10 +1,11 @@
 const express = require("express");
+const {ensureAuthorized} = require("../utils/token.js");
 
 const meetingRouter = express.Router();
 var meetingController = require("../controller/meetingController");
 
 // get the meeting list page
-meetingRouter.get("/", (req,res) => {
+meetingRouter.get("/", ensureAuthorized, (req,res) => {
     meetingController.getFullMeeting(req,res)
 });
 
@@ -14,7 +15,7 @@ meetingRouter.get("/:id", (req,res) => {
 });
 
 // create single meeting
-meetingRouter.post("/create", (req,res) => 
+meetingRouter.post("/create", ensureAuthorized, (req,res) => 
     meetingController.meetingCreate(req,res)
 );
 

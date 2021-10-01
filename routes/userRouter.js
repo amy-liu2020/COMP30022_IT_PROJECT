@@ -14,7 +14,7 @@ userRouter.get("/", userController.userLogin);
 userRouter.post("/login", userController.doLogin);
 
 // new user registration
-userRouter.get("/register", userController.userRegister);
+userRouter.get("/userPreferredColor", ensureAuthorized, userController.userPreferredColor);
 
 userRouter.post("/doRegister", userController.userDoRegister);
 
