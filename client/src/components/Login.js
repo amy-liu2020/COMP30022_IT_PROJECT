@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom";
 import { NavigationBar } from "./NavigationBar";
-import { loginUser, registerUser } from "./api";
+import { loginUser } from "./api";
 import { useState } from "react";
 
 const Logo = () => {
@@ -24,7 +24,11 @@ export const Login = () => {
     e.preventDefault();
 
     console.log(user);
-    loginUser(user);
+    loginUser(user)
+    .then(value => {
+      value.status == 200 ? history.push("/contact") : alert(value.msg)
+    })
+
   }
 
   return (
