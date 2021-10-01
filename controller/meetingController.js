@@ -1,7 +1,7 @@
 const Meeting = require("../models/meeting");
 const getFullMeeting = async (req, res) => {
     try {
-        let uid = req.token.uid
+        let uid = req.token.userId
         const meetings = await Meeting.find({AccountID:uid}).lean();
         res.json({
             status:200,
