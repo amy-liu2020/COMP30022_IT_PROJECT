@@ -6,7 +6,6 @@ var contactController = require("../controller/contactController");
 
 // get the main contact page
 contactRouter.get("/", ensureAuthorized, (req,res) => {
-    // res.send（'<h1> Contact List </h1>')
     contactController.getFullContact(req,res)
 });
 
@@ -26,7 +25,6 @@ contactController.contactEdit(req,res)
 );
 
 // present the searching results 
-
 contactRouter.get("/searching/:type/:searchingawords", (req,res) => {
     contactController.searching(req,res)
 });

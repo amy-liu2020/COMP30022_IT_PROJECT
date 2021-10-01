@@ -18,7 +18,7 @@ const MeetingSchema = new mongoose.Schema({
         default:true
     },
     Notes:{
-        type:Boolean,
+        type:String,
         default:"Nothing special about this meeting."
     },
     Invitees:[mongoose.Schema.Types.ObjectId],
