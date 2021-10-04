@@ -8,7 +8,8 @@ function ensureAuthorized(req, res, next) {
         next();
     } else {
         res.json({
-            
+            status:401,
+            msg:"token expired"
         });
     }
 }

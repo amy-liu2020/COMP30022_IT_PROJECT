@@ -82,7 +82,6 @@ exports.doLogin = function (req, res) {
 };
 exports.userDoRegister = async function (req, res) {
 
-    console.log("1")
     let {
         userId,
         password,
