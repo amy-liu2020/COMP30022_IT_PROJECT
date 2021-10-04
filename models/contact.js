@@ -11,7 +11,7 @@ const ContactSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    Home:String,
+    Address:String,
     IsActive:{
         type:Boolean,
         default:true
@@ -21,7 +21,10 @@ const ContactSchema = new mongoose.Schema({
         type:String,
         default:"Nothing special about this contact."
     },
-    PhoneNumber:String,
+    PhoneNumber:{
+        Mobile:String,
+        Home:String
+    },
     Tags:[String]
 }, {versionKey:false});
 

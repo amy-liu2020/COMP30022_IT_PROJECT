@@ -16,8 +16,8 @@ const getFullMeeting = async (req, res) => {
 
 const getSingleMeeting = async(req, res) =>{
     try {
-        let cid = req.params.id
-        const meeting = await Meeting.findById(cid).lean();
+        let mid = req.params.id
+        const meeting = await Meeting.findById(mid).lean();
         res.json({
             status:200,
             msg:"Get single meeting successfully",
@@ -59,7 +59,7 @@ const meetingCreate = async (req, res)=>{
         if (err){
             res.json({
                 status: 503,
-                msg: "create fail"
+                msg:"Error occurred: "+err
             });
         }
         else {
@@ -72,8 +72,38 @@ const meetingCreate = async (req, res)=>{
 };
 
 const meetingEdit = async(req, res) =>{
-    res.send("meetingEdit")
-    console.log("meetingEdit")
+    try{
+        let {
+            Title,
+            Location,
+            StartTime,
+            EndTime,
+            OtherParticipants,
+            Notes,
+            Participants, 
+            Tags
+        } = req.body
+        let MeetingId = req.params.id;
+        Meeting.findByIdAndUpdate(MeetingId,{Title:Title, Location:Location, StartTime:StartTime, EndTime:EndTime, OtherParticipants:OtherParticipants, Notes:Notes, Participants:Participants, Tags:Tags}, (err)=>{
+            if(err){
+                res.json({
+                    status:503,
+                    msg:"Error occurred: "+err
+                })
+                return;
+            }
+        })
+        const meeting = await Meeting.findById(MeetingId).lean();
+        res.json({
+            status:200,
+            msg:"Edit success",
+            meeting:meeting
+        })
+        
+    
+    } catch (err){
+        console.log(err)
+    }
 };
 
 const searching = async(req, res) =>{
