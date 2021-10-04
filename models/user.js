@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
         required:true
     },
     DateOfRegister:Date,
-    //just a name
+    //name of user to present in their profile page
     UserName:{
         type:String,
         required:true
@@ -37,6 +37,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    //prefered theme colour
     Color: {
         type: String,
         default: "Green"
@@ -45,6 +46,5 @@ const UserSchema = new mongoose.Schema({
 
 var User = mongoose.model("User", UserSchema, "UserAccount");
 
-// Test of printing out all user
 
 module.exports = User

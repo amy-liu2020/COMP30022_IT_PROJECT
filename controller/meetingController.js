@@ -6,10 +6,13 @@ const getFullMeeting = async (req, res) => {
         res.json({
             status:200,
             msg:"Get full meetings successfully",
-            meetings:meetings
+            meetings
         });
     } catch (err){
-        console.log(err);
+        res.json({
+            status: 503,
+            msg: "get meetings list fail: " + err
+        });
     }
 };
 
@@ -24,7 +27,10 @@ const getSingleMeeting = async(req, res) =>{
             meeting:meeting
         });
     } catch (err){
-        console.log(err)
+        res.json({
+            status: 400,
+            msg: "get single meeting fail" + err
+        });
     }
 };
 

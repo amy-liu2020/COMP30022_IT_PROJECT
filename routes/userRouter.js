@@ -30,8 +30,10 @@ userRouter.post("/upload", uploadFile, ensureAuthorized, userController.savePhot
 // user change password
 userRouter.post("/changePassword", ensureAuthorized, userController.changePassword);
 
+// user forget the password and need to pass security questions
 userRouter.post("/forgetPassword", ensureAuthorized, userController.forgetPassword);
 
+// user reset password in the case they forgot
 userRouter.post("/doChangeForgottenPassword", ensureAuthorized, userController.changeForgottenPassword);
 
 // user change details

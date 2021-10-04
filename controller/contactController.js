@@ -2,18 +2,21 @@ const Contact = require("../models/contact");
 
 const getFullContact = async (req, res) => {
     try {
-        let uid = req.body.userId
+        let uid = req.token.userId
         const contacts = await Contact.find({AccountID:uid, IsActive:true}).lean();
         res.json({
             status:200,
-            msg:"Get full contacts successfully",
-            contacts:contacts
+            msg:"Get full contact list successfully",
+            contacts
         });
     } catch (err){
         console.log(err)
+        res.json({
+            status: 503,
+            msg: "get contact list fail: " + err
+        });
     }
 };
-
 
 const getSingleContact = async (req, res) => {
     try {
@@ -25,7 +28,10 @@ const getSingleContact = async (req, res) => {
             contacts:contact
         });
     } catch (err){
-        console.log(err)
+        res.json({
+            status: 400,
+            msg: "get single contact fail" + err
+        });
     }
 };
 
@@ -98,13 +104,13 @@ const contactCreate = async (req, res) => {
         if (err){
             res.json({
                 status: 503,
-                msg: "create fail"
+                msg: "create contact fail: " + err
             });
         }
         else {
             res.json({
                 status: 200,
-                msg: "create success"
+                msg: "create contact success"
             });
         }
     });
