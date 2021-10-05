@@ -364,3 +364,22 @@ function errHandler(error) {
         console.log("Error", error.message);
     }
 }
+
+
+function getprofile(profile){
+    aixios({
+        method : 'get' ,
+        url : '/api/profile'
+    })
+        .then (res => profile(res.data))
+        .catch(err => console.err(err));
+}
+
+function getRegister(register){
+    aixios({
+        method : 'get',
+        url : '/api/register'
+    })
+        .then (reg => register(res.data))
+        .catch(err => console(err));
+}
