@@ -1,15 +1,34 @@
 const mongoose = require("mongoose")
 
 const ContactSchema = new mongoose.Schema({
-    AccountID:String,
-    Company:String,
+    AccountID:{
+        type:String,
+        required:true
+    },
+    FirstName:{
+        type:String,
+        required:true
+    },
+    LastName:{
+        type:String,
+        required:true
+    },
+    MobileNo:String,
+    HomeNo:String,
     Email:String,
-    FullName:String,
-    Home:String,
-    IsActive:Boolean,
+    Company:String,
     JobTitle:String,
-    Notes:String,
-    PhoneNumber:String,
+    DOB:Date,
+    Relationship:String,
+    Address:String,
+    Notes:{
+        type:String,
+        default:"Nothing special about this contact."
+    },
+    IsActive:{
+        type:Boolean,
+        default:true
+    },
     Tags:[String]
 }, {versionKey:false});
 

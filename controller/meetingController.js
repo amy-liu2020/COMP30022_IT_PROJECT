@@ -1,44 +1,72 @@
+const Bin = require("../models/bin");
 const Meeting = require("../models/meeting");
 const getFullMeeting = async (req, res) => {
     try {
-        const meetings = await Meeting.find().lean();
-        res.json(meetings);
+        let uid = req.token.userId
+        const meetings = await Meeting.find({AccountID:uid}).lean();
+        res.json({
+            status:200,
+            msg:"Get full meetings successfully",
+            meetings
+        });
     } catch (err){
-        console.log(err);
+        res.json({
+            status: 503,
+            msg: "get meetings list fail: " + err
+        });
     }
 };
 
 
 const getSingleMeeting = async(req, res) =>{
     try {
-        const meeting = await Meeting.findOne(
-            {_id: req.params.id} 
-        ).lean();
-        res.json(meeting);
+        let mid = req.params.id
+        const meeting = await Meeting.findById(mid).lean();
+        res.json({
+            status:200,
+            msg:"Get single meeting successfully",
+            meeting:meeting
+        });
     } catch (err){
-        console.log(err)
+        res.json({
+            status: 400,
+            msg: "get single meeting fail" + err
+        });
     }
 };
 
 const meetingCreate = async (req, res)=>{
+    let {
+        Title,
+        Location,
+        StartTime,
+        EndTime,
+        OtherParticipants,
+        Notes,
+        Participants,
+        Tags
+    } = req.body
+
+    let uid = req.token.userId
+
     const meeting = new Meeting({
-        AccountID:req.body.AccountID,
-        Title:req.body.Title,
-        Location:req.body.Location,
-        StartTime:req.body.StartTime,
-        EndTime:req.body.EndTime,
-        OtherParticipants:req.body.OtherParticipants,
+        AccountID:uid,
+        Title:Title,
+        Location:Location,
+        StartTime:StartTime,
+        EndTime:EndTime,
+        OtherParticipants:OtherParticipants,
         IsActive:true,
-        Notes:req.body.Notes,
-        Participants:req.body.Participants,
-        Tags:req.body.Tags
+        Notes:Notes,
+        Participants:Participants,
+        Tags:Tags
     });
 
     meeting.save((err)=>{
         if (err){
             res.json({
-                status: 400,
-                msg: "create fail"
+                status: 503,
+                msg:"Error occurred: "+err
             });
         }
         else {
@@ -51,9 +79,74 @@ const meetingCreate = async (req, res)=>{
 };
 
 const meetingEdit = async(req, res) =>{
-    res.send("meetingEdit")
-    console.log("meetingEdit")
+    try{
+        let {
+            Title,
+            Location,
+            StartTime,
+            EndTime,
+            OtherParticipants,
+            Notes,
+            Participants, 
+            Tags
+        } = req.body
+        let MeetingId = req.params.id;
+        Meeting.findByIdAndUpdate(MeetingId,{Title:Title, Location:Location, StartTime:StartTime, EndTime:EndTime, OtherParticipants:OtherParticipants, Notes:Notes, Participants:Participants, Tags:Tags}, (err)=>{
+            if(err){
+                res.json({
+                    status:503,
+                    msg:"Error occurred: "+err
+                })
+                return;
+            }
+        })
+        const meeting = await Meeting.findById(MeetingId).lean();
+        res.json({
+            status:200,
+            msg:"Edit success",
+            meeting:meeting
+        })
+        
+    
+    } catch (err){
+        console.log(err)
+    }
 };
+
+const meetingDelete = async (req,res) => {
+    let mid = req.params.id
+    let uid = req.token
+    Contact.findByIdAndUpdate(mid, {IsActive:false}, (err) =>{
+        if(err){
+            res.json({
+                status:503,
+                msg:"Error occurred: "+err
+            })
+            return;
+        }
+    })
+
+    const deletedItem = new Bin({
+        AccountID:uid,
+        DeleteDate:new Date(),
+        ID:mid,
+        Type:"M"
+    })
+    deletedItem.save((err)=>{
+        if (err){
+            res.json({
+                status: 503,
+                msg:"Error occurred: "+err
+            });
+        }
+        else {
+            res.json({
+                status: 200,
+                msg: "delete meeting success"
+            });
+        }
+    });
+}
 
 const searching = async(req, res) =>{
     res.send("searching")
@@ -64,4 +157,4 @@ const getDeletedItems = async(req, res) =>{
     res.send("getDeletedItems")
     console.log("getDeletedItems")
 };
-module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,searching,getDeletedItems}
+module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,meetingDelete,searching,getDeletedItems}

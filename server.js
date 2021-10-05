@@ -44,6 +44,7 @@ Ses = require("./models/session")
 const contactRouter = require("./routes/contactRouter");
 const meetingRouter = require("./routes/meetingRouter");
 const userRouter = require("./routes/userRouter");
+const tagRouter = require("./routes/tagRouter")
 
 
 
@@ -57,11 +58,14 @@ app.use(function (req, res, next) {
         console.log("white list")
         next()
     } else {
-        var bearerHeader = req.headers["authorization"]
+
+        var bearerHeader = req.headers.authorization
         
         if (!bearerHeader) {
             console.log("intercept")
-            res.status(403)
+            res.status(403).json({
+                msg:"token expired"
+            })
         }
         next()
     }
@@ -72,6 +76,7 @@ app.use(function (req, res, next) {
 app.use("/api/contact", contactRouter);
 app.use("/api/meeting", meetingRouter);
 app.use("/api", userRouter);
+app.use("/api/tag", tagRouter);
 
 // 'default' route to catch user errors
 app.all('*', (req, res) => {
@@ -83,45 +88,4 @@ app.listen(port, () => {
     console.log(`App is running at ${port}`)
 })
 
-// exports.conflictLoginCheck = async function (req, res) {
-//     let strs = await Ses.find({}, async function (err, doc) {
-//         if (err) {
-//             console.log(err);
-//             return;
-//         }
-//         return doc;
-//     });
-//     for (i = 0; i < strs.length; i++) {
-//         let keywords = strs[i].session.split(/"/);
-//         for (j = 0; j < keywords.length - 2; j++) {
-//             if (keywords[j] == "userid" && keywords[j + 2] == req.session.userid) {
-//                 if (strs[i]._id == req.session.id) {
-//                     return false;
-//                 } else {
-//                     Ses.findOneAndUpdate({ _id: strs[i]._id }, { loginState: 1 }, function (err, doc) {
-//                         if (err) {
-//                             console.log(err);
-//                             return;
-//                         }
-//                     })
-//                     return true;
-//                 }
-//             }
-//         }
-//     }
-//     return false;
-// }
-
-app.use(function (err, req, res, next) {
-    if (err.name === 'UnauthorizedError') {
-        res.status(401).send({ code: -1, msg: 'token failed' });
-    } else {
-
-        res.status(err.status || 500);
-        res.json({
-            msg: 'error',
-            error: err.name
-        });
-    }
-});
 
