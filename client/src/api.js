@@ -277,21 +277,21 @@ export function CreateContact(contact) {
 }
 
 export function EditContact(contact) {
-    //const [data, setData] = useState([]);
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .put(`/api/contact/${contact.id}`, contact, {
+            .post(`/api/contact/edit/${contact._id.$oid}`, contact, {
                 cancelToken: source.token,
             })
-            // .then((res) => {
-            //     setLoading(false);
-            //     res.data && setData(res.data);
-            //     console.log(res);
-            // })
+            .then((res) => {
+                setLoading(false);
+                res.data && setData(res.data);
+                console.log(res);
+            })
             .catch((err) => {
                 setLoading(false);
                 errHandler(err);
@@ -302,8 +302,8 @@ export function EditContact(contact) {
         };
     }, [contact]);
 
-    //return { data, loading, error };
-    return { loading, error };
+    return { data, loading, error };
+    //return { loading, error };
 }
 
 export function DeleteOneContact(id) {
@@ -314,7 +314,7 @@ export function DeleteOneContact(id) {
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .delete(`/api/contact/${id}`, { cancelToken: source.token })
+            .post(`/api/contact/delete/${id}`, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
                 res.data && setData(res.data);
@@ -522,7 +522,7 @@ function errHandler(error) {
 
 //zhengtian lu
 
-export function getprofile(profile) {
+export function Getprofile(profile) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
@@ -530,7 +530,7 @@ export function getprofile(profile) {
     useEffect(() => {
       const source = axios.CancelToken.source();
       axios
-          .get(`/api/profile${id}`, { cancelToken: source.token })
+          .get(`/api/profile`, { cancelToken: source.token })
           .then((res) => {
               setLoading(false);
               res.data && setData(res.data);
@@ -544,12 +544,12 @@ export function getprofile(profile) {
       return () => {
           source.cancel();
       };
-  }, [id]);
+  }, []);
   
   return { data, loading, error };
   }
 
-  export function getRegister(register) {
+  export function GetRegister(register) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
@@ -557,7 +557,7 @@ export function getprofile(profile) {
     useEffect(() => {
       const source = axios.CancelToken.source();
       axios
-          .get(`/api/register${id}`, { cancelToken: source.token })
+          .get(`/api/register`, { cancelToken: source.token })
           .then((res) => {
               setLoading(false);
               res.data && setData(res.data);
@@ -571,7 +571,7 @@ export function getprofile(profile) {
       return () => {
           source.cancel();
       };
-  }, [id]);
+  }, []);
   
   return { data, loading, error };
   }
