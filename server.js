@@ -44,6 +44,7 @@ Ses = require("./models/session")
 const contactRouter = require("./routes/contactRouter");
 const meetingRouter = require("./routes/meetingRouter");
 const userRouter = require("./routes/userRouter");
+const tagRouter = require("./routes/tagRouter")
 
 
 
@@ -57,11 +58,13 @@ app.use(function (req, res, next) {
         console.log("white list")
         next()
     } else {
-        var bearerHeader = req.headers["authorization"]
+        var bearerHeader = req.headers.authorization
         
         if (!bearerHeader) {
             console.log("intercept")
-            res.status(403)
+            res.status(403).json({
+                msg:"token expired"
+            })
         }
         next()
     }
@@ -72,6 +75,7 @@ app.use(function (req, res, next) {
 app.use("/api/contact", contactRouter);
 app.use("/api/meeting", meetingRouter);
 app.use("/api", userRouter);
+app.use("/api/tag", tagRouter);
 
 // 'default' route to catch user errors
 app.all('*', (req, res) => {
