@@ -22,17 +22,41 @@ import NavigationBar from "../common/nav";
 import Tag from "../common/tag";
 
 const List = () => {
-    const {contacts, loading, error} = GetContacts();
+    const createTest = {
+        FirstName: "jhbhv",
+        LastName: "fyrddyrdy",
+        MobileNo: "123456789",
+    };
+    const editTest = {
+        AccountID: "Nemesis00",
+        Address: "Winterfell somewhere",
+        Company: "Nights' Watch",
+        DOB: { $date: "1978-04-01T14:00:00Z" },
+        Email: "jonsnow123@gmail.com",
+        FirstName: "Jon",
+        HomeNo: "0432777891",
+        JobTitle: "lord commander",
+        LastName: "Snow",
+        MobileNo: "0423777890",
+        Notes: "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
+        Relationship: "uncle",
+        Tags: ["A Song of Ice and Fire", "Male"],
+        _id: { $oid: "6132267b43c1ad80f1bd58a7" },
+    };
+    const deleteTest = "6132267b43c1ad80f1bd58a7";
+
+    const { data, loading, error } = CreateContact(createTest);
 
     if (loading) {
-        <p>{loading}</p>
+        <p>{loading}</p>;
     }
 
     if (error) {
-        <p>{error}</p>
+        <p>{error}</p>;
     }
 
-    return <Table tab="contact" data={contacts} option="delete" />;
+    // return <Table tab="contact" data={contacts} option="delete" />;
+    return <p>Hello world</p>;
 };
 
 const Detail = () => {
@@ -253,9 +277,9 @@ const Edit = () => {
                         <label>DOB: </label>
                         <input
                             type="date"
-                            defaultValue={(new Date(
+                            defaultValue={new Date(
                                 Date(contacts[contactId].DOB)
-                            )).toISOString()}
+                            ).toISOString()}
                         />
                     </div>
 
