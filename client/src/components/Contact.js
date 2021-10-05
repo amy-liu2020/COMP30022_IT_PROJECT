@@ -199,32 +199,3 @@ export const Contact = () => {
         </div>
     )
 }
-
-
-// sample contacts data
-const contacts = [
-    {
-        id: 1,
-        fName: "Haiyao",
-        lName: "Yan",
-        mNum: "351465315",
-        email: "sample@gmail.com"
-    },
-    {
-        id: 2,
-        fName: "Jane",
-        lName: "Andy",
-        mNum: "351465315",
-        email: "sample@gmail.com"
-    }
-]
-
-// if contactId is specified, return single contact with requested id.
-// Otherwise, return all contacts
-const getOneContact = (contactId) => {
-    return contacts.find(({ id }) => id == contactId);
-}
-
-// const getAllContact = () => {
-//     return contacts;
-// }

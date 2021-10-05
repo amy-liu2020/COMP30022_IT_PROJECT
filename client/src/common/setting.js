@@ -1,5 +1,5 @@
-import { NavigationBar } from "./NavigationBar";
-import { SideMenu } from "./SideMenu";
+import NavigationBar from "./nav";
+import SideMenu from "./sideMenu";
 import { Switch, Route, useRouteMatch, useHistory, useParams} from "react-router-dom";
 import { useEffect, useState } from "react/cjs/react.development";
 
@@ -15,7 +15,6 @@ const SettingP = () => {
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        history.push('/setting');
     }
 
     return  (
@@ -39,7 +38,7 @@ const SettingP = () => {
 
 
 // render setting page
-export const Setting = () => {
+const Setting = () => {
 
     let { path } = useRouteMatch();
 
@@ -89,3 +88,5 @@ const getTheme = () => {
         return "green";
     }
 }
+
+export default Setting;

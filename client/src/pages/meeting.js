@@ -1,8 +1,16 @@
-import { NavigationBar } from "./NavigationBar";
-import { SideMenu } from "./SideMenu";
+import {
+    Switch,
+    Route,
+    useRouteMatch,
+    useHistory,
+    useParams,
+} from "react-router-dom";
+import SideMenu from "../common/sideMenu";
+import NavigationBar from "../common/nav";
+import Table from "../common/table";
+import { useForm } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
-import { Tag } from "./Tag"
-import { Switch, Route, useRouteMatch, useHistory, useParams} from "react-router-dom";
+import Tag from "../common/tag";
 import { useEffect, useState } from "react/cjs/react.development";
 
 const List = () => {
@@ -198,7 +206,7 @@ const Edit = () => {
 
 
 // decide which subPage will be render based on path
-export const Meeting = () => {
+const Meeting = () => {
 
     let { path } = useRouteMatch();
 
@@ -221,6 +229,7 @@ export const Meeting = () => {
     )
 }
 
+export default Meeting;
 
 // sample meetings data
 const meetings = [
@@ -249,3 +258,31 @@ const getOneMeeting = (meetingID) => {
 const getAllMeeting = () => {
     return meetings;
 }
+
+// const Meeting = () => {
+//     let { path } = useRouteMatch();
+
+//     return (
+//         <div className="three-part-layout">
+//             <NavigationBar />
+//             <SideMenu tab="meeting"/>
+//             <Switch>
+//                 <Route path={`${path}/edit/:id`}>
+//                     <p>edit</p>
+//                 </Route>
+//                 <Route path={`${path}/create`}>
+//                     <p>create</p>
+//                 </Route>
+//                 <Route path={`${path}/:id`}>
+//                     <p>detail</p>
+//                 </Route>
+//                 <Route exact path={path}>
+//                     <p>list</p>
+//                 </Route>
+//             </Switch>
+//         </div>
+//     );
+// };
+
+
+// export default Meeting;
