@@ -5,25 +5,29 @@ const ContactSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    Company:String,
-    Email:String,
-    FullName:{
+    FirstName:{
         type:String,
         required:true
     },
-    Address:String,
-    IsActive:{
-        type:Boolean,
-        default:true
+    LastName:{
+        type:String,
+        required:true
     },
+    MobileNo:String,
+    HomeNo:String,
+    Email:String,
+    Company:String,
     JobTitle:String,
+    DOB:Date,
+    Relationship:String,
+    Address:String,
     Notes:{
         type:String,
         default:"Nothing special about this contact."
     },
-    PhoneNumber:{
-        Mobile:String,
-        Home:String
+    IsActive:{
+        type:Boolean,
+        default:true
     },
     Tags:[String]
 }, {versionKey:false});
