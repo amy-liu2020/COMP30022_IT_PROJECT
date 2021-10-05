@@ -21,8 +21,13 @@ contactRouter.post("/create", ensureAuthorized, (req,res) =>
 
 // edit single Contact
 contactRouter.post("/edit/:id", (req,res) => 
-contactController.contactEdit(req,res)
+    contactController.contactEdit(req,res)
 );
+
+// delete single Contact
+contactRouter.post("/delete/:id", ensureAuthorized, (req,res)=>{
+    contactController.contactDelete(req,res)
+})
 
 // present the searching results 
 contactRouter.get("/searching/:type/:searchingawords", (req,res) => {

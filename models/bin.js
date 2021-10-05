@@ -16,7 +16,7 @@ const BinSchema = new mongoose.Schema({
     Type:{
         type:String,
         required:true
-    },
+    }
 }, {versionKey:false});
 
 var Bin = mongoose.model("Bin", BinSchema, "Bin");

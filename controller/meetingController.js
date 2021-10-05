@@ -1,3 +1,4 @@
+const Bin = require("../models/bin");
 const Meeting = require("../models/meeting");
 const getFullMeeting = async (req, res) => {
     try {
@@ -112,6 +113,41 @@ const meetingEdit = async(req, res) =>{
     }
 };
 
+const meetingDelete = async (req,res) => {
+    let mid = req.params.id
+    let uid = req.token
+    Contact.findByIdAndUpdate(mid, {IsActive:false}, (err) =>{
+        if(err){
+            res.json({
+                status:503,
+                msg:"Error occurred: "+err
+            })
+            return;
+        }
+    })
+
+    const deletedItem = new Bin({
+        AccountID:uid,
+        DeleteDate:new Date(),
+        ID:mid,
+        Type:"M"
+    })
+    deletedItem.save((err)=>{
+        if (err){
+            res.json({
+                status: 503,
+                msg:"Error occurred: "+err
+            });
+        }
+        else {
+            res.json({
+                status: 200,
+                msg: "delete meeting success"
+            });
+        }
+    });
+}
+
 const searching = async(req, res) =>{
     res.send("searching")
     console.log("searching")
@@ -121,4 +157,4 @@ const getDeletedItems = async(req, res) =>{
     res.send("getDeletedItems")
     console.log("getDeletedItems")
 };
-module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,searching,getDeletedItems}
+module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,meetingDelete,searching,getDeletedItems}

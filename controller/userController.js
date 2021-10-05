@@ -33,10 +33,9 @@ exports.doLogin = function (req, res) {
         let { userId, password } = req.body;
         if (userId == "") {
             console.log("userId can not be empty")
-            res.json({
-                status: 403,
-                msg: "userId can not be empty"
-            });
+            res.status(403).json({
+                msg:"userId can not be empty"
+            })
             return;
         }
         if (password == "") {
