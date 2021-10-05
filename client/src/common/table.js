@@ -123,7 +123,7 @@ const Table = ({ tab, data, option }) => {
                 {
                     Header: "Date",
                     accessor:
-                        "StartTime",
+                        row => row.StartTime.$date.slice(0, 10)
                 }
             ])
         }
