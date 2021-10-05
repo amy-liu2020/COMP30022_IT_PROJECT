@@ -366,7 +366,14 @@ function errHandler(error) {
 }
 
 
-function getprofile(profile){
+
+
+
+
+
+
+//zhengtian lu
+export function getprofile(profile){
     aixios({
         method : 'get' ,
         url : '/api/profile'
@@ -375,11 +382,65 @@ function getprofile(profile){
         .catch(err => console.err(err));
 }
 
-function getRegister(register){
+export function getRegister(register){
     aixios({
         method : 'get',
         url : '/api/register'
     })
         .then (reg => register(res.data))
-        .catch(err => console.err(err));
+        .catch(err => console(err));
 }
+
+export function getprofile(profile) {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+      const source = axios.CancelToken.source();
+      axios
+          .get(`/api/profile${id}`, { cancelToken: source.token })
+          .then((res) => {
+              setLoading(false);
+              res.data && setData(res.data);
+              console.log(res);
+          })
+          .catch((err) => {
+              setLoading(false);
+              errHandler(err);
+              setError("An error occured.");
+          });
+      return () => {
+          source.cancel();
+      };
+  }, [id]);
+  
+  return { data, loading, error };
+  }
+
+  export function getRegister(register) {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+      const source = axios.CancelToken.source();
+      axios
+          .get(`/api/register${id}`, { cancelToken: source.token })
+          .then((res) => {
+              setLoading(false);
+              res.data && setData(res.data);
+              console.log(res);
+          })
+          .catch((err) => {
+              setLoading(false);
+              errHandler(err);
+              setError("An error occured.");
+          });
+      return () => {
+          source.cancel();
+      };
+  }, [id]);
+  
+  return { data, loading, error };
+  }
