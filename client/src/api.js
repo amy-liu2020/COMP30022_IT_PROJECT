@@ -510,23 +510,6 @@ function errHandler(error) {
 
 
 //zhengtian lu
-export function getprofile(profile){
-    aixios({
-        method : 'get' ,
-        url : '/api/profile'
-    })
-        .then (res => profile(res.data))
-        .catch(err => console.err(err));
-}
-
-export function getRegister(register){
-    aixios({
-        method : 'get',
-        url : '/api/register'
-    })
-        .then (reg => register(res.data))
-        .catch(err => console(err));
-}
 
 export function getprofile(profile) {
     const [data, setData] = useState([]);
