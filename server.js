@@ -58,6 +58,7 @@ app.use(function (req, res, next) {
         console.log("white list")
         next()
     } else {
+
         var bearerHeader = req.headers.authorization
         
         if (!bearerHeader) {
