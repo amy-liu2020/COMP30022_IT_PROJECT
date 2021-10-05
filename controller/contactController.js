@@ -4,17 +4,22 @@ const Bin = require("../models/bin")
 const getFullContact = async (req, res) => {
     try {
         let uid = req.token.userId
-        const contacts = await Contact.find({AccountID:uid, IsActive:true}).lean();
-        res.json({
-            status:200,
-            msg:"Get full contact list successfully",
-            contacts
-        });
+        const contacts = await Contact.find({AccountID:uid, IsActive:true}, (err) => {
+            if(err){
+                res.status(503).json({
+                    msg: "Error occurred: " + err
+                });
+                return;
+            }
+        }).lean();
+        res.status(200).json({
+            msg:"Get contact list successfully",
+            contacts:contacts
+        })
     } catch (err){
         console.log(err)
-        res.json({
-            status: 503,
-            msg: "get contact list fail: " + err
+        res.status(400).json({
+            msg: "Error occurred: " + err
         });
     }
 };
@@ -22,16 +27,21 @@ const getFullContact = async (req, res) => {
 const getSingleContact = async (req, res) => {
     try {
         let cid = req.params.id
-        const contact = await Contact.findById(cid).lean();
-        res.json({
-            status:200,
-            msg:"Get single contact successfully",
-            contacts:contact
+        const contact = await Contact.findById(cid, (err) => {
+            if(err){
+                res.status(503).json({
+                    msg: "Error occurred: " + err
+                });
+                return;
+            }
+        }).lean();
+        res.status(200).json({
+            msg: "Get single contact successfully",
+            contact:contact
         });
     } catch (err){
-        res.json({
-            status: 400,
-            msg: "get single contact fail" + err
+        res.status(400).json({
+            msg: "Error occurred: " + err
         });
     }
 };
@@ -39,48 +49,55 @@ const getSingleContact = async (req, res) => {
 const contactEdit = async (req, res) => {
     try {
         let {
+            FirstName,
+            LastName,
+            MobileNo,
+            HomeNo,
             Company,
             Email,
-            FullName,
             Address,
             JobTitle,
             Notes,
-            Mobile,
-            Home,
+            DOB,
+            Relationship,
             Tags
         } = req.body
         let ContactId = req.params.id;
-        Contact.findByIdAndUpdate(ContactId, {Company:Company, Email:Email, FullName:FullName, Address:Address, JobTitle:JobTitle, Notes:Notes, PhoneNumber:{Mobile:Mobile, Home:Home}, Tags:Tags}, (err, doc)=>{
+        Contact.findByIdAndUpdate(ContactId, {FirstName:FirstName, LastName:LastName, Company:Company, Email:Email, FullName:FullName, Address:Address, JobTitle:JobTitle, Notes:Notes, MobileNo:MobileNo, HomeNo:HomeNo, DOB:DOB, Relationship:Relationship, Tags:Tags}, (err, doc)=>{
             if(err){
-                res.json({
-                    status:503,
-                    msg:"Error occurred: "+err
-                })
+                res.status(503).json({
+                    msg: "Error occurred: " + err
+                });
                 return;
             }
         })
         const contact = await Contact.findById(ContactId).lean();
-        res.json({
-            status:200,
-            msg:"Edit success",
+        res.status(200).json({
+            msg: "Edit successfully",
             contact:contact
-        })
+        });
     } catch (err){
         console.log(err);
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        });
     }
 };
 
 const contactCreate = async (req, res) => {
 
     let {
+        FirstName,
+        LastName,
+        MobileNo,
+        HomeNo,
         Company,
         Email,
-        FullName,
         Address,
         JobTitle,
         Notes,
-        Mobile,
-        Home,
+        DOB,
+        Relationship,
         Tags
     } = req.body
 
@@ -88,30 +105,30 @@ const contactCreate = async (req, res) => {
 
     const contact = new Contact({
         AccountID:uid,
-        Company:Company,
-        Email:Email,
-        FullName:FullName,
-        Address:Address,
-        IsActive:true,
-        JobTitle:JobTitle,
-        Notes:Notes,
-        PhoneNumber:{
-            Mobile:Mobile,
-            Home:Home
-        },
+        IsActive: true,
+        FirstName:FirstName, 
+        LastName:LastName, 
+        Company:Company, 
+        Email:Email, 
+        FullName:FullName, 
+        Address:Address, 
+        JobTitle:JobTitle, 
+        Notes:Notes, 
+        MobileNo:MobileNo, 
+        HomeNo:HomeNo, 
+        DOB:DOB, 
+        Relationship:Relationship, 
         Tags:Tags
     });
     contact.save((err)=>{
         if (err){
-            res.json({
-                status: 503,
-                msg: "create contact fail: " + err
+            res.status(503).json({
+                msg: "Error occurred: " + err
             });
         }
         else {
-            res.json({
-                status: 200,
-                msg: "create contact success"
+            res.status(200).json({
+                msg: "Create a new contact successfully"
             });
         }
     });
@@ -122,9 +139,8 @@ const contactDelete = async (req,res) => {
     let uid = req.token
     Contact.findByIdAndUpdate(cid, {IsActive:false}, (err) =>{
         if(err){
-            res.json({
-                status:503,
-                msg:"Error occurred: "+err
+            res.status(503).json({
+                msg: "Error occurred: " + err
             })
             return;
         }
@@ -139,15 +155,13 @@ const contactDelete = async (req,res) => {
 
     deletedItem.save((err)=>{
         if (err){
-            res.json({
-                status: 503,
-                msg:"Error occurred: "+err
+            res.status(503).json({
+                msg: "Error occurred: " + err
             });
         }
         else {
-            res.json({
-                status: 200,
-                msg: "delete contact success"
+            res.status(200).json({
+                msg: "Delete contact successfully"
             });
         }
     });

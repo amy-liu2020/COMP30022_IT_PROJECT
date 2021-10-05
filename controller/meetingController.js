@@ -3,17 +3,21 @@ const Meeting = require("../models/meeting");
 const getFullMeeting = async (req, res) => {
     try {
         let uid = req.token.userId
-        const meetings = await Meeting.find({AccountID:uid}).lean();
-        res.json({
-            status:200,
-            msg:"Get full meetings successfully",
-            meetings
-        });
+        const meetings = await Meeting.find({AccountID:uid}, (err) => {
+            res.status(503).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }).lean();
+        res.status(200).json({
+            msg: "Get meeting list successfully",
+            meetings:meetings
+        })
     } catch (err){
-        res.json({
-            status: 503,
-            msg: "get meetings list fail: " + err
-        });
+        console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
     }
 };
 
@@ -21,29 +25,38 @@ const getFullMeeting = async (req, res) => {
 const getSingleMeeting = async(req, res) =>{
     try {
         let mid = req.params.id
-        const meeting = await Meeting.findById(mid).lean();
-        res.json({
-            status:200,
-            msg:"Get single meeting successfully",
+        const meeting = await Meeting.findById(mid, (err) => {
+            res.status(503).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }).lean();
+        res.status(200).json({
+            msg: "Get single meeting successfully",
             meeting:meeting
-        });
+        })
     } catch (err){
-        res.json({
-            status: 400,
-            msg: "get single meeting fail" + err
-        });
+        console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
     }
 };
+
 
 const meetingCreate = async (req, res)=>{
     let {
         Title,
+        URL,
+        Frequency,
         Location,
         StartTime,
         EndTime,
-        OtherParticipants,
+        OtherInvitees,
         Notes,
-        Participants,
+        NotesKeyWords,
+        Attachment,
+        Invitees,
         Tags
     } = req.body
 
@@ -52,28 +65,30 @@ const meetingCreate = async (req, res)=>{
     const meeting = new Meeting({
         AccountID:uid,
         Title:Title,
+        URL:URL,
+        Frequency:Frequency,
         Location:Location,
         StartTime:StartTime,
         EndTime:EndTime,
-        OtherParticipants:OtherParticipants,
+        OtherInvitees:OtherInvitees,
         IsActive:true,
         Notes:Notes,
-        Participants:Participants,
+        NotesKeyWords:NotesKeyWords,
+        Invitees:Invitees,
+        Attachment:Attachment,
         Tags:Tags
     });
 
     meeting.save((err)=>{
         if (err){
-            res.json({
-                status: 503,
-                msg:"Error occurred: "+err
-            });
+            res.status(503).json({
+                msg: "Error occurred: " + err
+            })
         }
         else {
-            res.json({
-                status: 200,
-                msg: "create success"
-            });
+            res.status(200).json({
+                msg: "Create a new meeting successfully"
+            })
         }
     });
 };
@@ -82,34 +97,52 @@ const meetingEdit = async(req, res) =>{
     try{
         let {
             Title,
+            URL,
+            Frequency,
             Location,
             StartTime,
             EndTime,
-            OtherParticipants,
+            OtherInvitees,
             Notes,
-            Participants, 
+            NotesKeyWords,
+            Attachment,
+            Invitees,
             Tags
         } = req.body
         let MeetingId = req.params.id;
-        Meeting.findByIdAndUpdate(MeetingId,{Title:Title, Location:Location, StartTime:StartTime, EndTime:EndTime, OtherParticipants:OtherParticipants, Notes:Notes, Participants:Participants, Tags:Tags}, (err)=>{
+        Meeting.findByIdAndUpdate(MeetingId,{
+            Title:Title,
+            URL:URL,
+            Frequency:Frequency,
+            Location:Location,
+            StartTime:StartTime,
+            EndTime:EndTime,
+            OtherInvitees:OtherInvitees,
+            Notes:Notes,
+            NotesKeyWords:NotesKeyWords,
+            Invitees:Invitees,
+            Attachment:Attachment,
+            Tags:Tags
+        }, (err)=>{
             if(err){
-                res.json({
-                    status:503,
-                    msg:"Error occurred: "+err
+                res.status(503).json({
+                    msg: "Error occurred: " + err
                 })
                 return;
             }
         })
         const meeting = await Meeting.findById(MeetingId).lean();
-        res.json({
-            status:200,
-            msg:"Edit success",
+        res.status(200).json({
+            msg: "Edit meeting successfully",
             meeting:meeting
         })
         
     
     } catch (err){
         console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
     }
 };
 
@@ -118,9 +151,8 @@ const meetingDelete = async (req,res) => {
     let uid = req.token
     Contact.findByIdAndUpdate(mid, {IsActive:false}, (err) =>{
         if(err){
-            res.json({
-                status:503,
-                msg:"Error occurred: "+err
+            res.status(503).json({
+                msg: "Error occurred: " + err
             })
             return;
         }
@@ -134,16 +166,14 @@ const meetingDelete = async (req,res) => {
     })
     deletedItem.save((err)=>{
         if (err){
-            res.json({
-                status: 503,
-                msg:"Error occurred: "+err
-            });
+            res.status(503).json({
+                msg: "Error occurred: " + err
+            })
         }
         else {
-            res.json({
-                status: 200,
-                msg: "delete meeting success"
-            });
+            res.status(200).json({
+                msg: "Delete meeting successfully"
+            })
         }
     });
 }

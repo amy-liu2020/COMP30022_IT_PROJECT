@@ -15,6 +15,7 @@ const BinSchema = new mongoose.Schema({
     },
     Type:{
         type:String,
+        enum:["C","M"],
         required:true
     }
 }, {versionKey:false});

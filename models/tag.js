@@ -11,6 +11,7 @@ const TagSchema = new mongoose.Schema({
     },
     TagOf:{
         type:String,
+        enum:["C","M"],
         required:true
     }
 }, {versionKey:false});
