@@ -381,5 +381,5 @@ function getRegister(register){
         url : '/api/register'
     })
         .then (reg => register(res.data))
-        .catch(err => console(err));
+        .catch(err => console.err(err));
 }
