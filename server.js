@@ -58,8 +58,9 @@ app.use(function (req, res, next) {
         next()
     } else {
         var bearerHeader = req.headers["authorization"]
-        console.log("intercept")
+        
         if (!bearerHeader) {
+            console.log("intercept")
             res.status(403)
         }
         next()

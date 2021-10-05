@@ -1,354 +1,92 @@
 [{
-    "_id": {
-      "$oid": "6132267b43c1ad80f1bd58a7"
-    },
-    "AccountID": "Nemesis00",
-    "FullName": "Jon Snow",
-    "Email": "jonsnow123@gmail.com",
-    "Company": "Nights' Watch",
-    "Home": "Winterfell",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878",
-    "JobTitle": "lord commander",
-    "IsActive": true,
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Male"
-    ]
-  },{
-    "_id": {
-      "$oid": "6136ee6b6c2ed3113385c135"
-    },
-    "AccountID": "Nemesis00",
-    "FullName": "Sansa Stark",
-    "Email": "sansastark123@gmail.com",
-    "Company": "House Stark",
-    "Home": "Winterfell",
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "PhoneNumber": "0432777879",
-    "JobTitle": "Lady of Winterfell",
-    "IsActive": true,
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ]
-  },{
-    "_id": {
-      "$oid": "6136f5b36c2ed3113385c137"
-    },
-    "AccountID": "Nemesis00",
-    "FullName": "Eddard Stark",
-    "Email": "",
-    "Company": "House Stark",
-    "Home": "Winterfell",
-    "Notes": "Lord of House Stark, the Hand of King, excuted in King's Landing",
-    "PhoneNumber": "0432777880",
-    "JobTitle": "Lord of Winterfell",
-    "IsActive": true,
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Male"
-    ]
-  },{
-    "_id": {
-      "$oid": "614ca953109e9c0b7eccbf25"
-    },
-    "Tags": [],
-    "AccountID": "Nemesis88",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "614ca9a88857480ba1613acf"
-    },
-    "Tags": [],
-    "AccountID": "Nemesis88",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "614ca9be8857480ba1613ad2"
-    },
-    "Tags": [],
-    "AccountID": "Nemesis99",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "614ca9e28857480ba1613ad5"
-    },
-    "Tags": [],
-    "AccountID": "Nemesis99",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "614caa2b8857480ba1613ad8"
-    },
-    "Tags": [],
-    "AccountID": "Nemesis22",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "614caa3b8857480ba1613adb"
-    },
-    "Tags": [],
-    "AccountID": "Nemesis900",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "614caa608857480ba1613ade"
-    },
-    "Tags": [],
-    "AccountID": "asdu",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "614caa8fc72eb90bf05b952c"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Male"
-    ],
-    "AccountID": "as4du",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "615674d487c7f76083487af0"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Male"
-    ],
-    "AccountID": "as4du",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "615675aed9180b613b705e2b"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Male"
-    ],
-    "AccountID": "as4du",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "615675dabd47d66164884840"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Male"
-    ],
-    "AccountID": "as4du",
-    "Company": "Nights' Watch",
-    "Email": "jonsnow123@gmail.com",
-    "FullName": "Jon Snow",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "lord commander",
-    "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
-    "PhoneNumber": "0432777878"
-  },{
-    "_id": {
-      "$oid": "6156766ede9b61617ac4dda6"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ],
-    "AccountID": "Nemesis00",
-    "Company": "House Stark",
-    "Email": "sansastark123@gmail.com",
-    "FullName": "Sansa Stark",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "Lady of Winterfell",
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "PhoneNumber": "0432777879"
-  },{
-    "_id": {
-      "$oid": "615676cdf7db0561a7d5fb02"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ],
-    "AccountID": "Nemesis00",
-    "Company": "House Stark",
-    "Email": "sansastark123@gmail.com",
-    "FullName": "Sansa Stark",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "Lady of Winterfell",
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "PhoneNumber": "0432777879"
-  },{
-    "_id": {
-      "$oid": "6156775bc646e661d6a01e8a"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ],
-    "AccountID": "Nemesis00",
-    "Company": "House Stark",
-    "Email": "sansastark123@gmail.com",
-    "FullName": "Sansa Stark",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "Lady of Winterfell",
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "PhoneNumber": "0432777879"
-  },{
-    "_id": {
-      "$oid": "6156792939d1f1621bc5d5d1"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ],
-    "AccountID": "Nemesis00",
-    "Company": "House Stark",
-    "Email": "sansastark123@gmail.com",
-    "FullName": "Sansa Stark",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "Lady of Winterfell",
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "PhoneNumber": "0432777879"
-  },{
-    "_id": {
-      "$oid": "61568b0039d1f1621bc5d5e1"
-    },
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ],
-    "AccountID": "Nemesis00",
-    "Company": "House Stark",
-    "Email": "sansastark123@gmail.com",
-    "FullName": "Sansa Stark",
-    "Home": "Winterfell",
-    "IsActive": true,
-    "JobTitle": "Lady of Winterfell",
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "PhoneNumber": "0432777879"
-  },{
-    "_id": {
-      "$oid": "6156e20199049c6eba56016e"
-    },
-    "IsActive": true,
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ],
-    "AccountID": "Nemesis00",
-    "Company": "House Stark",
-    "Email": "sansastark123@gmail.com",
-    "FullName": "Sansa Stark",
-    "Home": "Winterfell",
-    "JobTitle": "Lady of Winterfell",
-    "PhoneNumber": "0432777879"
-  },{
-    "_id": {
-      "$oid": "6156e35e2799516f0bbb3466"
-    },
-    "IsActive": true,
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ],
-    "AccountID": "Nemesis00",
-    "Company": "House Stark",
-    "Email": "",
-    "FullName": "Sansa Stark",
-    "Home": "Winterfell",
-    "JobTitle": "Lady of Winterfell",
-    "PhoneNumber": "0432777879"
-  },{
-    "_id": {
-      "$oid": "6156e3902799516f0bbb346a"
-    },
-    "IsActive": true,
-    "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
-    "Tags": [
-      "A Song of Ice and Fire",
-      "Female"
-    ],
-    "AccountID": "Nemesis00",
-    "Company": "House Stark",
-    "Email": "sansastark123@gmail.com",
-    "FullName": "Sansa Stark",
-    "Home": "Winterfell",
-    "JobTitle": "Lady of Winterfell",
-    "PhoneNumber": "0432777879"
-  }]
+  "_id": {
+    "$oid": "6132267b43c1ad80f1bd58a7"
+  },
+  "AccountID": "Nemesis00",
+  "FirstName": "Jon",
+  "LastName": "Snow",
+  "MobileNo": "0423777890",
+  "HomeNo": "0432777891",
+  "Email": "jonsnow123@gmail.com",
+  "Company": "Nights' Watch",
+  "JobTitle": "lord commander",
+  "DOB": {
+    "$date": "1978-04-01T14:00:00Z"
+  },
+  "Relationship": "uncle",
+  "Address": "Winterfell",
+  "Notes": "Barster of Eddard Stark, Son of Rhaegar Targaryen, true heritor of Seven Kingdom.",
+  "IsActive": true,
+  "Tags": [
+    "A Song of Ice and Fire",
+    "Male"
+  ]
+},{
+  "_id": {
+    "$oid": "6136ee6b6c2ed3113385c135"
+  },
+  "AccountID": "Nemesis00",
+  "FirstName": "test",
+  "LastName": "Name",
+  "MobileNo": "012345678",
+  "HomeNo": "",
+  "Email": "test@gmail.com",
+  "Company": "testC",
+  "JobTitle": "testJob",
+  "DOB": {
+    "$date": "1980-02-02T00:00:00Z"
+  },
+  "Relationship": "",
+  "Address": "testAdress",
+  "Notes": "testNotes",
+  "IsActive": true,
+  "Tags": [
+    ""
+  ]
+},{
+  "_id": {
+    "$oid": "6136f5b36c2ed3113385c137"
+  },
+  "AccountID": "Nemesis00",
+  "FirstName": "Eddard",
+  "LastName": "Stark",
+  "MobileNo": "040177882",
+  "HomeNo": "022398872",
+  "Email": "test2@gmail.com",
+  "Company": "House Stark",
+  "JobTitle": "Lord of Winterfell",
+  "DOB": {
+    "$date": "1990-10-05T03:29:13.279Z"
+  },
+  "Relationship": "cousin",
+  "Address": "",
+  "Notes": "Lord of House Stark, the Hand of King, excuted in King's Landing",
+  "IsActive": true,
+  "Tags": [
+    "A Song of Ice and Fire",
+    "Male"
+  ]
+},{
+  "_id": {
+    "$oid": "6156766ede9b61617ac4dda6"
+  },
+  "AccountID": "Nemesis00",
+  "FirstName": "Sansa",
+  "LastName": "Stark",
+  "MobileNo": "012234567",
+  "HomeNo": "012544678",
+  "Email": "sansastark123@gmail.com",
+  "Company": "House Stark",
+  "JobTitle": "Lady of Winterfell",
+  "DOB": {
+    "$date": "2000-10-05T03:29:20.278Z"
+  },
+  "Relationship": "",
+  "Address": "128 Melbourne St Melbourne 3000 VIC",
+  "Notes": "Daughter of Eddard Stark, Lady of Winterfell",
+  "IsActive": true,
+  "Tags": [
+    "A Song of Ice and Fire",
+    "Female"
+  ]
+}]

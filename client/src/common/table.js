@@ -88,22 +88,22 @@ const Table = ({ tab, data, option }) => {
     };
 
     const onOptionHandler = () => {
-        console.log(option);
+        console.log(selectedContacts);
     }
 
-    // useEffect(() => {
-    //     setSelectedContacts(selectedFlatRows.map((d) => data[d.index]._id));
-    // }, [data, selectedFlatRows]);
+    useEffect(() => {
+        setSelectedContacts(selectedFlatRows.map((d) => data[d.index]._id.$oid));
+    }, [data, selectedFlatRows]);
     useEffect(() => {
         if (tab==="contact") {
             setCol([
                 {
                     Header: "Name",
-                    accessor: "FullName",
+                    accessor: row => (row.FirstName + " " + row.LastName),
                 },
                 {
                     Header: "Phone number",
-                    accessor: "PhoneNumber",
+                    accessor: "MobileNo",
                 },
                 {
                     Header: "Email",

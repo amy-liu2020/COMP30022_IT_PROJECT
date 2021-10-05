@@ -28,7 +28,7 @@ const SideMenu = ({ tab }) => {
       ))}
       <button className="sideM-addGroup">add new group</button>
       <button className="sideM-import">import</button>
-      <button className="sideM-export">export</button>
+      <button className="sideM-export" onClick={() => {history.push("/contact/export")}}>export</button>
       <button className="sideM-bin">bin</button>
     </div>
   );
