@@ -19,9 +19,13 @@ meetingRouter.post("/create", ensureAuthorized, (req,res) =>
 
 // edit single meeting
 meetingRouter.post("/edit/:id", (req,res) => 
-meetingController.meetingEdit(req,res)
+    meetingController.meetingEdit(req,res)
 );
 
+// delete single meeting
+meetingRouter.post("/delete/:id", ensureAuthorized, (req,res) => 
+    meetingController.meetingDelete(req,res)
+);
 // present the searching results 
 meetingRouter.get("/searching/:type/:searchingawords", (req,res) =>
     meetingController.searching(req,res)

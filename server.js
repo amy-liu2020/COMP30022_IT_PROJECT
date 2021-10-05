@@ -58,8 +58,9 @@ app.use(function (req, res, next) {
         next()
     } else {
         var bearerHeader = req.headers["authorization"]
-        console.log("intercept")
+        
         if (!bearerHeader) {
+            console.log("intercept")
             res.status(403)
         }
         next()
@@ -82,46 +83,4 @@ app.listen(port, () => {
     console.log(`App is running at ${port}`)
 })
 
-/* exports.conflictLoginCheck = async function (req, res) {
-     let strs = await Ses.find({}, async function (err, doc) {
-         if (err) {
-             console.log(err);
-             return;
-         }
-         return doc;
-     });
-     for (i = 0; i < strs.length; i++) {
-         let keywords = strs[i].session.split(/"/);
-         for (j = 0; j < keywords.length - 2; j++) {
-             if (keywords[j] == "userid" && keywords[j + 2] == req.session.userid) {
-                 if (strs[i]._id == req.session.id) {
-                     return false;
-                 } else {
-                     Ses.findOneAndUpdate({ _id: strs[i]._id }, { loginState: 1 }, function (err, doc) {
-                         if (err) {
-                             console.log(err);
-                             return;
-                         }
-                     })
-                     return true;
-                 }
-             }
-         }
-     }
-     return false;
- }
-*/
-
-app.use(function (err, req, res, next) {
-    if (err.name === 'UnauthorizedError') {
-        res.status(401).send({ code: -1, msg: 'token failed' });
-    } else {
-
-        res.status(err.status || 500);
-        res.json({
-            msg: 'error',
-            error: err.name
-        });
-    }
-});
 

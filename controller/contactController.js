@@ -1,4 +1,5 @@
 const Contact = require("../models/contact");
+const Bin = require("../models/bin")
 
 const getFullContact = async (req, res) => {
     try {
@@ -36,8 +37,37 @@ const getSingleContact = async (req, res) => {
 };
 
 const contactEdit = async (req, res) => {
-    res.send("contactEdit")
-    console.log("contactEdit")
+    try {
+        let {
+            Company,
+            Email,
+            FullName,
+            Address,
+            JobTitle,
+            Notes,
+            Mobile,
+            Home,
+            Tags
+        } = req.body
+        let ContactId = req.params.id;
+        Contact.findByIdAndUpdate(ContactId, {Company:Company, Email:Email, FullName:FullName, Address:Address, JobTitle:JobTitle, Notes:Notes, PhoneNumber:{Mobile:Mobile, Home:Home}, Tags:Tags}, (err, doc)=>{
+            if(err){
+                res.json({
+                    status:503,
+                    msg:"Error occurred: "+err
+                })
+                return;
+            }
+        })
+        const contact = await Contact.findById(ContactId).lean();
+        res.json({
+            status:200,
+            msg:"Edit success",
+            contact:contact
+        })
+    } catch (err){
+        console.log(err);
+    }
 };
 
 const contactCreate = async (req, res) => {
@@ -46,10 +76,11 @@ const contactCreate = async (req, res) => {
         Company,
         Email,
         FullName,
-        Home,
+        Address,
         JobTitle,
         Notes,
-        PhoneNumber,
+        Mobile,
+        Home,
         Tags
     } = req.body
 
@@ -60,11 +91,14 @@ const contactCreate = async (req, res) => {
         Company:Company,
         Email:Email,
         FullName:FullName,
-        Home:Home,
+        Address:Address,
         IsActive:true,
         JobTitle:JobTitle,
         Notes:Notes,
-        PhoneNumber:PhoneNumber,
+        PhoneNumber:{
+            Mobile:Mobile,
+            Home:Home
+        },
         Tags:Tags
     });
     contact.save((err)=>{
@@ -83,13 +117,49 @@ const contactCreate = async (req, res) => {
     });
 }
 
+const contactDelete = async (req,res) => {
+    let cid = req.params.id
+    let uid = req.token
+    Contact.findByIdAndUpdate(cid, {IsActive:false}, (err) =>{
+        if(err){
+            res.json({
+                status:503,
+                msg:"Error occurred: "+err
+            })
+            return;
+        }
+    })
+
+    const deletedItem = new Bin({
+        AccountID:uid,
+        DeleteDate:new Date(),
+        ID:cid,
+        Type:"C"
+    })
+
+    deletedItem.save((err)=>{
+        if (err){
+            res.json({
+                status: 503,
+                msg:"Error occurred: "+err
+            });
+        }
+        else {
+            res.json({
+                status: 200,
+                msg: "delete contact success"
+            });
+        }
+    });
+
+}
+
 const searching = async (req, res) => {
-    res.send("searching")
-    console.log("searching")
+    
 };  
 const getDeletedItems = async (req, res)=> {
     res.send("getDeletedItems")
     console.log("getDeletedItems")
 };
 
-module.exports = {getFullContact, getSingleContact,contactEdit,contactCreate,searching,getDeletedItems}
+module.exports = {getFullContact, getSingleContact,contactEdit,contactCreate,contactDelete,searching,getDeletedItems}

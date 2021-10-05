@@ -1,3 +1,4 @@
+const Bin = require("../models/bin");
 const Meeting = require("../models/meeting");
 const getFullMeeting = async (req, res) => {
     try {
@@ -19,8 +20,8 @@ const getFullMeeting = async (req, res) => {
 
 const getSingleMeeting = async(req, res) =>{
     try {
-        let cid = req.params.id
-        const meeting = await Meeting.findById(cid).lean();
+        let mid = req.params.id
+        const meeting = await Meeting.findById(mid).lean();
         res.json({
             status:200,
             msg:"Get single meeting successfully",
@@ -65,7 +66,7 @@ const meetingCreate = async (req, res)=>{
         if (err){
             res.json({
                 status: 503,
-                msg: "create meeting fail: " + err
+                msg:"Error occurred: "+err
             });
         }
         else {
@@ -78,9 +79,74 @@ const meetingCreate = async (req, res)=>{
 };
 
 const meetingEdit = async(req, res) =>{
-    res.send("meetingEdit")
-    console.log("meetingEdit")
+    try{
+        let {
+            Title,
+            Location,
+            StartTime,
+            EndTime,
+            OtherParticipants,
+            Notes,
+            Participants, 
+            Tags
+        } = req.body
+        let MeetingId = req.params.id;
+        Meeting.findByIdAndUpdate(MeetingId,{Title:Title, Location:Location, StartTime:StartTime, EndTime:EndTime, OtherParticipants:OtherParticipants, Notes:Notes, Participants:Participants, Tags:Tags}, (err)=>{
+            if(err){
+                res.json({
+                    status:503,
+                    msg:"Error occurred: "+err
+                })
+                return;
+            }
+        })
+        const meeting = await Meeting.findById(MeetingId).lean();
+        res.json({
+            status:200,
+            msg:"Edit success",
+            meeting:meeting
+        })
+        
+    
+    } catch (err){
+        console.log(err)
+    }
 };
+
+const meetingDelete = async (req,res) => {
+    let mid = req.params.id
+    let uid = req.token
+    Contact.findByIdAndUpdate(mid, {IsActive:false}, (err) =>{
+        if(err){
+            res.json({
+                status:503,
+                msg:"Error occurred: "+err
+            })
+            return;
+        }
+    })
+
+    const deletedItem = new Bin({
+        AccountID:uid,
+        DeleteDate:new Date(),
+        ID:mid,
+        Type:"M"
+    })
+    deletedItem.save((err)=>{
+        if (err){
+            res.json({
+                status: 503,
+                msg:"Error occurred: "+err
+            });
+        }
+        else {
+            res.json({
+                status: 200,
+                msg: "delete meeting success"
+            });
+        }
+    });
+}
 
 const searching = async(req, res) =>{
     res.send("searching")
@@ -91,4 +157,4 @@ const getDeletedItems = async(req, res) =>{
     res.send("getDeletedItems")
     console.log("getDeletedItems")
 };
-module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,searching,getDeletedItems}
+module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,meetingDelete,searching,getDeletedItems}
