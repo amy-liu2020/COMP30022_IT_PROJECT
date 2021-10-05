@@ -12,17 +12,25 @@ const MeetingSchema = new mongoose.Schema({
     Location:String,
     StartTime:Date,
     EndTime:Date,
-    OtherInvitees:String,
-    IsActive:{
-        type:Boolean,
-        default:true
+    Frequency:{
+        type:String,
+        enum:["Every Day","Every Week", "Every Month","Every Year","Never"],
+        default:"Never"
     },
+    URL:String,
+    NotesKeyWords:[String],
     Notes:{
         type:String,
         default:"Nothing special about this meeting."
     },
+    IsActive:{
+        type:Boolean,
+        default:true
+    },
+    Tags:[String],
     Invitees:[mongoose.Schema.Types.ObjectId],
-    Tags:[String]
+    OtherInvitees:String,
+    Attachment:String
 }, {versionKey:false});
 
 const Meeting = mongoose.model("Meeting", MeetingSchema, "MeetingList");
