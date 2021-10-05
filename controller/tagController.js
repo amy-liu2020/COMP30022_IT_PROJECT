@@ -4,7 +4,14 @@ const addTag = async (req, res) => {
     try {
         let { tagName, tagOf } = req.body
         var decodedID = jwt.decode(req.token, { complete: true })
-        let tagChecked = await Tag.find({ TagName: tagName, TagOf: tagOf, AccountID: decodedID })
+        let tagChecked = await Tag.find({ TagName: tagName, TagOf: tagOf, AccountID: decodedID }, (err) => {
+            if(err){
+                res.status(503).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        })
         if (!tagChecked) {
 
             var newTag = new Tag({
@@ -15,20 +22,28 @@ const addTag = async (req, res) => {
 
             newTag.save((err) => {
                 if (err) {
-                    console.log(err)
+                    res.status(503).json({
+                        msg: "Error occurred: " + err
+                    })
                     return;
                 }
                 else {
-                    res.json({
-                        status: 200,
-                        msg: "Add tag success"
+                    res.status(200).json({
+                        msg: "Add tag successfully"
                     })
                 }
             })
 
+        } else {
+            res.status(403).json({
+                msg: "Tag exists"
+            })
         }
     } catch (err) {
         console.log(err);
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
     }
 }
 
@@ -36,14 +51,23 @@ const deleteTag = async function (req, res) {
     try {
         let { tagName, tagOf } = req.body
         var decodedID = jwt.decode(req.token, { complete: true })
-        Tag.findOneAndDelete({ TagName: tagName, TagOf: tagOf, AccountID: decodedID })
+        Tag.findOneAndDelete({ TagName: tagName, TagOf: tagOf, AccountID: decodedID }, (err) => {
+            if(err){
+                res.status(503).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        })
 
-        res.json({
-            status: 200,
-            msg: "delete tag success"
+        res.status(200).json({
+            msg: "Delete tag successfully"
         })
     } catch (err) {
         console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
     }
 }
 
@@ -54,21 +78,22 @@ const getTagList = async (req, res) => {
 
         const tags = Tag.find({ TagOf: tagOf, AccountID: uid }, (err) => {
             if (err) {
-                res.json({
-                    status: 503,
+                res.status(503).json({
                     msg: "Error occurred: " + err
                 })
                 return;
             }
         })
-        res.json({
-            status: 200,
-            msg: "Get tags success",
+        res.status(200).json({
+            msg: "Get tag list successfully",
             tags:tags
         })
 
     } catch (err) {
         console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
     }
 }
 
