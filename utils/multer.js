@@ -23,7 +23,7 @@ function uploadFile (req, res, next) {
         } else {
             req.body.photo = req.file;
             next();
-        }C
+        }
     })
 };
 
