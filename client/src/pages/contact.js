@@ -4,6 +4,7 @@ import {
     CreateContact,
     EditContact,
     DeleteOneContact,
+    DeleteContact
 } from "../api";
 import { MdAdd } from "react-icons/md";
 import {
@@ -28,10 +29,9 @@ const List = () => {
         MobileNo: "123456789",
     };
     const editTest = {
-        AccountID: "Nemesis00",
-        Address: "Winterfell somewhere",
+        Address: "Winterfell somewheremnkjbjk",
         Company: "Nights' Watch",
-        DOB: { $date: "1978-04-01T14:00:00Z" },
+        DOB: "1978-04-01T14:00:00Z",
         Email: "jonsnow123@gmail.com",
         FirstName: "Jon",
         HomeNo: "0432777891",
@@ -43,17 +43,20 @@ const List = () => {
         Tags: ["A Song of Ice and Fire", "Male"],
         _id: { $oid: "6132267b43c1ad80f1bd58a7" },
     };
-    const deleteTest = "6132267b43c1ad80f1bd58a7";
+    const deleteTest = "615d5a4558c2905a181592a3";
 
-    const { data, loading, error } = CreateContact(createTest);
+    // if (loading) {
+    //     <p>{loading}</p>;
+    // }
 
-    if (loading) {
-        <p>{loading}</p>;
-    }
-
-    if (error) {
-        <p>{error}</p>;
-    }
+    // if (error) {
+    //     <p>{error}</p>;
+    // }
+    useEffect(() => {
+        DeleteContact(deleteTest).then(data => {
+            data !== undefined && console.log(data);
+        })
+    })
 
     // return <Table tab="contact" data={contacts} option="delete" />;
     return <p>Hello world</p>;

@@ -132,12 +132,14 @@ const Login = () => {
         setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const onSubmitHandler = (e) => {
+    const OnSubmitHandler = (e) => {
         e.preventDefault();
 
         console.log(user);
-        loginUser(user).then((value) => {
-            value.status == 200 ? history.push("/contact") : alert(value.msg);
+        loginUser(user).then(data => {
+            if (data !== undefined) {
+                history.push("/contact");
+            }
         });
     };
 
@@ -161,7 +163,7 @@ const Login = () => {
                     <button onClick={() => history.push(`/user/register`)}>
                         register
                     </button>
-                    <button type="submit" onClick={onSubmitHandler}>
+                    <button type="submit" onClick={OnSubmitHandler}>
                         login
                     </button>
                 </div>
