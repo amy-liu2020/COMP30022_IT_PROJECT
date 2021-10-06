@@ -135,7 +135,7 @@ const contactCreate = async (req, res) => {
 
 const contactDelete = async (req,res) => {
     let cid = req.params.id
-    let uid = req.token
+    let uid = req.token.userId
     Contact.findByIdAndUpdate(cid, {IsActive:false}, (err) =>{
         if(err){
             res.status(400).json({
@@ -151,7 +151,6 @@ const contactDelete = async (req,res) => {
         ID:cid,
         Type:"C"
     })
-
     deletedItem.save((err)=>{
         if (err){
             res.status(400).json({
@@ -168,6 +167,7 @@ const contactDelete = async (req,res) => {
 }
 
 const searching = async (req, res) => {
+
     
 };  
 const getDeletedItems = async (req, res)=> {
