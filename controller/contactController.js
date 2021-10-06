@@ -6,9 +6,9 @@ const getFullContact = async (req, res) => {
         let uid = req.token.userId
         const contacts = await Contact.find({AccountID:uid, IsActive:true}, (err) => {
             if(err){
-                res.status(503).json({
+                res.status(400).json({
                     msg: "Error occurred: " + err
-                });
+                })
                 return;
             }
         }).lean();
@@ -29,9 +29,9 @@ const getSingleContact = async (req, res) => {
         let cid = req.params.id
         const contact = await Contact.findById(cid, (err) => {
             if(err){
-                res.status(503).json({
+                res.status(400).json({
                     msg: "Error occurred: " + err
-                });
+                })
                 return;
             }
         }).lean();
@@ -63,11 +63,11 @@ const contactEdit = async (req, res) => {
             Tags
         } = req.body
         let ContactId = req.params.id;
-        Contact.findByIdAndUpdate(ContactId, {FirstName:FirstName, LastName:LastName, Company:Company, Email:Email, FullName:FullName, Address:Address, JobTitle:JobTitle, Notes:Notes, MobileNo:MobileNo, HomeNo:HomeNo, DOB:DOB, Relationship:Relationship, Tags:Tags}, (err, doc)=>{
+        Contact.findByIdAndUpdate(ContactId, {FirstName:FirstName, LastName:LastName, Company:Company, Email:Email, Address:Address, JobTitle:JobTitle, Notes:Notes, MobileNo:MobileNo, HomeNo:HomeNo, DOB:DOB, Relationship:Relationship, Tags:Tags}, (err, doc)=>{
             if(err){
-                res.status(503).json({
+                res.status(400).json({
                     msg: "Error occurred: " + err
-                });
+                })
                 return;
             }
         })
@@ -110,7 +110,6 @@ const contactCreate = async (req, res) => {
         LastName:LastName, 
         Company:Company, 
         Email:Email, 
-        FullName:FullName, 
         Address:Address, 
         JobTitle:JobTitle, 
         Notes:Notes, 
@@ -122,9 +121,9 @@ const contactCreate = async (req, res) => {
     });
     contact.save((err)=>{
         if (err){
-            res.status(503).json({
+            res.status(400).json({
                 msg: "Error occurred: " + err
-            });
+            })
         }
         else {
             res.status(200).json({
@@ -139,7 +138,7 @@ const contactDelete = async (req,res) => {
     let uid = req.token
     Contact.findByIdAndUpdate(cid, {IsActive:false}, (err) =>{
         if(err){
-            res.status(503).json({
+            res.status(400).json({
                 msg: "Error occurred: " + err
             })
             return;
@@ -155,9 +154,9 @@ const contactDelete = async (req,res) => {
 
     deletedItem.save((err)=>{
         if (err){
-            res.status(503).json({
+            res.status(400).json({
                 msg: "Error occurred: " + err
-            });
+            })
         }
         else {
             res.status(200).json({
