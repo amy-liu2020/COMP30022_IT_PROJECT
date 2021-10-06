@@ -4,7 +4,7 @@ const getFullMeeting = async (req, res) => {
     try {
         let uid = req.token.userId
         const meetings = await Meeting.find({AccountID:uid}, (err) => {
-            res.status(503).json({
+            res.status(400).json({
                 msg: "Error occurred: " + err
             })
             return;
@@ -26,7 +26,7 @@ const getSingleMeeting = async(req, res) =>{
     try {
         let mid = req.params.id
         const meeting = await Meeting.findById(mid, (err) => {
-            res.status(503).json({
+            res.status(400).json({
                 msg: "Error occurred: " + err
             })
             return;
@@ -81,7 +81,7 @@ const meetingCreate = async (req, res)=>{
 
     meeting.save((err)=>{
         if (err){
-            res.status(503).json({
+            res.status(400).json({
                 msg: "Error occurred: " + err
             })
         }
@@ -125,7 +125,7 @@ const meetingEdit = async(req, res) =>{
             Tags:Tags
         }, (err)=>{
             if(err){
-                res.status(503).json({
+                res.status(400).json({
                     msg: "Error occurred: " + err
                 })
                 return;
@@ -151,7 +151,7 @@ const meetingDelete = async (req,res) => {
     let uid = req.token
     Contact.findByIdAndUpdate(mid, {IsActive:false}, (err) =>{
         if(err){
-            res.status(503).json({
+            res.status(400).json({
                 msg: "Error occurred: " + err
             })
             return;
@@ -166,7 +166,7 @@ const meetingDelete = async (req,res) => {
     })
     deletedItem.save((err)=>{
         if (err){
-            res.status(503).json({
+            res.status(400).json({
                 msg: "Error occurred: " + err
             })
         }
