@@ -93,17 +93,23 @@ const Detail = () => {
                 <div class="meetingForm-Info">
                     <div class="meetingForm-record">
                         <label>Date: </label>
-                        <text type="text" name="date">{meeting.StartTime}</text>
+                        <text name="Date">
+                            {new Date(Date(meeting.StartTime)).toLocaleDateString()}
+                        </text>
                     </div>
 
                     <div class="meetingForm-record">
                         <label>Start Time: </label>
-                        <text type="text" name="time">{meeting.StartTime}</text>
+                        <text name="Date">
+                            {new Date(Date(meeting.StartTime)).toUTCString().slice(17,22)}
+                        </text>
                     </div>
 
                     <div class="meetingForm-record">
                         <label>End Time: </label>
-                        <text type="text" name="time">{meeting.EndTime}</text>
+                        <text name="Date">
+                            {new Date(Date(meeting.EndTime)).toUTCString().slice(17,22)}
+                        </text>
                     </div>
 
                     <div class="meetingForm-record">
@@ -125,12 +131,12 @@ const Detail = () => {
 
                 <div class="meetingForm-notes">
                     <label>Notes: </label>
-                    <textarea id="meetingForm-noteArea" placeholder="add notes..." name="notes">{meeting.Notes}</textarea>
+                    <text id="meetingForm-noteArea" name="notes">{meeting.Notes}</text>
                 </div>
 
                 <div class="meetingForm-keyWords">
                     <label>Key words:</label>
-                    <textarea id="meetingForm-keyWordsArea" placeholder="add key words..."name="keyWords">{meeting.NotesKeyWords}</textarea>
+                    <text id="meetingForm-keyWordsArea" name="keyWords">{meeting.NotesKeyWords}</text>
                 </div>
             </form>
         </div>
@@ -174,17 +180,32 @@ const Edit = () => {
                 
                     <div class="meetingForm-record">
                         <label>Date: </label>
-                        <input type="date" {...register("StartTime.$date.slice(0,10)")}/>
+                        <input
+                            type="date"
+                            defaultValue={new Date(
+                                Date(meetings[meetingID].Date)
+                            ).toISOString()}
+                        />
                     </div>
 
                     <div class="meetingForm-record">
                         <label>Start Time: </label>
-                        <input type="time" {...register("StartTime.$date.slice(10,)")}/>
+                        <input
+                            type="date"
+                            defaultValue={new Date(
+                                Date(meetings[meetingID].Date) + meetings[meetingID].StartTime.$date.slice(0, 10)
+                            ).toISOString()}
+                        />
                     </div>
 
                     <div class="meetingForm-record">
                         <label>End Time: </label>
-                        <input type="time" {...register("EndTime.$date.slice(10,)")}/>
+                        <input
+                            type="date"
+                            defaultValue={new Date(
+                                Date(meetings[meetingID].Date) + meetings[meetingID].EndTime.$date.slice(0, 10)
+                            ).toISOString()}
+                        />
                     </div>
 
                     <div class="meetingForm-record">

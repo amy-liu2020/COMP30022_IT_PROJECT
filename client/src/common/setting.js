@@ -1,21 +1,17 @@
 import NavigationBar from "./nav";
-import SideMenu from "./sideMenu";
-import { Switch, Route, useRouteMatch, useHistory, useParams} from "react-router-dom";
-import { useEffect, useState } from "react/cjs/react.development";
-
+import { Route, useRouteMatch, useParams} from "react-router-dom";
+import { useState } from "react/cjs/react.development";
+import { useForm } from "react-hook-form";
+import users from "../json/UserList.json"
 
 const SettingP = () => {
 
-    let history = useHistory();
-    const [setting, setSetting] = useState([]);
-
-    const onChangeHandler = (e) => {
-        setSetting((prevSetting) => ({...prevSetting, [e.target.name] : e.target.value}))
-    }
-
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-    }
+    let { userID } = useParams();
+    const [user, setUser] = useState([]);
+    const { register, formState: { errors }, handleSubmit } = useForm({
+        criteriaMode: 'all',
+        defaultValues: users[userID]
+    });
 
     return  (
         <div className="setting">
@@ -25,12 +21,12 @@ const SettingP = () => {
             <div className="setting-form">
                 change colour theme
             </div>
-            <button className="detail-edit" type="button" onClick={() => setTheme(localStorage.getItem('theme'))}>cancel</button>
-            <button className="detail-edit" type="button" onClick={() => localStorage.setItem('theme', getTheme())}>save</button>
-            <div class="box blue" onClick={() => setTheme("blue")}></div>
-            <div class="box red" onClick={() => setTheme("red")}></div>
-            <div class="box green" onClick={() => setTheme("green")}></div>
-            <div class="box dark" onClick={() => setTheme("dark")}></div>
+            <button className="detail-edit" type="button" onClick={() => setTheme(user.Color)}>cancel</button>
+            <button className="detail-edit" type="submit">save</button>
+            <div class="box blue" onClick={() => setTheme("blue")} {...register("Color")}></div>
+            <div class="box red" onClick={() => setTheme("red")} {...register("Color")}></div>
+            <div class="box green" onClick={() => setTheme("green")} {...register("Color")}></div>
+            <div class="box dark" onClick={() => setTheme("dark")} {...register("Color")}></div>
 
         </div>
     )
@@ -43,9 +39,8 @@ const Setting = () => {
     let { path } = useRouteMatch();
 
     return (
-        <div className="three-part-layout">
+        <div className="two-part-layout">
             <NavigationBar/>
-            <SideMenu tab={"setting"}/>
             <Route exact path={path}>
                 <SettingP/>
             </Route>
