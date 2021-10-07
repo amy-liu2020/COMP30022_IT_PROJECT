@@ -30,8 +30,8 @@ contactRouter.post("/delete/:id", ensureAuthorized, (req,res)=>{
 })
 
 // present the searching results 
-contactRouter.get("/searching/:type/:searchingawords", (req,res) => {
-    contactController.searching(req,res)
+contactRouter.get("/search/:keyword", (req,res) => {
+    contactController.searchKeyword(req,res)
 });
 
 // present the bin page

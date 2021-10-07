@@ -1,16 +1,19 @@
 const MAX_ATTEMPT_TIME = 5; 
-const PRIVATE_KEY = "APriVatekEy"
-const EXPIRESD = 60 * 60 * 24
 
 const User = require("../models/user")
-const server = require("../server")
 const fs = require('fs');
-
+const {PRIVATE_KEY, EXPIRESD} = require("../utils/token")
 const jwt = require("jsonwebtoken");
 const { encrypt, decrypt } = require("../utils/encrypt");
 const SecurityQuestion = require("../models/securityQuestion");
 
-const userLogin = (req, res) => {
+const userLogin = async (req, res) => {
+    // let reg = new RegExp("mesi","i")
+    // console.log(reg)
+    // // let users = await User.find({SecurityQuestion: 0}, {Password:0, Color:0})
+    // let users = await User.find({$and:[{$or:[{UserID:{$regex:reg}}, {UserName: /ph/i}]},{UserID:/one/i}]}, 'UserID UserName')
+    // console.log(users)
+
     res.render("login", {});
 };
 
