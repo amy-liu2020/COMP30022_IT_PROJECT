@@ -1,4 +1,8 @@
 const jwt = require('jsonwebtoken')
+
+const PRIVATE_KEY = "APriVatekEy"
+const EXPIRESD = 60 * 60 * 24
+
 function ensureAuthorized(req, res, next) {
     var bearerHeader = req.headers.authorization;
     if (typeof bearerHeader !== 'undefined') {
@@ -14,4 +18,4 @@ function ensureAuthorized(req, res, next) {
     }
 }
 
-module.exports = {ensureAuthorized}
+module.exports = {ensureAuthorized, PRIVATE_KEY, EXPIRESD}

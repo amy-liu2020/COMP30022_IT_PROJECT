@@ -182,9 +182,4 @@ const searching = async(req, res) =>{
     res.send("searching")
     console.log("searching")
 };
-
-const getDeletedItems = async(req, res) =>{
-    res.send("getDeletedItems")
-    console.log("getDeletedItems")
-};
-module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,meetingDelete,searching,getDeletedItems}
+module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,meetingDelete,searching}
