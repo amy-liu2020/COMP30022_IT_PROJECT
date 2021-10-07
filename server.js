@@ -56,7 +56,6 @@ app.use(function (req, res, next) {
     console.log(arr)
     if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
         console.log("white list")
-        next()
     } else {
         var bearerHeader = req.headers.authorization
         
@@ -66,9 +65,9 @@ app.use(function (req, res, next) {
                 msg:"token expired"
             })
         }
-        next()
+        
     }
-
+    next()
 })
 
 
@@ -79,7 +78,7 @@ app.use("/api/tag", tagRouter);
 
 // 'default' route to catch user errors
 app.all('*', (req, res) => {
-    res.status(404).render('404')
+    res.status(404).send('404')
 })
 
 //Indicating running backend
