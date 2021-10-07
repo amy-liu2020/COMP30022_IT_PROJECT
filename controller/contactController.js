@@ -1,5 +1,6 @@
 const Contact = require("../models/contact");
-const Bin = require("../models/bin")
+const Bin = require("../models/bin");
+const Meeting = require("../models/meeting");
 
 const getFullContact = async (req, res) => {
     try {
@@ -36,9 +37,18 @@ const getSingleContact = async (req, res) => {
                 return;
             }
         }).lean();
+        const relatedMeeting = await Meeting.find({Invitees:{$elemMatch:{$eq:cid}}}, "Title StartTime", (err) => {
+            if(err){
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        })
         res.status(200).json({
             msg: "Get single contact successfully",
-            contact:contact
+            contact:contact,
+            relatedMeeting:relatedMeeting
         });
     } catch (err){
         res.status(400).json({
