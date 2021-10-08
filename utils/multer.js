@@ -14,7 +14,7 @@ function uploadFile (req, res, next) {
         }
     })
 
-    let upload = multer({storage}).single("photo");
+    let upload = multer({storage}).single("file");
     upload(req, res, (err) => {
         if(err instanceof multer.MulterError) {
             res.send("multererr" + err);
@@ -23,7 +23,7 @@ function uploadFile (req, res, next) {
         } else {
             req.body.photo = req.file;
             next();
-        }C
+        }
     })
 };
 

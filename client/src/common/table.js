@@ -1,7 +1,7 @@
 import { useTable, useRowSelect } from "react-table";
 import { useEffect, useState } from "react";
 import React from "react";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 /**
  * Add checkbox column to allow user to select multiple records
@@ -31,7 +31,37 @@ const IndeterminateCheckbox = React.forwardRef(
  * no option will shown for invalid option.
  */
 const Table = ({ tab, data, option }) => {
-    const [col, setCol] = useState([]);
+    const [col, setCol] = useState(
+        tab === "contact"
+            ? [
+                  {
+                      Header: "Name",
+                      accessor: (row) => row.FirstName + " " + row.LastName,
+                  },
+                  {
+                      Header: "Phone number",
+                      accessor: "MobileNo",
+                  },
+                  {
+                      Header: "Email",
+                      accessor: "Email",
+                  },
+              ]
+            : [
+                  {
+                      Header: "Meeting Name",
+                      accessor: "Title",
+                  },
+                  {
+                      Header: "Location",
+                      accessor: "Location",
+                  },
+                  {
+                      Header: "Date",
+                      accessor: (row) => row.StartTime.$date.slice(0, 10),
+                  },
+              ]
+    );
     const {
         getTableProps,
         getTableBodyProps,
@@ -88,46 +118,17 @@ const Table = ({ tab, data, option }) => {
     };
 
     const onOptionHandler = () => {
+        if (option === "delete") {
+            console.log("delete");
+        } else {
+            console.log("export");
+        }
         console.log(selectedContacts);
-    }
+    };
 
     useEffect(() => {
-        setSelectedContacts(selectedFlatRows.map((d) => data[d.index]._id.$oid));
+        setSelectedContacts(selectedFlatRows.map((d) => data[d.index]._id));
     }, [data, selectedFlatRows]);
-    useEffect(() => {
-        if (tab==="contact") {
-            setCol([
-                {
-                    Header: "Name",
-                    accessor: row => (row.FirstName + " " + row.LastName),
-                },
-                {
-                    Header: "Phone number",
-                    accessor: "MobileNo",
-                },
-                {
-                    Header: "Email",
-                    accessor: "Email",
-                },
-            ])
-        }else{
-            setCol([
-                {
-                    Header: "Meeting Name",
-                    accessor: "Title",
-                },
-                {
-                    Header: "Location",
-                    accessor: "Location",
-                },
-                {
-                    Header: "Date",
-                    accessor:
-                        row => row.StartTime.$date.slice(0, 10)
-                }
-            ])
-        }
-    }, [tab])
 
     // Render the UI for your table
     return (
@@ -148,7 +149,10 @@ const Table = ({ tab, data, option }) => {
                     <table className="contact-list" {...getTableProps()}>
                         <thead>
                             {headerGroups.map((headerGroup) => (
-                                <tr className="contact-list-head" {...headerGroup.getHeaderGroupProps()}>
+                                <tr
+                                    className="contact-list-head"
+                                    {...headerGroup.getHeaderGroupProps()}
+                                >
                                     {headerGroup.headers.map((column) => (
                                         <th {...column.getHeaderProps()}>
                                             {column.render("Header")}
@@ -161,7 +165,18 @@ const Table = ({ tab, data, option }) => {
                             {rows.map((row, i) => {
                                 prepareRow(row);
                                 return (
-                                    <tr className="contact-list-record" {...row.getRowProps()} onClick={() => {!showSelect && history.push(`/${tab}/${row.index}`) }}>
+                                    <tr
+                                        className="contact-list-record"
+                                        {...row.getRowProps()}
+                                        onClick={() => {
+                                            !showSelect &&
+                                                history.push(
+                                                    `/${tab}/${
+                                                        data[row.index]._id
+                                                    }`
+                                                );
+                                        }}
+                                    >
                                         {row.cells.map((cell) => {
                                             return (
                                                 <td {...cell.getCellProps()}>

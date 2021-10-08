@@ -7,7 +7,6 @@ axios.interceptors.request.use(
     (config) => {
         config.headers.authorization =
             "Bearer " + localStorage.getItem("token"); // we put our token in the header
-        console.log(localStorage.getItem("token"));
         return config;
     },
     (error) => {
@@ -16,12 +15,9 @@ axios.interceptors.request.use(
     }
 );
 
-// axios.defaults.headers.common["authorization"] = localStorage.getItem("token");
-
 // component for handling user login
 export async function loginUser(user) {
-    // define the route which the FoodBuddy API is handling
-    // login/authentication
+
     const endpoint = `/api/login`;
 
     // POST the email and password to FoodBuddy API to
@@ -47,9 +43,14 @@ export async function loginUser(user) {
 
     // put token ourselves in the local storage, we will
     // send the token in the request header to the API server
-    localStorage.setItem("token", data.token);
+
+    if (data !== undefined) {
+        console.log(data);
+        localStorage.setItem("token", data.token);
+    }
 
     return data;
+    // return data;
 }
 
 export async function registerUser(user) {
@@ -78,12 +79,36 @@ export async function registerUser(user) {
     return data;
 }
 
-export function getGroups(tab) {
-    // let data = await axios.get(`/api/doRegister`)
-    //   .then(res => res.data)
-    //   .catch(err => console.log(err))
+// for contact tag, group = 'C'; for meeting tag, group = 'M'
+export function GetTagList(group) {
+    const [tags, setTags] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
 
-    // return data;
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/tag/getTagList/${group}`, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setTags(res.data.tags);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [group]);
+
+    return { tags, loading, error };
+}
+
+export function getGroups(tab) {
 
     if (tab === "contact") {
         return [
@@ -122,74 +147,6 @@ export function getGroups(tab) {
     }
 }
 
-// // contact
-
-// // function getOneContact(id) {
-// //   return axios.get(`api/contact/${id}`, {withCredentials:true}).then(res => res.data);
-// // }
-
-// // export function useOneContact(id) {
-// //   const [loading, setLoading] = useState(true);
-// //   const [contact, setContact] = useState([]);
-// //   const [error, setError] = useState(null);
-
-// //   useEffect(() => {
-// //     getOneContact(id)
-// //       .then(contact => {
-// //         setContact(contact);
-// //         setLoading(false);
-// //       })
-// //       .catch(e => {
-// //         console.log(e);
-// //         setError(e);
-// //         setLoading(false);
-// //       });
-// //   }, [id]);
-
-// //   return {
-// //     loading,
-// //     contact,
-// //     error
-// //   };
-// // }
-
-// // function getContacts() {
-// //   return axios.get(`api/contact`, {withCredentials:true}).then(res => res.data);
-// // }
-
-// // export function useContacts() {
-// //   const [loading, setLoading] = useState(true);
-// //   const [contacts, setContacts] = useState([]);
-// //   const [error, setError] = useState(null);
-
-// //   useEffect(() => {
-// //     getContacts()
-// //       .then(contacts => {
-// //         setContacts(contacts);
-// //         setLoading(false);
-// //       })
-// //       .catch(e => {
-// //         console.log(e);
-// //         setError(e);
-// //         setLoading(false);
-// //       });
-// //   });
-
-// //   return {
-// //     loading,
-// //     contacts,
-// //     error
-// //   };
-// // }
-
-// // export async function createContact(contact) {
-// //   let data = await axios.post('/api/contact/create', contact)
-// //   .then(res => res.data)
-// //   .catch(err => console.log(err));
-
-// //   return data;
-// // }
-
 export function GetOneContact(id) {
     const [contact, setContact] = useState([]);
     const [loading, setLoading] = useState("loading...");
@@ -199,13 +156,11 @@ export function GetOneContact(id) {
         const source = axios.CancelToken.source();
         axios
             .get(`/api/contact/${id}`, {
-                headers: { authorization: localStorage.getItem("token") },
                 cancelToken: source.token,
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setContact(res.data);
-                console.log(res);
+                res.data && setContact(res.data.contact);
             })
             .catch((err) => {
                 setLoading(false);
@@ -227,14 +182,16 @@ export function GetContacts() {
 
     useEffect(() => {
         const source = axios.CancelToken.source();
+        const endpoint = `/api/contact`;
         axios
-            .get(`/api/contact`, {
-                cancelToken: source.token,
-            })
+            .get(endpoint,
+                {
+                    cancelToken: source.token,
+                }
+            )
             .then((res) => {
                 setLoading(false);
-                res.data && setContacts(res.data);
-                console.log(res);
+                res.data && setContacts(res.data.contacts);
             })
             .catch((err) => {
                 setLoading(false);
@@ -249,61 +206,31 @@ export function GetContacts() {
     return { contacts, loading, error };
 }
 
-export function CreateContact(contact) {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState("loading...");
-    const [error, setError] = useState(null);
+export async function CreateContact(contact) {
+    let data = await axios
+        .post(`/api/contact/create`, contact)
+        .then((res) => res.data)
+        .catch((err) => console.log(err));
 
-    useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios
-            .post(`/api/contact/create`, contact, { cancelToken: source.token })
-            .then((res) => {
-                setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
-            })
-            .catch((err) => {
-                setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            });
-        return () => {
-            source.cancel();
-        };
-    }, [contact]);
-
-    return { data, loading, error };
+    return data;
 }
 
-export function EditContact(contact) {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState("loading...");
-    const [error, setError] = useState(null);
+export async function EditContact(contact) {
+    let data = await axios
+        .post(`/api/contact/edit/${contact._id.$oid}`, contact)
+        .then((res) => res.data)
+        .catch((err) => console.log(err));
 
-    useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios
-            .post(`/api/contact/edit/${contact._id.$oid}`, contact, {
-                cancelToken: source.token,
-            })
-            .then((res) => {
-                setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
-            })
-            .catch((err) => {
-                setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            });
-        return () => {
-            source.cancel();
-        };
-    }, [contact]);
+    return data;
+}
 
-    return { data, loading, error };
-    //return { loading, error };
+export async function DeleteContact(id) {
+    let data = await axios
+        .post(`/api/contact/delete/${id}`)
+        .then((res) => res.data)
+        .catch((err) => console.log(err));
+
+    return data;
 }
 
 export function DeleteOneContact(id) {
@@ -339,162 +266,140 @@ export function GetOneMeeting(id) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-      const source = axios.CancelToken.source();
-      axios
-          .get(`/api/meeting/${id}`, { cancelToken: source.token })
-          .then((res) => {
-              setLoading(false);
-              res.data && setMeeting(res.data);
-              console.log(res);
-          })
-          .catch((err) => {
-              setLoading(false);
-              errHandler(err);
-              setError("An error occured.");
-          });
-      return () => {
-          source.cancel();
-      };
-  }, [id]);
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/meeting/${id}`, { cancelToken: source.token })
+            .then((res) => {
+                setLoading(false);
+                res.data && setMeeting(res.data);
+                console.log(res);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [id]);
 
-  return { meeting, loading, error };
+    return { meeting, loading, error };
 }
 
 export function GetMeetings() {
-  const [meetings, setMeetings] = useState([]);
-  const [loading, setLoading] = useState("loading...");
-  const [error, setError] = useState(null);
+    const [meetings, setMeetings] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    axios
-        .get(`/api/meeting`, { cancelToken: source.token, params: {_limit: 5} })
-        .then((res) => {
-            setLoading(false);
-            res.data && setMeetings(res.data);
-            console.log(res);
-        })
-        .catch((err) => {
-            setLoading(false);
-            errHandler(err);
-            setError("An error occured.");
-        });
-    return () => {
-        source.cancel();
-    };
-}, []);
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/meeting`, {
+                cancelToken: source.token,
+                params: { _limit: 5 },
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setMeetings(res.data);
+                console.log(res);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, []);
 
-return { meetings, loading, error };
+    return { meetings, loading, error };
 }
 
 export function CreateMeeting(meeting) {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState("loading...");
-  const [error, setError] = useState(null);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    axios
-        .post(`/api/meeting/create`, meeting, { cancelToken: source.token })
-        .then((res) => {
-            setLoading(false);
-            res.data && setData(res.data);
-            console.log(res);
-        })
-        .catch((err) => {
-            setLoading(false);
-            errHandler(err);
-            setError("An error occured.");
-        });
-    return () => {
-        source.cancel();
-    };
-}, [meeting]);
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .post(`/api/meeting/create`, meeting, { cancelToken: source.token })
+            .then((res) => {
+                setLoading(false);
+                res.data && setData(res.data);
+                console.log(res);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [meeting]);
 
-return { data, loading, error };
+    return { data, loading, error };
 }
 
 export function EditMeeting(meeting) {
-  //const [data, setData] = useState([]);
-  const [loading, setLoading] = useState("loading...");
-  const [error, setError] = useState(null);
+    //const [data, setData] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    axios
-        .patch(`/api/meeting/${meeting.id}`, meeting, { cancelToken: source.token })
-        // .then((res) => {
-        //     setLoading(false);
-        //     res.data && setData(res.data);
-        //     console.log(res);
-        // })
-        .catch((err) => {
-            setLoading(false);
-            errHandler(err);
-            setError("An error occured.");
-        });
-    return () => {
-        source.cancel();
-    };
-}, [meeting]);
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .patch(`/api/meeting/${meeting.id}`, meeting, {
+                cancelToken: source.token,
+            })
+            // .then((res) => {
+            //     setLoading(false);
+            //     res.data && setData(res.data);
+            //     console.log(res);
+            // })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [meeting]);
 
-//return { data, loading, error };
-return {loading, error};
+    //return { data, loading, error };
+    return { loading, error };
 }
 
 export function DeleteOneMeeting(id) {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState("loading...");
-  const [error, setError] = useState(null);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    axios
-        .delete(`/api/meeting/${id}`, { cancelToken: source.token })
-        .then((res) => {
-            setLoading(false);
-            res.data && setData(res.data);
-            console.log(res);
-        })
-        .catch((err) => {
-            setLoading(false);
-            errHandler(err);
-            setError("An error occured.");
-        });
-    return () => {
-        source.cancel();
-    };
-}, [id]);
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .delete(`/api/meeting/${id}`, { cancelToken: source.token })
+            .then((res) => {
+                setLoading(false);
+                res.data && setData(res.data);
+                console.log(res);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [id]);
 
-return { data, loading, error };
+    return { data, loading, error };
 }
-
-// // export function useFetch(url) {
-// //     const [data, setData] = useState([]);
-// //     const [loading, setLoading] = useState("loading...");
-// //     const [error, setError] = useState(null);
-
-// //     useEffect(() => {
-// //         const source = axios.CancelToken.source();
-// //         axios
-// //             .get(url, { cancelToken: source.token })
-// //             .then((res) => {
-// //                 setLoading(false);
-// //                 res.data && setData(res.data);
-// //                 console.log(res);
-// //             })
-// //             .catch((err) => {
-// //                 setLoading(false);
-// //                 errHandler(err);
-// //                 setError("An error occured.");
-// //             });
-// //         return () => {
-// //             source.cancel();
-// //         };
-// //     }, [url]);
-
-// //     return { data, loading, error };
-// // }
 
 function errHandler(error) {
     if (error.response) {
@@ -513,65 +418,58 @@ function errHandler(error) {
     }
 }
 
-
-
-
-
-
-
-
 //zhengtian lu
 
 export function Getprofile(profile) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
-  
-    useEffect(() => {
-      const source = axios.CancelToken.source();
-      axios
-          .get(`/api/profile`, { cancelToken: source.token })
-          .then((res) => {
-              setLoading(false);
-              res.data && setData(res.data);
-              console.log(res);
-          })
-          .catch((err) => {
-              setLoading(false);
-              errHandler(err);
-              setError("An error occured.");
-          });
-      return () => {
-          source.cancel();
-      };
-  }, []);
-  
-  return { data, loading, error };
-  }
 
-  export function GetRegister(register) {
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/profile`, { cancelToken: source.token })
+            .then((res) => {
+                setLoading(false);
+                res.data && setData(res.data);
+                console.log(res);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, []);
+
+    return { data, loading, error };
+}
+
+export function GetRegister(register) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
-  
+
     useEffect(() => {
-      const source = axios.CancelToken.source();
-      axios
-          .get(`/api/register`, { cancelToken: source.token })
-          .then((res) => {
-              setLoading(false);
-              res.data && setData(res.data);
-              console.log(res);
-          })
-          .catch((err) => {
-              setLoading(false);
-              errHandler(err);
-              setError("An error occured.");
-          });
-      return () => {
-          source.cancel();
-      };
-  }, []);
-  
-  return { data, loading, error };
-  }
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/register`, { cancelToken: source.token })
+            .then((res) => {
+                setLoading(false);
+                res.data && setData(res.data);
+                console.log(res);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, []);
+
+    return { data, loading, error };
+}
