@@ -6,7 +6,7 @@ const addTag = async (req, res) => {
         var decodedID = jwt.decode(req.token, { complete: true })
         let tagChecked = await Tag.find({ TagName: tagName, TagOf: tagOf, AccountID: decodedID }, (err) => {
             if(err){
-                res.status(503).json({
+                res.status(400).json({
                     msg: "Error occurred: " + err
                 })
                 return;
@@ -22,7 +22,7 @@ const addTag = async (req, res) => {
 
             newTag.save((err) => {
                 if (err) {
-                    res.status(503).json({
+                    res.status(400).json({
                         msg: "Error occurred: " + err
                     })
                     return;
@@ -53,7 +53,7 @@ const deleteTag = async function (req, res) {
         var decodedID = jwt.decode(req.token, { complete: true })
         Tag.findOneAndDelete({ TagName: tagName, TagOf: tagOf, AccountID: decodedID }, (err) => {
             if(err){
-                res.status(503).json({
+                res.status(400).json({
                     msg: "Error occurred: " + err
                 })
                 return;
@@ -78,7 +78,7 @@ const getTagList = async (req, res) => {
 
         const tags = Tag.find({ TagOf: tagOf, AccountID: uid }, (err) => {
             if (err) {
-                res.status(503).json({
+                res.status(400).json({
                     msg: "Error occurred: " + err
                 })
                 return;
