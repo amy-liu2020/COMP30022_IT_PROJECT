@@ -16,7 +16,7 @@ const SideMenu = ({ tab }) => {
     <div className="sideM">
       <button
         className="sideM-create"
-        onClick={() => history.push(`/${tab}/edit`)}
+        onClick={() => history.push(`/${tab}/create`)}
       >
         <MdAdd />
         create {tab}
@@ -28,7 +28,7 @@ const SideMenu = ({ tab }) => {
       ))}
       <button className="sideM-addGroup">add new group</button>
       <button className="sideM-import">import</button>
-      <button className="sideM-export" onClick={() => {history.push("/contact/export")}}>export</button>
+      <button className="sideM-export" onClick={() => history.push(`/${tab}/export`)}>export</button>
       <button className="sideM-bin">bin</button>
     </div>
   );

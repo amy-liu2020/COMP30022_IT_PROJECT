@@ -135,7 +135,7 @@ const contactCreate = async (req, res) => {
 
 const contactDelete = async (req,res) => {
     let cid = req.params.id
-    let uid = req.token
+    let uid = req.token.userId
     Contact.findByIdAndUpdate(cid, {IsActive:false}, (err) =>{
         if(err){
             res.status(400).json({
@@ -157,6 +157,7 @@ const contactDelete = async (req,res) => {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
+            console.log(err);
         }
         else {
             res.status(200).json({
