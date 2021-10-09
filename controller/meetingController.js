@@ -178,8 +178,35 @@ const meetingDelete = async (req,res) => {
     });
 }
 
-const searching = async(req, res) =>{
-    res.send("searching")
-    console.log("searching")
+const fuzzySearch = async(req, res) =>{
+    let keyword = req.params.keyword
+    let uid = req.token.userId
+    let reg = new RegExp(keyword,"i")
+    const searchResult = await Meeting.find({
+        $and:[
+            {$or:[
+                {Title:reg},
+                {Location:reg},
+                {URL:reg},
+                {OtherInvitees:reg},
+                {StartTime:reg},
+                {Notes:reg}
+            ]},
+            {IsActive:true, AccountID:uid}
+        ]},
+        "Title StartTime Location Invitees",
+        (err) => {
+            if(err){
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        }
+    ).lean()
+    res.status(200).json({
+        msg: "Search contact successfully",
+        searchResult:searchResult
+    });
 };
-module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,meetingDelete,searching}
+module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,meetingDelete,fuzzySearch}

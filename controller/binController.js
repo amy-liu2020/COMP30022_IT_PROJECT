@@ -212,7 +212,7 @@ const clearAll = async (req,res) => {
 
 
 
-exports.module = {getBinList, getBinItem, contactCreate, deleteBinItem, restoreBinItem, clearAll}
+exports.module = {getBinList, getBinItem, deleteBinItem, restoreBinItem, clearAll}
 
 
 
