@@ -27,8 +27,8 @@ meetingRouter.post("/delete/:id", ensureAuthorized, (req,res) =>
     meetingController.meetingDelete(req,res)
 );
 // present the searching results 
-meetingRouter.get("/searching/:type/:searchingawords", (req,res) =>
-    meetingController.searching(req,res)
+meetingRouter.get("/fuzzySearch/:keyword", (req,res) =>
+    meetingController.fuzzySearch(req,res)
 );
 
 // present the bin page

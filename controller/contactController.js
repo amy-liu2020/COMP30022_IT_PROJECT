@@ -190,7 +190,7 @@ const contactDelete = async (req,res) => {
 
 }
 
-const searchKeyword = async (req, res) => {
+const fuzzySearch = async (req, res) => {
     let keyword = req.params.keyword
     let uid = req.token.userId
     let reg = new RegExp(keyword,"i")
@@ -223,4 +223,4 @@ const searchKeyword = async (req, res) => {
     });
 };
 
-module.exports = {getFullContact, getSingleContact,contactEdit,contactCreate,contactDelete,searchKeyword}
+module.exports = {getFullContact, getSingleContact,contactEdit,contactCreate,contactDelete,fuzzySearch}

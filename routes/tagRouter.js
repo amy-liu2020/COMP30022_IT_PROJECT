@@ -15,7 +15,7 @@ tagRouter.post("/deleteTag", ensureAuthorized, (req, res) => {
 })
 
 // get a list of tags
-tagRouter.get("/getTagList", ensureAuthorized, (req, res) => {
+tagRouter.get("/getTagList/:tagOf", ensureAuthorized, (req, res) => {
     tagController.getTagList(req, res)
 })
 

@@ -73,7 +73,7 @@ const deleteTag = async function (req, res) {
 
 const getTagList = async (req, res) => {
     try {
-        let { tagOf } = req.body
+        let tagOf = req.params.tagOf
         let uid = req.token.userId
 
         const tags = Tag.find({ TagOf: tagOf, AccountID: uid }, (err) => {
