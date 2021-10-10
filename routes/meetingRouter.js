@@ -5,7 +5,14 @@ const meetingRouter = express.Router();
 var meetingController = require("../controller/meetingController");
 
 // get the meeting list page
-meetingRouter.get("/", ensureAuthorized, meetingController.getFullMeeting);
+meetingRouter.get("/", ensureAuthorized, (req, res) => {
+    meetingController.getFullMeeting(req, res)
+});
+
+// get the meeting list with given tag
+meetingRouter.get("/:tag", ensureAuthorized, (req, res) => {
+    meetingController.getMeetingsByTag(req, res)
+});
 
 // get a single meeting page
 meetingRouter.get("/:id", (req,res) => {
