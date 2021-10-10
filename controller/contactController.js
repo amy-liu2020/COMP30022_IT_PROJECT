@@ -204,6 +204,7 @@ const contactDelete = async (req,res) => {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
+            console.log(err);
         }
         else {
             res.status(200).json({
