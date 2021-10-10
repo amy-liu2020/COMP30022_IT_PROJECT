@@ -9,6 +9,11 @@ contactRouter.get("/", ensureAuthorized, (req,res) => {
     contactController.getFullContact(req,res)
 });
 
+// get the contact list with given tag
+contactRouter.get("/:tag", ensureAuthorized, (req,res) => {
+    contactController.getContactsByTag(req,res)
+});
+
 // get a single contact
 contactRouter.get("/:id", (req,res) => {
     contactController.getSingleContact(req,res)

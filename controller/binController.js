@@ -1,6 +1,7 @@
 const Bin = require("../models/bin")
 const Contact = require("../models/contact");
 const Meeting = require("../models/meeting");
+const DEFAULT_MAX_PREVERVING_DATE = 24;
 
 const getBinList = async (req,res) => {
     try {
@@ -14,7 +15,7 @@ const getBinList = async (req,res) => {
                 return;
             }
         }).lean()
-    
+        
         res.status(200).json({
             msg: "Get bin list successfully",
             binList:binList
@@ -210,9 +211,36 @@ const clearAll = async (req,res) => {
     })
 }
 
+const autoDeleteItems = async (req, res) => {
+    const binList = await Bin.find({}, (err) => {
+        if(err){
+            res.status(503).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }
+    }).lean()
+
+    binList.forEach((item) => {
+        let DelDate = item.DeleteDate;
+        let curDate = new Date();
+        if((curDate - DelDate)/24/3600/1000 >= DEFAULT_MAX_PREVERVING_DATE){
+            Bin.findByIdAndDelete(item._id, (err)=>{
+                if(err){
+                    res.status(503).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            })
+        }
+        console.log("Auto delete success")
+    })
+}
 
 
-exports.module = {getBinList, getBinItem, deleteBinItem, restoreBinItem, clearAll}
+
+module.exports = {getBinList, getBinItem, deleteBinItem, restoreBinItem, clearAll, autoDeleteItems}
 
 
 
