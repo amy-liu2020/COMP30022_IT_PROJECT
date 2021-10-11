@@ -27,7 +27,8 @@ const List = ({ mode }) => {
         return <p>{error}</p>;
     }
 
-    return <Table tab="contact" data={contacts} option={mode} />;
+    return <p>hello</p>
+    // return <Table tab="contact" data={contacts} option={mode} />;
 };
 
 const Detail = () => {
@@ -99,7 +100,7 @@ const Detail = () => {
                             disabled={inputDisable}
                         />
                     </div>
-                    <Tag tab="contact" setSelectedOption={setTags} />
+                    {/* <Tag tagOf='C' setSelectedOption={setTags} /> */}
                     <div class="form-record">
                         <label>Home: </label>
                         <input
@@ -268,7 +269,7 @@ export const Contact = () => {
     return (
         <div className="three-part-layout">
             <NavigationBar />
-            <SideMenu tab={"contact"} />
+            <SideMenu tagOf='C' />
             <Switch>
                 <Route path={`${path}/create`}>
                     <Create />

@@ -1,13 +1,10 @@
 import Select from "react-select";
 import { useEffect, useState } from "react/cjs/react.development";
-import { getGroups } from "../api";
+import { GetTags } from "../api";
 
-const Tag = ({ tab, defaultValue=null, setSelectedOption}) => {
-    const [tags, setTags] = useState([]);
+const Tag = ({ tagOf, defaultValue=null, setSelectedOption}) => {
+    const {tags, loading, error} = GetTags(tagOf)
 
-    useEffect(() => {
-        setTags(getGroups(tab));
-    }, [tab]);
     return (
         <Select
             defaultValue={defaultValue}

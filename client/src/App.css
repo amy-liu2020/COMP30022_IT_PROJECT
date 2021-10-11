@@ -20,6 +20,15 @@ body {
                           "sideM content";
 }
 
+.two-part-layout {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  grid-template-columns: 100vw;
+  grid-template-rows: 50px auto;
+  grid-template-areas:    "nav nav"
+}
+
 .avatar-buttons {
   position: relative;
 }
@@ -556,6 +565,7 @@ input:valid {
   width: 200px;
   height: 100px;
   resize: none;
+  font-size: small;
 }
 
 .meetingForm-notes {
@@ -576,6 +586,7 @@ input:valid {
   width: 200px;
   height: 20px;
   resize: none;
+  font-size: small;
 }
 
 .meeting-form > button[type="submit"], .detail-edit{
@@ -619,17 +630,17 @@ input:valid {
 }
 
 .setting-form {
-  margin: 50px;
+  margin: 30px;
   font-size: 30px;
 }
 
 .box {
   position: relative;
-  left: 90px;
-  padding: 110px 70px;
+  left: 195px;
+  padding: 135px 80px;
   float: left;
   text-align: center;
-  margin: 25px;
+  margin: 20px;
   border: none;
 }
 

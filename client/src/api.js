@@ -17,7 +17,6 @@ axios.interceptors.request.use(
 
 // component for handling user login
 export async function loginUser(user) {
-
     const endpoint = `/api/login`;
 
     // POST the email and password to FoodBuddy API to
@@ -79,8 +78,10 @@ export async function registerUser(user) {
     return data;
 }
 
+// tag section ----------------------------------
+
 // for contact tag, group = 'C'; for meeting tag, group = 'M'
-export function GetTagList(group) {
+export function GetTags(tagOf) {
     const [tags, setTags] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
@@ -88,12 +89,17 @@ export function GetTagList(group) {
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .get(`/api/tag/getTagList/${group}`, {
+            .get(`/api/tag/getTagList/${tagOf}`, {
                 cancelToken: source.token,
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setTags(res.data.tags);
+                console.log(res);
+                if (res.data) {
+                    // re-group tags
+                    setTags(res.data.tags.map(tag => 
+                        ({...tag, value: tag.TagName, label: tag.TagName})));
+                }
             })
             .catch((err) => {
                 setLoading(false);
@@ -103,49 +109,66 @@ export function GetTagList(group) {
         return () => {
             source.cancel();
         };
-    }, [group]);
+    }, [tagOf]);
 
     return { tags, loading, error };
 }
 
-export function getGroups(tab) {
-
-    if (tab === "contact") {
-        return [
-            {
-                value: 1,
-                label: "all",
-            },
-            {
-                value: 2,
-                label: "family",
-            },
-            {
-                value: 3,
-                label: "friend",
-            },
-        ];
-    } else {
-        return [
-            {
-                value: 1,
-                label: "all",
-            },
-            {
-                value: 2,
-                label: "party",
-            },
-            {
-                value: 3,
-                label: "business",
-            },
-            {
-                value: 4,
-                label: "date",
-            },
-        ];
-    }
+export async function AddTag(tag) {
+    const data = await axios
+        .post("/api/tag/addTag", tag)
+        .then(res => res.data)
+        .catch(err => errHandler(err));
+    return data;
 }
+
+export async function DeleteTag(tag) {
+    const data = await axios
+        .post("/api/tag/deleteTag", tag)
+        .then(res => res.data)
+        .catch(err => errHandler(err));
+    return data;
+}
+
+// export function getGroups(tab) {
+//     if (tab === "contact") {
+//         return [
+//             {
+//                 value: 1,
+//                 label: "all",
+//             },
+//             {
+//                 value: 2,
+//                 label: "family",
+//             },
+//             {
+//                 value: 3,
+//                 label: "friend",
+//             },
+//         ];
+//     } else {
+//         return [
+//             {
+//                 value: 1,
+//                 label: "all",
+//             },
+//             {
+//                 value: 2,
+//                 label: "party",
+//             },
+//             {
+//                 value: 3,
+//                 label: "business",
+//             },
+//             {
+//                 value: 4,
+//                 label: "date",
+//             },
+//         ];
+//     }
+// }
+
+// contact section ------------------------------
 
 export function GetOneContact(id) {
     const [contact, setContact] = useState([]);
@@ -184,11 +207,9 @@ export function GetContacts() {
         const source = axios.CancelToken.source();
         const endpoint = `/api/contact`;
         axios
-            .get(endpoint,
-                {
-                    cancelToken: source.token,
-                }
-            )
+            .get(endpoint, {
+                cancelToken: source.token,
+            })
             .then((res) => {
                 setLoading(false);
                 res.data && setContacts(res.data.contacts);
