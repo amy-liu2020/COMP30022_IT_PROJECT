@@ -168,7 +168,7 @@ const Edit = () => {
                     <div class="meetingForm-name">
                         <input type="text" {...register("Title")}/>
                     </div>
-                    <Tag tab="meeting"/>
+                    {/* <Tag tab="meeting"/> */}
                     <div class="meetingForm-record">
                         <label>Location: </label>
                         <input type="text" {...register("Location")}/>
@@ -256,7 +256,7 @@ export const Meeting = () => {
     return (
         <div className="three-part-layout">
             <NavigationBar/>
-            <SideMenu tab={"meeting"}/>
+            <SideMenu tagOf='M'/>
             <Switch>
                 <Route path={[`${path}/edit/:meetingID`, `${path}/edit`]}>
                     <Edit/>
