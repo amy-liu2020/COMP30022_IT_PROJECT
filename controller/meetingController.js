@@ -3,7 +3,7 @@ const Meeting = require("../models/meeting");
 const getFullMeeting = async (req, res) => {
     try {
         let uid = req.token.userId
-        const meetings = await Meeting.find({AccountID:uid}, (err) => {
+        const meetings = await Meeting.find({AccountID:uid, IsActive:true},"Title StartTime Location Invitees", (err) => {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
@@ -11,6 +11,28 @@ const getFullMeeting = async (req, res) => {
         }).lean();
         res.status(200).json({
             msg: "Get meeting list successfully",
+            meetings:meetings
+        })
+    } catch (err){
+        console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
+    }
+};
+
+const getMeetingsByTag = async (req, res) => {
+    try {
+        let uid = req.token.userId
+        let tag = req.params.tag
+        const meetings = await Meeting.find({AccountID:uid, Tags:{$elemMatch:{$eq:tag}}, IsActive:true},"Title StartTime Location Invitees", (err) => {
+            res.status(400).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }).lean();
+        res.status(200).json({
+            msg: "Get meeting list with tag "+tag+" successfully",
             meetings:meetings
         })
     } catch (err){
@@ -178,8 +200,43 @@ const meetingDelete = async (req,res) => {
     });
 }
 
-const searching = async(req, res) =>{
-    res.send("searching")
-    console.log("searching")
+const fuzzySearch = async(req, res) =>{
+    let keyword = req.params.keyword
+    let uid = req.token.userId
+    let reg = new RegExp(keyword,"i")
+    const searchResult = await Meeting.find({
+        $and:[
+            {$or:[
+                {Title:reg},
+                {Location:reg},
+                {URL:reg},
+                {OtherInvitees:reg},
+                {StartTime:reg},
+                {Notes:reg}
+            ]},
+            {IsActive:true, AccountID:uid}
+        ]},
+        "Title StartTime Location Invitees",
+        (err) => {
+            if(err){
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        }
+    ).lean()
+    res.status(200).json({
+        msg: "Search contact successfully",
+        searchResult:searchResult
+    });
 };
-module.exports = {getFullMeeting, getSingleMeeting,meetingCreate,meetingEdit,meetingDelete,searching}
+module.exports = {
+    getFullMeeting, 
+    getMeetingsByTag, 
+    getSingleMeeting,
+    meetingCreate,
+    meetingEdit,
+    meetingDelete,
+    fuzzySearch
+}

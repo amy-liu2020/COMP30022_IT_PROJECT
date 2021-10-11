@@ -25,6 +25,30 @@ const getFullContact = async (req, res) => {
     }
 };
 
+const getContactsByTag = async (req, res) => {
+    try {
+        let uid = req.token.userId
+        let tag = req.params.tag;
+        const contacts = await Contact.find({AccountID:uid,Tags:{$elemMatch:{$eq:tag}}, IsActive:true}, "FirstName LastName MobileNo Email", (err) => {
+            if(err){
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        }).lean();
+        res.status(200).json({
+            msg:"Get contact list with tag "+tag+" successfully",
+            contacts:contacts
+        })
+    } catch (err){
+        console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        });
+    }
+};
+
 const getSingleContact = async (req, res) => {
     try {
         let cid = req.params.id
@@ -191,7 +215,7 @@ const contactDelete = async (req,res) => {
 
 }
 
-const searchKeyword = async (req, res) => {
+const fuzzySearch = async (req, res) => {
     let keyword = req.params.keyword
     let uid = req.token.userId
     let reg = new RegExp(keyword,"i")
@@ -224,4 +248,4 @@ const searchKeyword = async (req, res) => {
     });
 };
 
-module.exports = {getFullContact, getSingleContact,contactEdit,contactCreate,contactDelete,searchKeyword}
+module.exports = {getFullContact, getContactsByTag, getSingleContact,contactEdit,contactCreate,contactDelete,fuzzySearch}

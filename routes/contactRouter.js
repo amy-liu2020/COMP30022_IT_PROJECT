@@ -9,6 +9,11 @@ contactRouter.get("/", ensureAuthorized, (req,res) => {
     contactController.getFullContact(req,res)
 });
 
+// get the contact list with given tag
+contactRouter.get("/:tag", ensureAuthorized, (req,res) => {
+    contactController.getContactsByTag(req,res)
+});
+
 // get a single contact
 contactRouter.get("/:id", (req,res) => {
     contactController.getSingleContact(req,res)
@@ -30,8 +35,8 @@ contactRouter.post("/delete/:id", ensureAuthorized, (req,res)=>{
 })
 
 // present the searching results 
-contactRouter.get("/search/:keyword", (req,res) => {
-    contactController.searchKeyword(req,res)
+contactRouter.get("/fuzzySearch/:keyword", (req,res) => {
+    contactController.fuzzySearch(req,res)
 });
 
 // present the bin page

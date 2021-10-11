@@ -1,8 +1,5 @@
-//const mongoose = require("mongoose");
-
 // import backend framwork
 const express = require("express");
-const session = require('express-session')
 const ejs = require("ejs");
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -22,33 +19,8 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(session({
-    secret: "She could fade and wither - I didn't care.",
-    name: "UserAccount",
-    resave: true,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 1,
-        secure: false
-    },
-    store: MongoStore.create({ mongoUrl: "mongodb+srv://AEHXZ:aehxz123456@cluster0.0vlpa.mongodb.net/CRM?retryWrites=true&w=majority" }),
-    rolling: true
-}))
-
 
 app.set("view engine", "ejs");
-
-Ses = require("./models/session")
-
-// link to routes 
-const contactRouter = require("./routes/contactRouter");
-const meetingRouter = require("./routes/meetingRouter");
-const userRouter = require("./routes/userRouter");
-const tagRouter = require("./routes/tagRouter")
-
-
-
-
 
 // Interceptor
 app.use(function (req, res, next) {
@@ -72,10 +44,20 @@ app.use(function (req, res, next) {
 })
 
 
+// link to routes 
+const contactRouter = require("./routes/contactRouter");
+const meetingRouter = require("./routes/meetingRouter");
+const userRouter = require("./routes/userRouter");
+const tagRouter = require("./routes/tagRouter");
+const binRouter = require("./routes/binRouter");
+
+
+
 app.use("/api/contact", contactRouter);
 app.use("/api/meeting", meetingRouter);
 app.use("/api", userRouter);
 app.use("/api/tag", tagRouter);
+app.use("/api/bin", binRouter);
 
 // 'default' route to catch user errors
 app.all('*', (req, res) => {

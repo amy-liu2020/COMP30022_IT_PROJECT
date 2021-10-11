@@ -1,11 +1,12 @@
-const MAX_ATTEMPT_TIME = 5; 
+const MAX_ATTEMPT_TIME = 5;
 
 const User = require("../models/user")
 const fs = require('fs');
-const {PRIVATE_KEY, EXPIRESD} = require("../utils/token")
+const { PRIVATE_KEY, EXPIRESD } = require("../utils/token")
 const jwt = require("jsonwebtoken");
 const { encrypt, decrypt } = require("../utils/encrypt");
 const SecurityQuestion = require("../models/securityQuestion");
+
 
 const userLogin = async (req, res) => {
     // let reg = new RegExp("mesi","i")
@@ -13,6 +14,8 @@ const userLogin = async (req, res) => {
     // // let users = await User.find({SecurityQuestion: 0}, {Password:0, Color:0})
     // let users = await User.find({$and:[{$or:[{UserID:{$regex:reg}}, {UserName: /ph/i}]},{UserID:/one/i}]}, 'UserID UserName')
     // console.log(users)
+    // console.log(users[0].id)
+
 
     res.render("login", {});
 };
@@ -48,8 +51,8 @@ const doLogin = (req, res) => {
                     let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
                     res.status(200).json({
                         msg: "Login successfully",
-                        account:account,
-                        token:token
+                        account: account,
+                        token: token
                     })
                     return;
                 } else {
@@ -70,17 +73,17 @@ const doLogin = (req, res) => {
 };
 
 const getQuestionList = async (req, res) => {
-    try{
+    try {
         let questions = await SecurityQuestion.findOne((err) => {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
             return;
         })
-    
+
         res.status(200).json({
-            msg:"Get security question list successfully",
-            questions:questions
+            msg: "Get security question list successfully",
+            questions: questions
         })
     } catch (err) {
         console.log(err);
@@ -88,7 +91,7 @@ const getQuestionList = async (req, res) => {
             msg: "Error occurred: " + err
         })
     }
-    
+
 }
 
 const userDoRegister = async (req, res) => {
@@ -156,7 +159,7 @@ const userPreferredColor = async (req, res) => {
         }
         res.status(200).json({
             msg: "Get color successfully",
-            color:color
+            color: color
         })
     } catch (err) {
         console.log(err)
@@ -180,7 +183,7 @@ const getProfile = async (req, res) => {
         });
         res.status(200).json({
             msg: "Get user profile successfully",
-            info:thisAccount
+            info: thisAccount
         })
     } catch (err) {
         console.log(err)
@@ -202,7 +205,7 @@ const forgetPassword = async (req, res) => {
             }
         })
         let sqCode = thisAccount.securityQuestion;
-        let question = SecurityQuestion.findOne({Code:sqCode}, (err) => {
+        let question = SecurityQuestion.findOne({ Code: sqCode }, (err) => {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
@@ -210,7 +213,7 @@ const forgetPassword = async (req, res) => {
         })
         res.status(200).json({
             msg: "Get security question successfully",
-            securityQuestion:question
+            securityQuestion: question
         })
 
     } catch (err) {
@@ -333,7 +336,7 @@ const changeDetails = (req, res) => {
 };
 
 module.exports = {
-    userLogin, 
+    userLogin,
     doLogin,
     getQuestionList,
     userDoRegister,
