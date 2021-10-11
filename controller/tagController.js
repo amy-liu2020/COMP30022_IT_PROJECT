@@ -12,7 +12,7 @@ const addTag = async (req, res) => {
                 return;
             }
         })
-        if (!tagChecked) {
+        if (tagChecked.length() == 0) {
 
             var newTag = new Tag({
                 AccountID: decodedID,
