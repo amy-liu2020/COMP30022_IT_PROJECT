@@ -51,8 +51,8 @@ const addTag = async (req, res) => {
 const deleteTag = async function (req, res) {
     try {
         let { tagName, tagOf } = req.body
-        var decodedID = jwt.decode(req.token, { complete: true })
-        Tag.findOneAndDelete({ TagName: tagName, TagOf: tagOf, AccountID: decodedID }, (err) => {
+        var uid = req.token.userId;
+        Tag.findOneAndDelete({ TagName: tagName, TagOf: tagOf, AccountID: uid }, (err) => {
             if(err){
                 res.status(400).json({
                     msg: "Error occurred: " + err
