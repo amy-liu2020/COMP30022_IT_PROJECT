@@ -31,7 +31,7 @@ const IndeterminateCheckbox = React.forwardRef(
  * no option will shown for invalid option.
  */
 const Table = ({ tab, data, option }) => {
-    const col = (tab === "contact")
+    const [col, setCol] = useState(tab === "contact"
             ? [
                   {
                       Header: "Name",
@@ -59,7 +59,7 @@ const Table = ({ tab, data, option }) => {
                       Header: "Date",
                       accessor: (row) => row.StartTime.$date.slice(0, 10),
                   },
-              ];
+              ]);
     const {
         getTableProps,
         getTableBodyProps,

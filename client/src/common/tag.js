@@ -2,8 +2,8 @@ import Select from "react-select";
 import { useEffect, useState } from "react/cjs/react.development";
 import { GetTags } from "../api";
 
-const Tag = ({ tagOf, defaultValue=null, setSelectedOption}) => {
-    const {tags, loading, error} = GetTags(tagOf)
+const Tag = ({ tagOf, defaultValue = null, setSelectedOption, isDisabled }) => {
+    const { tags, loading, error } = GetTags(tagOf);
 
     return (
         <Select
@@ -11,6 +11,8 @@ const Tag = ({ tagOf, defaultValue=null, setSelectedOption}) => {
             onChange={setSelectedOption}
             options={tags}
             isMulti
+            isLoading={loading || error}
+            isDisabled={isDisabled}
         />
     );
 };

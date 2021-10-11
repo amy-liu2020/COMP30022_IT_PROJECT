@@ -130,44 +130,6 @@ export async function DeleteTag(tag) {
     return data;
 }
 
-// export function getGroups(tab) {
-//     if (tab === "contact") {
-//         return [
-//             {
-//                 value: 1,
-//                 label: "all",
-//             },
-//             {
-//                 value: 2,
-//                 label: "family",
-//             },
-//             {
-//                 value: 3,
-//                 label: "friend",
-//             },
-//         ];
-//     } else {
-//         return [
-//             {
-//                 value: 1,
-//                 label: "all",
-//             },
-//             {
-//                 value: 2,
-//                 label: "party",
-//             },
-//             {
-//                 value: 3,
-//                 label: "business",
-//             },
-//             {
-//                 value: 4,
-//                 label: "date",
-//             },
-//         ];
-//     }
-// }
-
 // contact section ------------------------------
 
 export function GetOneContact(id) {
@@ -184,6 +146,7 @@ export function GetOneContact(id) {
             .then((res) => {
                 setLoading(false);
                 res.data && setContact(res.data.contact);
+                setContact(values => ({...values, DOB: values.DOB.slice(0, 10)}))
             })
             .catch((err) => {
                 setLoading(false);
@@ -231,55 +194,29 @@ export async function CreateContact(contact) {
     let data = await axios
         .post(`/api/contact/create`, contact)
         .then((res) => res.data)
-        .catch((err) => console.log(err));
+        .catch((err) => errHandler(err));
 
     return data;
 }
 
-export async function EditContact(contact) {
+export async function EditContact(contact, id) {
     let data = await axios
-        .post(`/api/contact/edit/${contact._id.$oid}`, contact)
+        .post(`/api/contact/edit/${id}`, contact)
         .then((res) => res.data)
-        .catch((err) => console.log(err));
+        .catch((err) => errHandler(err));
 
     return data;
 }
 
 export async function DeleteContact(id) {
-    let data = await axios
-        .post(`/api/contact/delete/${id}`)
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
+    const data = await axios
+        .delete(`/api/contact/delete/${id}`)
+        .then(res => res.data)
+        .catch(err => errHandler(err));
     return data;
 }
 
-export function DeleteOneContact(id) {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState("loading...");
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios
-            .post(`/api/contact/delete/${id}`, { cancelToken: source.token })
-            .then((res) => {
-                setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
-            })
-            .catch((err) => {
-                setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            });
-        return () => {
-            source.cancel();
-        };
-    }, [id]);
-
-    return { data, loading, error };
-}
+// meeting section -------------------------
 
 export function GetOneMeeting(id) {
     const [meeting, setMeeting] = useState([]);

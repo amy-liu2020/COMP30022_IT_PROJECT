@@ -10,7 +10,7 @@ contactRouter.get("/", ensureAuthorized, (req,res) => {
 });
 
 // get the contact list with given tag
-contactRouter.get("/:tag", ensureAuthorized, (req,res) => {
+contactRouter.get("/getByTag/:tag", ensureAuthorized, (req,res) => {
     contactController.getContactsByTag(req,res)
 });
 
@@ -30,7 +30,10 @@ contactRouter.post("/edit/:id", (req,res) =>
 );
 
 // delete single Contact
-contactRouter.post("/delete/:id", ensureAuthorized, (req,res)=>{
+// contactRouter.post("/delete/:id", ensureAuthorized, (req,res)=>{
+//     contactController.contactDelete(req,res)
+// })
+contactRouter.delete("/delete/:id", ensureAuthorized, (req,res)=>{
     contactController.contactDelete(req,res)
 })
 

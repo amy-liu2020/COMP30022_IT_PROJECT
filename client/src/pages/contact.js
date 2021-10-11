@@ -1,6 +1,9 @@
 import {
     GetContacts,
-    GetOneContact
+    GetOneContact,
+    DeleteContact,
+    CreateContact,
+    EditContact,
 } from "../api";
 import { MdAdd } from "react-icons/md";
 import {
@@ -10,11 +13,13 @@ import {
     useHistory,
     useParams,
 } from "react-router-dom";
-import {useState } from "react/cjs/react.development";
+import { useState, useMemo, useEffect } from "react/cjs/react.development";
 import Table from "../common/table";
 import SideMenu from "../common/sideMenu";
 import NavigationBar from "../common/nav";
 import Tag from "../common/tag";
+import Select from "react-select";
+import { useForm } from "react-hook-form";
 
 const List = ({ mode }) => {
     const { contacts, loading, error } = GetContacts();
@@ -27,30 +32,63 @@ const List = ({ mode }) => {
         return <p>{error}</p>;
     }
 
-    return <p>hello</p>
-    // return <Table tab="contact" data={contacts} option={mode} />;
+    return <Table tab="contact" data={contacts} option={mode} />;
 };
 
 const Detail = () => {
     let { contactId } = useParams();
+    let history = useHistory();
     const { contact, loading, error } = GetOneContact(contactId);
-    const [data, setData] = useState([]);
-    const [tags, setTags] = useState([]);
+    //const [tags, setTags] = useState([]);
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { isDirty, isSubmitting },
+    } = useForm({
+        defaultValues: useMemo(() => contact, [contact]),
+    });
     const [inputDisable, setInputDisable] = useState(true);
 
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-        console.log(contact);
+    const onSubmitHandler = (data) => {
+        // check if there is any change
+        if (isDirty) {
+            // send data to server
+            EditContact(data, contactId).then((data) => {
+                if (data === undefined) {
+                    alert("error");
+                } else {
+                    alert(data.msg);
+                    window.location.reload(); // refresh page
+                }
+            });
+        }
+
+        // switch to view mode
+        setInputDisable(true);
+    };
+
+    const onCancelHandler = () => {
+        reset(contact);
         setInputDisable(true);
     };
 
     const onDeleteHandler = () => {
-        console.log("delete");
-        setInputDisable(true);
+        // send request to server
+        DeleteContact(contactId).then((res) => {
+            console.log(res);
+        });
+
+        // redirect to list page
+        history.push("/contact");
     };
 
-    if (loading) {
-        return <p>{loading}</p>;
+    useEffect(() => {
+        reset(contact);
+    }, [contact, reset]);
+
+    if (loading || isSubmitting) {
+        return <p>loading...</p>;
     }
 
     if (error) {
@@ -59,13 +97,25 @@ const Detail = () => {
 
     return (
         <div className="content">
-            <form className="contact-form" onSubmit={onSubmitHandler}>
+            <form
+                className="contact-form"
+                onSubmit={handleSubmit(onSubmitHandler)}
+            >
                 <button
                     className="detail-edit"
                     type="button"
-                    onClick={() => setInputDisable(!inputDisable)}
+                    onClick={() => setInputDisable(false)}
+                    hidden={!inputDisable}
                 >
-                    {inputDisable ? "edit" : "cancel"}
+                    edit
+                </button>
+                <button
+                    className="detail-edit"
+                    type="button"
+                    onClick={onCancelHandler}
+                    hidden={inputDisable}
+                >
+                    cancel
                 </button>
                 <button
                     className="detail-edit"
@@ -90,14 +140,16 @@ const Detail = () => {
                         <input
                             type="text"
                             placeholder="FirstName"
-                            defaultValue={contact.FirstName}
+                            {...register("FirstName")}
                             disabled={inputDisable}
+                            required
                         />
                         <input
                             type="text"
                             placeholder="LastName"
-                            defaultValue={contact.LastName}
+                            {...register("LastName")}
                             disabled={inputDisable}
+                            required
                         />
                     </div>
                     {/* <Tag tagOf='C' setSelectedOption={setTags} /> */}
@@ -105,7 +157,7 @@ const Detail = () => {
                         <label>Home: </label>
                         <input
                             type="tel"
-                            defaultValue={contact.HomeNo}
+                            {...register("HomeNo")}
                             disabled={inputDisable}
                         />
                     </div>
@@ -113,7 +165,7 @@ const Detail = () => {
                         <label>Mobile: </label>
                         <input
                             type="tel"
-                            defaultValue={contact.MobileNo}
+                            {...register("MobileNo")}
                             disabled={inputDisable}
                         />
                     </div>
@@ -123,7 +175,7 @@ const Detail = () => {
                         <label>Email: </label>
                         <input
                             type="email"
-                            defaultValue={contact.Email}
+                            {...register("Email")}
                             disabled={inputDisable}
                         />
                     </div>
@@ -132,7 +184,7 @@ const Detail = () => {
                         <label>Job tittle: </label>
                         <input
                             type="text"
-                            defaultValue={contact.JobTitle}
+                            {...register("JobTitle")}
                             disabled={inputDisable}
                         />
                     </div>
@@ -141,7 +193,7 @@ const Detail = () => {
                         <label>Company: </label>
                         <input
                             type="text"
-                            defaultValue={contact.Company}
+                            {...register("Company")}
                             disabled={inputDisable}
                         />
                     </div>
@@ -150,9 +202,7 @@ const Detail = () => {
                         <label>DOB: </label>
                         <input
                             type="date"
-                            defaultValue={
-                                contact.DOB && contact.DOB.slice(0, 10)
-                            }
+                            {...register("DOB")}
                             disabled={inputDisable}
                         />
                     </div>
@@ -161,7 +211,7 @@ const Detail = () => {
                         <label>Relationship: </label>
                         <input
                             type="text"
-                            defaultValue={contact.Relationship}
+                            {...register("Relationship")}
                             disabled={inputDisable}
                         />
                     </div>
@@ -170,7 +220,7 @@ const Detail = () => {
                         <label>Address: </label>
                         <input
                             type="text"
-                            defaultValue={contact.Address}
+                            {...register("Address")}
                             disabled={inputDisable}
                         />
                     </div>
@@ -180,7 +230,7 @@ const Detail = () => {
                     <textarea
                         id="form-noteArea"
                         placeholder="write something..."
-                        defaultValue={contact.Notes}
+                        {...register("Notes")}
                         disabled={inputDisable}
                     ></textarea>
                 </div>
@@ -192,62 +242,87 @@ const Detail = () => {
 const Create = () => {
     let history = useHistory();
 
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
+    const {
+        register,
+        handleSubmit,
+        formState: { isDirty },
+    } = useForm();
+
+    const onSubmitHandler = (data) => {
+        // check if there any input
+        if (isDirty) {
+            // send data to server
+            CreateContact(data).then((res) => alert(res.msg));
+        }
+
+        // redirect to list page
         history.push("/contact");
     };
 
     return (
         <div className="content">
-            <form className="contact-form" onSubmit={onSubmitHandler}>
+            <form
+                className="contact-form"
+                onSubmit={handleSubmit(onSubmitHandler)}
+            >
                 <button type="submit">save</button>
                 <div class="form-avatar">
                     <MdAdd id="form-addPhoto" size={50} />
                 </div>
                 <div class="form-keyInfo">
                     <div class="form-name">
-                        <input type="text" placeholder="FirstName" />
-                        <input type="text" placeholder="LastName" />
+                        <input
+                            type="text"
+                            placeholder="FirstName"
+                            {...register("FirstName")}
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="LastName"
+                            {...register("LastName")}
+                            required
+                        />
                     </div>
-                    <Tag tab="contact" />
+                    {/* <Tag tagOf='C' setSelectedOption={setTags} /> */}
                     <div class="form-record">
                         <label>Home: </label>
-                        <input type="tel" />
+                        <input type="tel" {...register("HomeNo")} />
                     </div>
                     <div class="form-record">
                         <label>Mobile: </label>
-                        <input type="tel" />
+                        <input type="tel" {...register("MobileNo")} />
                     </div>
                 </div>
                 <div class="form-Info">
                     <div class="form-record">
                         <label>Email: </label>
-                        <input type="email" />
+                        <input type="email" {...register("Email")} />
                     </div>
 
                     <div class="form-record">
                         <label>Job tittle: </label>
-                        <input type="text" />
+                        <input type="text" {...register("JobTitle")} />
                     </div>
 
                     <div class="form-record">
                         <label>Company: </label>
-                        <input type="text" />
+                        <input type="text" {...register("Company")} />
                     </div>
 
                     <div class="form-record">
                         <label>DOB: </label>
-                        <input type="date" />
+                        <input type="date" {...register("DOB")} />
                     </div>
 
                     <div class="form-record">
                         <label>Relationship: </label>
-                        <input type="text" />
+                        <input type="text" {...register("Relationship")} />
                     </div>
 
                     <div class="form-record">
                         <label>Address: </label>
-                        <input type="text" />
+                        <input type="text" {...register("Address")} />
                     </div>
                 </div>
                 <div class="form-note">
@@ -255,6 +330,7 @@ const Create = () => {
                     <textarea
                         id="form-noteArea"
                         placeholder="write something..."
+                        {...register("Notes")}
                     ></textarea>
                 </div>
             </form>
@@ -269,7 +345,7 @@ export const Contact = () => {
     return (
         <div className="three-part-layout">
             <NavigationBar />
-            <SideMenu tagOf='C' />
+            <SideMenu tagOf="C" />
             <Switch>
                 <Route path={`${path}/create`}>
                     <Create />

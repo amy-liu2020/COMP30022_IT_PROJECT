@@ -1,11 +1,10 @@
 const Tag = require("../models/tag")
-const jwt = require("jsonwebtoken")
 
 const addTag = async (req, res) => {
     try {
         let { tagName, tagOf } = req.body
-        var decodedID = jwt.decode(req.token, { complete: true })
-        let tagChecked = await Tag.findOne({ TagName: tagName, TagOf: tagOf, AccountID: decodedID }, (err) => {
+        var uid = req.token.userId;
+        let tagChecked = await Tag.findOne({ TagName: tagName, TagOf: tagOf, AccountID: uid }, (err) => {
             if(err){
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -16,7 +15,7 @@ const addTag = async (req, res) => {
         if (!tagChecked) {
 
             var newTag = new Tag({
-                AccountID: decodedID,
+                AccountID: uid,
                 TagName: tagName,
                 TagOf: tagOf
             })
@@ -51,8 +50,8 @@ const addTag = async (req, res) => {
 const deleteTag = async function (req, res) {
     try {
         let { tagName, tagOf } = req.body
-        var decodedID = jwt.decode(req.token, { complete: true })
-        Tag.findOneAndDelete({ TagName: tagName, TagOf: tagOf, AccountID: decodedID }, (err) => {
+        var uid = req.token.userId;
+        Tag.findOneAndDelete({ TagName: tagName, TagOf: tagOf, AccountID: uid }, (err) => {
             if(err){
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -103,4 +102,3 @@ module.exports = {
     deleteTag,
     getTagList
 }
-

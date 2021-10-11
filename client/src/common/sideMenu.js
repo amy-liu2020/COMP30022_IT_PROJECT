@@ -26,7 +26,8 @@ const PopUp = ({ tagOf, turnOff }) => {
             if (data === undefined) {
                 alert("error");
             } else {
-                alert(data.msg);
+                // alert(data.msg);
+                window.location.reload(); // refresh page
             }
         });
     };
@@ -75,7 +76,8 @@ const SideMenu = ({ tagOf }) => {
             if (data === undefined) {
                 alert("error");
             } else {
-                alert(data.msg);
+                // alert(data.msg);
+                window.location.reload(); // refresh page
             }
         });
     };
@@ -102,6 +104,9 @@ const SideMenu = ({ tagOf }) => {
                 <MdAdd />
                 create {tab}
             </button>
+            <Link className="sideM-group" to={`/${tab}`}>
+                    all
+            </Link>
             {pending ? <p>updating...</p> : tags.map((tag) => (
                 <Link className="sideM-group" to={`/${tab}/?tag=${tag.value}`}>
                     {tag.label}
