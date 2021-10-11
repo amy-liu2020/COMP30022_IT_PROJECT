@@ -12,7 +12,7 @@ const addTag = async (req, res) => {
                 return;
             }
         })
-        if (!tagChecked) {
+        if (tagChecked.length() == 0) {
 
             var newTag = new Tag({
                 AccountID: decodedID,
@@ -76,7 +76,7 @@ const getTagList = async (req, res) => {
         let tagOf = req.params.tagOf
         let uid = req.token.userId
 
-        const tags = Tag.find({ TagOf: tagOf, AccountID: uid }, (err) => {
+        const tags = await Tag.find({ TagOf: tagOf, AccountID: uid }, (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
