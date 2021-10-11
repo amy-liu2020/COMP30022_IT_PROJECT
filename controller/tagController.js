@@ -76,7 +76,7 @@ const getTagList = async (req, res) => {
         let tagOf = req.params.tagOf
         let uid = req.token.userId
 
-        const tags = Tag.find({ TagOf: tagOf, AccountID: uid }, (err) => {
+        const tags = await Tag.find({ TagOf: tagOf, AccountID: uid }, (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
