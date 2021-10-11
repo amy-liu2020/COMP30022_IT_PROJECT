@@ -10,7 +10,7 @@ contactRouter.get("/", ensureAuthorized, (req,res) => {
 });
 
 // get the contact list with given tag
-contactRouter.get("/:tag", ensureAuthorized, (req,res) => {
+contactRouter.get("/getByTag/:tag", ensureAuthorized, (req,res) => {
     contactController.getContactsByTag(req,res)
 });
 
