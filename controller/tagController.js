@@ -3,8 +3,8 @@ const Tag = require("../models/tag")
 const addTag = async (req, res) => {
     try {
         let { tagName, tagOf } = req.body
-        var decodedID = jwt.decode(req.token, { complete: true })
-        let tagChecked = await Tag.findOne({ TagName: tagName, TagOf: tagOf, AccountID: decodedID }, (err) => {
+        var uid = req.params.userId;
+        let tagChecked = await Tag.findOne({ TagName: tagName, TagOf: tagOf, AccountID: uid }, (err) => {
             if(err){
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -15,7 +15,7 @@ const addTag = async (req, res) => {
         if (!tagChecked) {
 
             var newTag = new Tag({
-                AccountID: decodedID,
+                AccountID: uid,
                 TagName: tagName,
                 TagOf: tagOf
             })
