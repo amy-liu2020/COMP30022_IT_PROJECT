@@ -3,7 +3,7 @@ const Tag = require("../models/tag")
 const addTag = async (req, res) => {
     try {
         let { tagName, tagOf } = req.body
-        var uid = req.params.userId;
+        var uid = req.token.userId;
         let tagChecked = await Tag.findOne({ TagName: tagName, TagOf: tagOf, AccountID: uid }, (err) => {
             if(err){
                 res.status(400).json({
