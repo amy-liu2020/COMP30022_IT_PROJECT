@@ -12,9 +12,8 @@ const userLogin = async (req, res) => {
     // let reg = new RegExp("mesi","i")
     // console.log(reg)
     // // let users = await User.find({SecurityQuestion: 0}, {Password:0, Color:0})
-    // let users = await User.find({$and:[{$or:[{UserID:{$regex:reg}}, {UserName: /ph/i}]},{UserID:/one/i}]}, 'UserID UserName')
+    // let users = await User.findOne({$and:[{$or:[{UserID:{$regex:reg}}, {UserName: /phasdd/i}]},{UserID:/one/i}]}, 'UserID UserName')
     // console.log(users)
-    // console.log(users[0].id)
 
 
     res.render("login", {});
