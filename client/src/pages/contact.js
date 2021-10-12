@@ -4,6 +4,7 @@ import {
     DeleteContact,
     CreateContact,
     EditContact,
+    GetContactsByTag,
 } from "../api";
 import { MdAdd } from "react-icons/md";
 import {
@@ -18,7 +19,6 @@ import Table from "../common/table";
 import SideMenu from "../common/sideMenu";
 import NavigationBar from "../common/nav";
 import Tag from "../common/tag";
-import Select from "react-select";
 import { useForm } from "react-hook-form";
 
 const List = ({ mode }) => {
@@ -35,11 +35,33 @@ const List = ({ mode }) => {
     return <Table tab="contact" data={contacts} option={mode} />;
 };
 
+const ListWithTag = () => {
+    let { tagName } = useParams();
+    const { contacts, loading, error } = GetContactsByTag(tagName);
+
+    if (loading) {
+        return <p>{loading}</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+
+    return <Table tab="contact" data={contacts} option={"delete"} />;
+};
+
 const Detail = () => {
     let { contactId } = useParams();
     let history = useHistory();
     const { contact, loading, error } = GetOneContact(contactId);
-    //const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState(
+        useMemo(
+            () =>
+                contact.Tags &&
+                contact.Tags.map((tag) => ({ value: tag, label: tag })),
+            [contact]
+        )
+    );
     const {
         register,
         reset,
@@ -50,9 +72,17 @@ const Detail = () => {
     });
     const [inputDisable, setInputDisable] = useState(true);
 
+    const selectedTagsHandler = (options) => {
+        setTags(options.map((opt) => opt.label));
+    };
+
     const onSubmitHandler = (data) => {
         // check if there is any change
         if (isDirty) {
+            // update tags
+            data.Tags = tags;
+            console.log(data);
+
             // send data to server
             EditContact(data, contactId).then((data) => {
                 if (data === undefined) {
@@ -152,7 +182,13 @@ const Detail = () => {
                             required
                         />
                     </div>
-                    {/* <Tag tagOf='C' setSelectedOption={setTags} /> */}
+                    <Tag
+                        tagOf="C"
+                        isDisabled={inputDisable}
+                        defaultValue={tags}
+                        
+                        setSelectedTags={selectedTagsHandler}
+                    />
                     <div class="form-record">
                         <label>Home: </label>
                         <input
@@ -241,6 +277,7 @@ const Detail = () => {
 
 const Create = () => {
     let history = useHistory();
+    const [tags, setTags] = useState([]);
 
     const {
         register,
@@ -248,10 +285,18 @@ const Create = () => {
         formState: { isDirty },
     } = useForm();
 
+    const selectedTagsHandler = (options) => {
+        setTags(options.map((opt) => opt.label));
+    };
+
     const onSubmitHandler = (data) => {
         // check if there any input
         if (isDirty) {
+            // add tags to contact
+            data.Tags = tags;
+
             // send data to server
+            console.log(tags);
             CreateContact(data).then((res) => alert(res.msg));
         }
 
@@ -284,7 +329,7 @@ const Create = () => {
                             required
                         />
                     </div>
-                    {/* <Tag tagOf='C' setSelectedOption={setTags} /> */}
+                    <Tag tagOf="C" setSelectedTags={selectedTagsHandler} />
                     <div class="form-record">
                         <label>Home: </label>
                         <input type="tel" {...register("HomeNo")} />
@@ -352,6 +397,9 @@ export const Contact = () => {
                 </Route>
                 <Route path={`${path}/export`}>
                     <List mode="export" />
+                </Route>
+                <Route path={`${path}/tag/:tagName`}>
+                    <ListWithTag />
                 </Route>
                 <Route path={`${path}/:contactId`}>
                     <Detail />
