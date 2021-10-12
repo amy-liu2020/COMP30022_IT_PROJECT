@@ -34,19 +34,22 @@ const PopUp = ({ tagOf, turnOff }) => {
 
     // todo: add styling for pop-up
     return (
-        <div>
+        <div className="pop-up">
             <form onSubmit={onSubmitHandler}>
                 <input
                     type="text"
                     placeholder="tagName"
                     onChange={(e) => setTagName(e.target.value)}
+                    style={{marginBottom: "10px", width: "200px", height: "30px", fontSize: "20px"}}
                 />
-                <button type="button" onClick={turnOff}>
-                    cancel
-                </button>
-                <button type="submit">
-                    {isPending ? "uploading..." : "create"}
-                </button>
+                <div >
+                    <button type="button" onClick={turnOff}>
+                        cancel
+                    </button>
+                    <button type="submit" style={{float: "right" }}>
+                        {isPending ? "uploading..." : "create"}
+                    </button>
+                </div>
             </form>
         </div>
     );
@@ -62,7 +65,6 @@ const SideMenu = ({ tagOf }) => {
 
     // handle the removal of tag
     const onDeleteTagHandler = (tagName) => {
-
         // re-group data
         const tag = {
             tagName: tagName,
@@ -93,41 +95,52 @@ const SideMenu = ({ tagOf }) => {
     }
 
     return (
-        <div className="sideM">
+        <>
             {showPopup && (
                 <PopUp tagOf={tagOf} turnOff={() => setShowPopup(false)} />
             )}
-            <button
-                className="sideM-create"
-                onClick={() => history.push(`/${tab}/create`)}
-            >
-                <MdAdd />
-                create {tab}
-            </button>
-            <Link className="sideM-group" to={`/${tab}`}>
+            <div className="sideM">
+                <button
+                    className="sideM-create"
+                    onClick={() => history.push(`/${tab}/create`)}
+                >
+                    <MdAdd />
+                    create {tab}
+                </button>
+                <Link className="sideM-group" to={`/${tab}`}>
                     all
-            </Link>
-            {pending ? <p>updating...</p> : tags.map((tag) => (
-                <Link className="sideM-group" to={`/${tab}/?tag=${tag.value}`}>
-                    {tag.label}
-                    <FaTimes onClick={() => onDeleteTagHandler(tag.label)} />
                 </Link>
-            ))}
-            <button
-                className="sideM-addGroup"
-                onClick={() => setShowPopup(true)}
-            >
-                add new tag
-            </button>
-            <button className="sideM-import">import</button>
-            <button
-                className="sideM-export"
-                onClick={() => history.push(`/${tab}/export`)}
-            >
-                export
-            </button>
-            <button className="sideM-bin">bin</button>
-        </div>
+                {pending ? (
+                    <p>updating...</p>
+                ) : (
+                    tags.map((tag) => (
+                        <Link
+                            className="sideM-group"
+                            to={`/${tab}/tag/${tag.value}`}
+                        >
+                            {tag.label}
+                            <FaTimes
+                                onClick={() => onDeleteTagHandler(tag.label)}
+                            />
+                        </Link>
+                    ))
+                )}
+                <button
+                    className="sideM-addGroup"
+                    onClick={() => setShowPopup(true)}
+                >
+                    add new tag
+                </button>
+                <button className="sideM-import">import</button>
+                <button
+                    className="sideM-export"
+                    onClick={() => history.push(`/${tab}/export`)}
+                >
+                    export
+                </button>
+                <button className="sideM-bin">bin</button>
+            </div>
+        </>
     );
 };
 

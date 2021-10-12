@@ -365,6 +365,26 @@ body {
 
 /* contact section */
 
+.pop-up {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  display: flex;
+}
+
+.pop-up form {
+  margin: auto;
+  padding: 20px 50px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
 .contact-list {
   width: 100%;
   text-align: left;
@@ -449,11 +469,6 @@ body {
 
 .form-note {
   margin-top: 20px;
-}
-
-.input-error {
-  color: tomato;
-  font-size: 0.8em;
 }
 
 .contact-form > button[type="submit"], .detail-edit{
@@ -602,25 +617,6 @@ input:valid {
   margin-left: 45px;
 }
 
-
-/*  tag section */
-
-.tag {
-  background-color: var(--sideM-bg-color);
-  padding: 2px 5px;
-  border-radius: 20px;
-  border: 2px solid gray;
-  cursor: pointer;
-}
-
-.tag > * {
-  background-color: inherit;
-}
-
-.tag > input {
-  outline: none;
-  border: none;
-}
 
 
 /*  setting section */
