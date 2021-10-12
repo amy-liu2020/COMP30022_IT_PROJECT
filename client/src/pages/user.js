@@ -1,7 +1,7 @@
 import { Switch, Route, useRouteMatch, useHistory } from "react-router-dom";
 import NavigationBar from "../common/nav";
 import Logo from "../common/logo";
-import Setting from "../common/setting"
+import Setting from "../common/setting";
 import { loginUser } from "../api";
 import { useState } from "react";
 
@@ -136,7 +136,7 @@ const Login = () => {
         e.preventDefault();
 
         console.log(user);
-        loginUser(user).then(data => {
+        loginUser(user).then((data) => {
             if (data !== undefined) {
                 history.push("/contact");
             }
@@ -146,7 +146,7 @@ const Login = () => {
     return (
         <div className="login-bg">
             <div className="login-form">
-                <Logo/>
+                <Logo />
                 <input
                     name="userId"
                     type="text"
@@ -203,10 +203,10 @@ const Forget = () => {
         <div>
             <Switch>
                 <Route path={[`${path}/checkId`]}>
-                    <CheckId/>
+                    <CheckId />
                 </Route>
                 <Route path={`${path}/verify`}>
-                    <VerifyAns/>
+                    <VerifyAns />
                 </Route>
             </Switch>
         </div>
@@ -226,7 +226,9 @@ const CheckId = () => {
                         <input type="text" placeholder="username" />
                     </div>
                     <div class="buttons">
-                        <button onClick={() => history.push(`/user/forget/verify`)}>
+                        <button
+                            onClick={() => history.push(`/user/forget/verify`)}
+                        >
                             next
                         </button>
                     </div>
@@ -279,16 +281,16 @@ const User = () => {
     return (
         <Switch>
             <Route path={`${path}/login`}>
-                <Login/>
+                <Login />
             </Route>
             <Route path={`${path}/register`}>
-                <Register/>
+                <Register />
             </Route>
             <Route path={`${path}/profile`}>
                 <Profile />
             </Route>
             <Route path={`${path}/setting`}>
-                <Setting/>
+                <Setting />
             </Route>
             <Route path={`${path}/forget`}>
                 <Forget />

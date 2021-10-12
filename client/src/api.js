@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useParams } from "react-router";
-import { useEffect, useState } from "react/cjs/react.development";
-
+// import { useEffect, useState } from "react/cjs/react.development";
+import { useState, useEffect } from "react";
 // Axios interceptors are functions that Axios calls for every request
 axios.interceptors.request.use(
     (config) => {
@@ -45,7 +44,11 @@ export async function loginUser(user) {
 
     if (data !== undefined) {
         console.log(data);
+
+        // set token
         localStorage.setItem("token", data.token);
+
+        // create url for profile image
     }
 
     return data;
@@ -97,8 +100,12 @@ export function GetTags(tagOf) {
                 console.log(res);
                 if (res.data) {
                     // re-group tags
-                    setTags(res.data.tags.map(tag => 
-                        ({...tag, value: tag.TagName, label: tag.TagName})));
+                    setTags(
+                        res.data.tags.map((tag) => ({
+                            value: tag.TagName,
+                            label: tag.TagName,
+                        }))
+                    );
                 }
             })
             .catch((err) => {
@@ -117,16 +124,16 @@ export function GetTags(tagOf) {
 export async function AddTag(tag) {
     const data = await axios
         .post("/api/tag/addTag", tag)
-        .then(res => res.data)
-        .catch(err => errHandler(err));
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
     return data;
 }
 
 export async function DeleteTag(tag) {
     const data = await axios
         .post("/api/tag/deleteTag", tag)
-        .then(res => res.data)
-        .catch(err => errHandler(err));
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
     return data;
 }
 
@@ -146,7 +153,11 @@ export function GetOneContact(id) {
             .then((res) => {
                 setLoading(false);
                 res.data && setContact(res.data.contact);
-                setContact(values => ({...values, DOB: values.DOB.slice(0, 10)}))
+                console.log(res.data.contact);
+                setContact((values) => ({
+                    ...values,
+                    DOB: values.DOB && values.DOB.slice(0, 10),
+                }));
             })
             .catch((err) => {
                 setLoading(false);
@@ -168,9 +179,8 @@ export function GetContacts() {
 
     useEffect(() => {
         const source = axios.CancelToken.source();
-        const endpoint = `/api/contact`;
         axios
-            .get(endpoint, {
+            .get("/api/contact", {
                 cancelToken: source.token,
             })
             .then((res) => {
@@ -186,6 +196,34 @@ export function GetContacts() {
             source.cancel();
         };
     }, []);
+
+    return { contacts, loading, error };
+}
+
+export function GetContactsByTag(tagName) {
+    const [contacts, setContacts] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/contact/getByTag/${tagName}`, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setContacts(res.data.contacts);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [tagName]);
 
     return { contacts, loading, error };
 }
@@ -211,8 +249,8 @@ export async function EditContact(contact, id) {
 export async function DeleteContact(id) {
     const data = await axios
         .delete(`/api/contact/delete/${id}`)
-        .then(res => res.data)
-        .catch(err => errHandler(err));
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
     return data;
 }
 
