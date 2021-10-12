@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useParams } from "react-router";
-import { useEffect, useState } from "react/cjs/react.development";
-
+// import { useEffect, useState } from "react/cjs/react.development";
+import { useState, useEffect } from "react";
 // Axios interceptors are functions that Axios calls for every request
 axios.interceptors.request.use(
     (config) => {
@@ -50,7 +49,6 @@ export async function loginUser(user) {
         localStorage.setItem("token", data.token);
 
         // create url for profile image
-        
     }
 
     return data;

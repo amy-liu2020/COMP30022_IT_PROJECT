@@ -19,8 +19,8 @@ import meetings from "../json/MeetingList.json";
 import { useForm } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import Tag from "../common/tag";
-import { useEffect, useState } from "react/cjs/react.development";
-
+// import { useEffect, useState } from "react/cjs/react.development";
+import { useState, useEffect } from "react";
 const List = () => {
     return <Table tab="meeting" data={meetings} option="delete" />;
 };

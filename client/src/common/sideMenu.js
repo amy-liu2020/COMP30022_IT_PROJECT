@@ -1,6 +1,7 @@
 import { MdAdd } from "react-icons/md";
 import { FaTimes } from "react-icons/fa";
-import { useState } from "react/cjs/react.development";
+// import { useState } from "react/cjs/react.development";
+import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { GetTags, AddTag, DeleteTag } from "../api";
 
@@ -40,13 +41,18 @@ const PopUp = ({ tagOf, turnOff }) => {
                     type="text"
                     placeholder="tagName"
                     onChange={(e) => setTagName(e.target.value)}
-                    style={{marginBottom: "10px", width: "200px", height: "30px", fontSize: "20px"}}
+                    style={{
+                        marginBottom: "10px",
+                        width: "200px",
+                        height: "30px",
+                        fontSize: "20px",
+                    }}
                 />
-                <div >
+                <div>
                     <button type="button" onClick={turnOff}>
                         cancel
                     </button>
-                    <button type="submit" style={{float: "right" }}>
+                    <button type="submit" style={{ float: "right" }}>
                         {isPending ? "uploading..." : "create"}
                     </button>
                 </div>
@@ -113,9 +119,10 @@ const SideMenu = ({ tagOf }) => {
                 {pending ? (
                     <p>updating...</p>
                 ) : (
-                    tags.map((tag) => (
+                    tags.map((tag, index) => (
                         <Link
                             className="sideM-group"
+                            key={index}
                             to={`/${tab}/tag/${tag.value}`}
                         >
                             {tag.label}

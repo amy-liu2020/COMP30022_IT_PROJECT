@@ -14,7 +14,8 @@ import {
     useHistory,
     useParams,
 } from "react-router-dom";
-import { useState, useMemo, useEffect } from "react/cjs/react.development";
+// import { useState, useMemo, useEffect } from "react/cjs/react.development";
+import { useState, useMemo, useEffect } from "react";
 import Table from "../common/table";
 import SideMenu from "../common/sideMenu";
 import NavigationBar from "../common/nav";
@@ -162,11 +163,11 @@ const Detail = () => {
                 >
                     delete
                 </button>
-                <div class="form-avatar">
+                <div className="form-avatar">
                     <MdAdd id="form-addPhoto" size={50} />
                 </div>
-                <div class="form-keyInfo">
-                    <div class="form-name">
+                <div className="form-keyInfo">
+                    <div className="form-name">
                         <input
                             type="text"
                             placeholder="FirstName"
@@ -186,10 +187,9 @@ const Detail = () => {
                         tagOf="C"
                         isDisabled={inputDisable}
                         defaultValue={tags}
-                        
                         setSelectedTags={selectedTagsHandler}
                     />
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Home: </label>
                         <input
                             type="tel"
@@ -197,7 +197,7 @@ const Detail = () => {
                             disabled={inputDisable}
                         />
                     </div>
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Mobile: </label>
                         <input
                             type="tel"
@@ -206,8 +206,8 @@ const Detail = () => {
                         />
                     </div>
                 </div>
-                <div class="form-Info">
-                    <div class="form-record">
+                <div className="form-Info">
+                    <div className="form-record">
                         <label>Email: </label>
                         <input
                             type="email"
@@ -216,7 +216,7 @@ const Detail = () => {
                         />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Job tittle: </label>
                         <input
                             type="text"
@@ -225,7 +225,7 @@ const Detail = () => {
                         />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Company: </label>
                         <input
                             type="text"
@@ -234,7 +234,7 @@ const Detail = () => {
                         />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>DOB: </label>
                         <input
                             type="date"
@@ -243,7 +243,7 @@ const Detail = () => {
                         />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Relationship: </label>
                         <input
                             type="text"
@@ -252,7 +252,7 @@ const Detail = () => {
                         />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Address: </label>
                         <input
                             type="text"
@@ -261,7 +261,7 @@ const Detail = () => {
                         />
                     </div>
                 </div>
-                <div class="form-note">
+                <div className="form-note">
                     <label>Notes: </label>
                     <textarea
                         id="form-noteArea"
@@ -311,11 +311,11 @@ const Create = () => {
                 onSubmit={handleSubmit(onSubmitHandler)}
             >
                 <button type="submit">save</button>
-                <div class="form-avatar">
+                <div className="form-avatar">
                     <MdAdd id="form-addPhoto" size={50} />
                 </div>
-                <div class="form-keyInfo">
-                    <div class="form-name">
+                <div className="form-keyInfo">
+                    <div className="form-name">
                         <input
                             type="text"
                             placeholder="FirstName"
@@ -330,47 +330,47 @@ const Create = () => {
                         />
                     </div>
                     <Tag tagOf="C" setSelectedTags={selectedTagsHandler} />
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Home: </label>
                         <input type="tel" {...register("HomeNo")} />
                     </div>
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Mobile: </label>
                         <input type="tel" {...register("MobileNo")} />
                     </div>
                 </div>
-                <div class="form-Info">
-                    <div class="form-record">
+                <div className="form-Info">
+                    <div className="form-record">
                         <label>Email: </label>
                         <input type="email" {...register("Email")} />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Job tittle: </label>
                         <input type="text" {...register("JobTitle")} />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Company: </label>
                         <input type="text" {...register("Company")} />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>DOB: </label>
                         <input type="date" {...register("DOB")} />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Relationship: </label>
                         <input type="text" {...register("Relationship")} />
                     </div>
 
-                    <div class="form-record">
+                    <div className="form-record">
                         <label>Address: </label>
                         <input type="text" {...register("Address")} />
                     </div>
                 </div>
-                <div class="form-note">
+                <div className="form-note">
                     <label>Notes: </label>
                     <textarea
                         id="form-noteArea"
