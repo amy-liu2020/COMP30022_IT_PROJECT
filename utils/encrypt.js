@@ -20,6 +20,7 @@ function decrypt(str){
         console.log(err)
     }
 }
+
 module.exports = {
   encrypt,
   decrypt

@@ -3,6 +3,7 @@ const {ensureAuthorized} = require("../utils/token.js");
 
 const meetingRouter = express.Router();
 var meetingController = require("../controller/meetingController");
+const {uploadFile} = require('../utils/multer.js')
 
 // get the meeting list page
 meetingRouter.get("/", ensureAuthorized, (req, res) => {
@@ -10,7 +11,7 @@ meetingRouter.get("/", ensureAuthorized, (req, res) => {
 });
 
 // get the meeting list with given tag
-meetingRouter.get("/:tag", ensureAuthorized, (req, res) => {
+meetingRouter.get("/getByTag/:tag", ensureAuthorized, (req, res) => {
     meetingController.getMeetingsByTag(req, res)
 });
 
@@ -38,9 +39,14 @@ meetingRouter.get("/fuzzySearch/:keyword", (req,res) =>
     meetingController.fuzzySearch(req,res)
 );
 
-// present the bin page
-meetingRouter.get("/bin", (req,res) => {
-    meetingController.getDeletedItems(req,res)
+// upload attachment to meeting
+meetingRouter.post("/upload", uploadFile, ensureAuthorized, (req, res) => {
+    meetingController.uploadAttachment(req, res)
+});
+
+// assign tag to this contact
+meetingRouter.post("/addTag/:id", ensureAuthorized, (req,res) => {
+    meetingController.assignTag(req,res)
 });
 
 //export the router

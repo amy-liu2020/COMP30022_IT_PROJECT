@@ -6,15 +6,37 @@ const DEFAULT_MAX_PREVERVING_DATE = 24;
 const getBinList = async (req,res) => {
     try {
         let uid = req.token.userId
+        let type = req.params.type
 
-        const binList = await Bin.find({AccountID:uid}, (err) => {
-            if(err){
-                res.status(400).json({
-                    msg: "Error occurred: " + err
-                })
-                return;
-            }
-        }).lean()
+        var binList;
+        if(type === "C"){
+            binList = await Bin.find({AccountID:uid, Type:type}, (err) => {
+                if(err){
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            }).lean()
+        } else if (type === "M"){
+            binList = await Bin.find({AccountID:uid, Type:type}, (err) => {
+                if(err){
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            }).lean()
+        } else{
+            binList = await Bin.find({AccountID:uid}, (err) => {
+                if(err){
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            }).lean()
+        }
         
         res.status(200).json({
             msg: "Get bin list successfully",
