@@ -6,7 +6,7 @@ const binRouter = express.Router();
 var binController = require("../controller/binController");
 
 //present list of bin
-binRouter.get("/", ensureAuthorized, (req,res) => {
+binRouter.get("/:type", ensureAuthorized, (req,res) => {
     binController.getBinList(req,res)
 });
 

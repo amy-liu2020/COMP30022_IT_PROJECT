@@ -1,12 +1,13 @@
 const Contact = require("../models/contact");
 const Bin = require("../models/bin");
 const Meeting = require("../models/meeting");
+const Tag = require("../models/tag")
 
 const getFullContact = async (req, res) => {
     try {
         let uid = req.token.userId
-        const contacts = await Contact.find({AccountID:uid, IsActive:true}, "FirstName LastName MobileNo Email", (err) => {
-            if(err){
+        const contacts = await Contact.find({ AccountID: uid, IsActive: true }, "FirstName LastName MobileNo Email", (err) => {
+            if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
                 })
@@ -14,10 +15,10 @@ const getFullContact = async (req, res) => {
             }
         }).lean();
         res.status(200).json({
-            msg:"Get contact list successfully",
-            contacts:contacts
+            msg: "Get contact list successfully",
+            contacts: contacts
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(400).json({
             msg: "Error occurred: " + err
@@ -29,8 +30,8 @@ const getContactsByTag = async (req, res) => {
     try {
         let uid = req.token.userId
         let tag = req.params.tag;
-        const contacts = await Contact.find({AccountID:uid,Tags:{$elemMatch:{$eq:tag}}, IsActive:true}, "FirstName LastName MobileNo Email", (err) => {
-            if(err){
+        const contacts = await Contact.find({ AccountID: uid, Tags: { $elemMatch: { TagName: tag } }, IsActive: true }, "FirstName LastName MobileNo Email", (err) => {
+            if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
                 })
@@ -38,10 +39,10 @@ const getContactsByTag = async (req, res) => {
             }
         }).lean();
         res.status(200).json({
-            msg:"Get contact list with tag "+tag+" successfully",
-            contacts:contacts
+            msg: "Get contact list with tag " + tag + " successfully",
+            contacts: contacts
         })
-    } catch (err){
+    } catch (err) {
         console.log(err)
         res.status(400).json({
             msg: "Error occurred: " + err
@@ -53,16 +54,16 @@ const getSingleContact = async (req, res) => {
     try {
         let cid = req.params.id
         const contact = await Contact.findById(cid,
-            {IsActive:0, AccountID:0}, (err) => {
-            if(err){
-                res.status(400).json({
-                    msg: "Error occurred: " + err
-                })
-                return;
-            }
-        }).lean();
-        const relatedMeeting = await Meeting.find({Invitees:{$elemMatch:{$eq:cid}}}, "Title StartTime", (err) => {
-            if(err){
+            { IsActive: 0, AccountID: 0 }, (err) => {
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            }).lean();
+        const relatedMeeting = await Meeting.find({ Invitees: { $elemMatch: { $eq: cid } } }, "Title StartTime", (err) => {
+            if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
                 })
@@ -71,10 +72,10 @@ const getSingleContact = async (req, res) => {
         })
         res.status(200).json({
             msg: "Get single contact successfully",
-            contact:contact,
-            relatedMeeting:relatedMeeting
+            contact: contact,
+            relatedMeeting: relatedMeeting
         });
-    } catch (err){
+    } catch (err) {
         res.status(400).json({
             msg: "Error occurred: " + err
         });
@@ -98,33 +99,33 @@ const contactEdit = async (req, res) => {
             Tags
         } = req.body
         let ContactId = req.params.id;
-        Contact.findByIdAndUpdate(ContactId, 
+        Contact.findByIdAndUpdate(ContactId,
             {
-                FirstName:FirstName, 
-                LastName:LastName, 
-                Company:Company, Email:Email, 
-                Address:Address, JobTitle:JobTitle, 
-                Notes:Notes, 
-                MobileNo:MobileNo, 
-                HomeNo:HomeNo, 
-                DOB:DOB, 
-                Relationship:Relationship, 
-                Tags:Tags
+                FirstName: FirstName,
+                LastName: LastName,
+                Company: Company, Email: Email,
+                Address: Address, JobTitle: JobTitle,
+                Notes: Notes,
+                MobileNo: MobileNo,
+                HomeNo: HomeNo,
+                DOB: DOB,
+                Relationship: Relationship,
+                Tags: Tags
             },
-            {IsActive:0, AccountID:0}, (err, doc)=>{
-            if(err){
-                res.status(400).json({
-                    msg: "Error occurred: " + err
-                })
-                return;
-            }
-        })
+            { IsActive: 0, AccountID: 0 }, (err, doc) => {
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            })
         const contact = await Contact.findById(ContactId).lean();
         res.status(200).json({
             msg: "Edit successfully",
-            contact:contact
+            contact: contact
         });
-    } catch (err){
+    } catch (err) {
         console.log(err);
         res.status(400).json({
             msg: "Error occurred: " + err
@@ -152,23 +153,23 @@ const contactCreate = async (req, res) => {
     let uid = req.token.userId
 
     const contact = new Contact({
-        AccountID:uid,
+        AccountID: uid,
         IsActive: true,
-        FirstName:FirstName, 
-        LastName:LastName, 
-        Company:Company, 
-        Email:Email, 
-        Address:Address, 
-        JobTitle:JobTitle, 
-        Notes:Notes, 
-        MobileNo:MobileNo, 
-        HomeNo:HomeNo, 
-        DOB:DOB, 
-        Relationship:Relationship, 
-        Tags:Tags
+        FirstName: FirstName,
+        LastName: LastName,
+        Company: Company,
+        Email: Email,
+        Address: Address,
+        JobTitle: JobTitle,
+        Notes: Notes,
+        MobileNo: MobileNo,
+        HomeNo: HomeNo,
+        DOB: DOB,
+        Relationship: Relationship,
+        Tags: Tags
     });
-    contact.save((err)=>{
-        if (err){
+    contact.save((err) => {
+        if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
@@ -181,11 +182,11 @@ const contactCreate = async (req, res) => {
     });
 }
 
-const contactDelete = async (req,res) => {
+const contactDelete = async (req, res) => {
     let cid = req.params.id
     let uid = req.token.userId
-    Contact.findByIdAndUpdate(cid, {IsActive:false}, (err) =>{
-        if(err){
+    Contact.findByIdAndUpdate(cid, { IsActive: false }, (err) => {
+        if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
@@ -194,13 +195,13 @@ const contactDelete = async (req,res) => {
     })
 
     const deletedItem = new Bin({
-        AccountID:uid,
-        DeleteDate:new Date(),
-        ID:cid,
-        Type:"C"
+        AccountID: uid,
+        DeleteDate: new Date(),
+        ID: cid,
+        Type: "C"
     })
-    deletedItem.save((err)=>{
-        if (err){
+    deletedItem.save((err) => {
+        if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
@@ -218,23 +219,26 @@ const contactDelete = async (req,res) => {
 const fuzzySearch = async (req, res) => {
     let keyword = req.params.keyword
     let uid = req.token.userId
-    let reg = new RegExp(keyword,"i")
+    let reg = new RegExp(keyword, "i")
     const searchResult = await Contact.find({
-        $and:[
-            {$or:[
-                {FirstName:reg},
-                {LastName:reg},
-                {Email:reg},
-                {Address:reg},
-                {MobileNo:reg},
-                {HomeNo:reg},
-                {Notes:reg}
-            ]},
-            {IsActive:true, AccountID:uid}
-        ]},
+        $and: [
+            {
+                $or: [
+                    { FirstName: reg },
+                    { LastName: reg },
+                    { Email: reg },
+                    { Address: reg },
+                    { MobileNo: reg },
+                    { HomeNo: reg },
+                    { Notes: reg }
+                ]
+            },
+            { IsActive: true, AccountID: uid }
+        ]
+    },
         "FirstName LastName MobileNo Email",
         (err) => {
-            if(err){
+            if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
                 })
@@ -244,8 +248,90 @@ const fuzzySearch = async (req, res) => {
     )
     res.status(200).json({
         msg: "Search contact successfully",
-        searchResult:searchResult
+        searchResult: searchResult
     });
 };
 
-module.exports = {getFullContact, getContactsByTag, getSingleContact,contactEdit,contactCreate,contactDelete,fuzzySearch}
+
+const addToMeeting = async (req, res) => {
+    let mids = req.body.mids
+    let cid = req.params.id
+
+    mids.forEach(async (mid) => {
+        let meeting = await Meeting.findOne({_id:mid, Invitees:{$elemMatch:{$eq:cid}}, IsAlive:true}, "Invitees", (err) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        }).lean()
+    
+        if(!meeting){
+            let thisMeeting = await Meeting.findById(mid, (err) => {
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            })
+            
+            thisMeeting.Invitees.splice(0,0,cid)
+            thisMeeting.save((err)=>{
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            })
+        }
+    })
+    res.status(200).json({
+        msg: "Add this contact to meetings successfully"
+    })
+
+}
+
+const assignTag = async (req, res) => {
+    let {tagName} = req.body
+    let uid = req.token.userId
+    let cid = req.params.id
+
+    
+    let tag = await Tag.findOne({TagName:tagName, TagOf:"C", AccountID:uid}, "TagName", (err) => {
+        if (err) {
+            res.status(400).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }
+    }).lean()
+
+    Contact.findByIdAndUpdate(cid, {$push:{Tags:{TagName:tag.TagName, TagId:tag._id}}}, (err) => {
+        if (err) {
+            res.status(400).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }
+    })
+
+    
+    res.status(200).json({
+        msg: "Add tag to this contact successfully"
+    })
+}
+
+module.exports = { 
+    getFullContact, 
+    getContactsByTag, 
+    getSingleContact, 
+    contactEdit, 
+    contactCreate, 
+    contactDelete, 
+    fuzzySearch, 
+    addToMeeting, 
+    assignTag
+}

@@ -4,7 +4,7 @@ const User = require("../models/user")
 const fs = require('fs');
 const { PRIVATE_KEY, EXPIRESD } = require("../utils/token")
 const jwt = require("jsonwebtoken");
-const { encrypt, decrypt } = require("../utils/encrypt");
+const { encrypt} = require("../utils/encrypt");
 const SecurityQuestion = require("../models/securityQuestion");
 
 
@@ -156,7 +156,7 @@ const userPreferredColor = async (req, res) => {
                 })
             })
         }
-        res.status(200).json({
+        res.status(200).json({  
             msg: "Get color successfully",
             color: color
         })

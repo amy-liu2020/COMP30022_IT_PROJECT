@@ -47,5 +47,15 @@ contactRouter.get("/bin", (req,res) => {
     contactController.getDeletedItems(req,res)
 });
 
+// assign contact to meeting as invitees
+contactRouter.post("/addTo/:id", ensureAuthorized, (req,res) => {
+    contactController.addToMeeting(req,res)
+});
+
+// assign tag to this contact
+contactRouter.post("/addTag/:id", ensureAuthorized, (req,res) => {
+    contactController.assignTag(req,res)
+});
+
 //export the router
 module.exports = contactRouter;

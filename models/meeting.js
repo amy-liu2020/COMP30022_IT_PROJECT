@@ -27,7 +27,11 @@ const MeetingSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    Tags:[String],
+    Tags:[{
+        _id:false,
+        TagName:String,
+        TagId:mongoose.Schema.Types.ObjectId
+    }],
     Invitees:[mongoose.Schema.Types.ObjectId],
     OtherInvitees:String,
     Attachment:[Buffer]

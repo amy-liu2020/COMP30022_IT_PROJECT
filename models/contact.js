@@ -29,7 +29,11 @@ const ContactSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    Tags:[String]
+    Tags:[{
+        _id:false,
+        TagName:String,
+        TagId:mongoose.Schema.Types.ObjectId
+    }]
 }, {versionKey:false});
 
 const Contact = mongoose.model("Contact", ContactSchema, "ContactList");
