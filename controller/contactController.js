@@ -62,7 +62,7 @@ const getSingleContact = async (req, res) => {
                     return;
                 }
             }).lean();
-        const relatedMeeting = await Meeting.find({ Invitees: { $elemMatch: { $eq: cid } } }, "Title StartTime", (err) => {
+        const relatedMeeting = await Meeting.find({ Invitees: { $elemMatch: { $InviteeId: cid } } }, "Title StartTime", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -258,7 +258,7 @@ const addToMeeting = async (req, res) => {
     let cid = req.params.id
 
     mids.forEach(async (mid) => {
-        let meeting = await Meeting.findOne({_id:mid, Invitees:{$elemMatch:{$eq:cid}}, IsAlive:true}, "Invitees", (err) => {
+        let meeting = await Meeting.findOne({_id:mid, Invitees:{$elemMatch:{$InviteeId:cid}}, IsAlive:true}, "Invitees", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -276,8 +276,17 @@ const addToMeeting = async (req, res) => {
                     return;
                 }
             })
+
+            let contact = await Contact.findById(cid, (err) => {
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            })
             
-            thisMeeting.Invitees.splice(0,0,cid)
+            thisMeeting.Invitees.splice(0,0,{InviteeName:contact.FirstName, InviteeId:cid})
             thisMeeting.save((err)=>{
                 if (err) {
                     res.status(400).json({

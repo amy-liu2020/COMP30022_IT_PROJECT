@@ -223,8 +223,8 @@ const fuzzySearch = async (req, res) => {
                     { Title: reg },
                     { Location: reg },
                     { URL: reg },
+                    { Invitees: { $elemMatch : {InviteeName : reg }}},
                     { OtherInvitees: reg },
-                    { StartTime: reg },
                     { Notes: reg }
                 ]
             },
