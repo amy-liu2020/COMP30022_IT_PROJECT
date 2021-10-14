@@ -1,11 +1,10 @@
 import axios from "axios";
-// import { useEffect, useState } from "react/cjs/react.development";
 import { useState, useEffect } from "react";
+
 // Axios interceptors are functions that Axios calls for every request
 axios.interceptors.request.use(
     (config) => {
-        config.headers.authorization =
-            "Bearer " + localStorage.getItem("token"); // we put our token in the header
+        config.headers.authorization = localStorage.getItem("token"); // we put our token in the header
         return config;
     },
     (error) => {
@@ -46,9 +45,14 @@ export async function loginUser(user) {
         console.log(data);
 
         // set token
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", "Bearer " + data.token);
 
         // create url for profile image
+        if (data.Photo) {
+            console.log(data.Photo);
+            localStorage.setItem("avatar", URL.createObjectURL(new Blob(data.Photo.data)));
+        }
+        
     }
 
     return data;
@@ -134,6 +138,63 @@ export async function DeleteTag(tag) {
         .post("/api/tag/deleteTag", tag)
         .then((res) => res.data)
         .catch((err) => errHandler(err));
+    return data;
+}
+
+// bin section ----------------------------------
+
+export function GetBinList(type) {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/bin/${type}`, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setData(res.data.binList);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [type]);
+
+    return { data, loading, error };
+}
+
+export async function DeleteBinItem(id) {
+    let data = await axios
+        .post(`/api/bin/delete/:id`, [])
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+
+    return data;
+}
+
+export async function RestoreBinItem(id) {
+    let data = await axios
+        .post(`/api/bin/restore/:id`, [])
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+
+    return data;
+}
+
+export async function ClearBinItem() {
+    let data = await axios
+        .post(`/api/tag/clear`, [])
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+
     return data;
 }
 
