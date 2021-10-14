@@ -32,7 +32,11 @@ const MeetingSchema = new mongoose.Schema({
         TagName:String,
         TagId:mongoose.Schema.Types.ObjectId
     }],
-    Invitees:[mongoose.Schema.Types.ObjectId],
+    Invitees:[{
+        _id:false,
+        InviteeName:String,
+        InviteeId:mongoose.Schema.Types.ObjectId
+    }],
     OtherInvitees:String,
     Attachment:[Buffer]
 }, {versionKey:false});
