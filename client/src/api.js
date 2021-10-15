@@ -354,11 +354,11 @@ export function GetMeetings() {
         axios
             .get(`/api/meeting`, {
                 cancelToken: source.token,
-                params: { _limit: 5 },
+                params: { _limit: 5 }
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setMeetings(res.data);
+                res.data && setMeetings(res.data.meetings);
                 console.log(res);
             })
             .catch((err) => {
@@ -402,7 +402,7 @@ export function CreateMeeting(meeting) {
 }
 
 export function EditMeeting(meeting) {
-    //const [data, setData] = useState([]);
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -412,11 +412,11 @@ export function EditMeeting(meeting) {
             .patch(`/api/meeting/${meeting.id}`, meeting, {
                 cancelToken: source.token,
             })
-            // .then((res) => {
-            //     setLoading(false);
-            //     res.data && setData(res.data);
-            //     console.log(res);
-            // })
+            .then((res) => {
+                setLoading(false);
+                res.data && setData(res.data);
+                console.log(res);
+            })
             .catch((err) => {
                 setLoading(false);
                 errHandler(err);

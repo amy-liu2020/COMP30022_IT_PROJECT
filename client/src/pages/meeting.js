@@ -19,48 +19,22 @@ import meetings from "../json/MeetingList.json";
 import { useForm } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import Tag from "../common/tag";
-// import { useEffect, useState } from "react/cjs/react.development";
 import { useState, useEffect } from "react";
-const List = () => {
-    return <Table tab="meeting" data={meetings} option="delete" />;
+
+const List = ({ mode }) => {
+    const { meetings, loading, error } = GetMeetings();
+
+    if (loading) {
+        return <p>{loading}</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+
+    return <Table tab="meeting" data={meetings} option={mode} />;
 };
 
-// const Detail = () => {
-//     let history = useHistory();
-//     let {meetingID} = useParams();
-//     const [meeting, setMeeting] = useState([]);
-
-//     // fetch meeting from data
-//     useEffect(() => {
-//         setMeeting(meetings[meetingID]);
-//         // console.log(meetings[meetingID]);
-//     }, [meetingID])
-
-//     return (
-//         <div className="content">
-//             <table className="meeting-list">
-//                 <thead className="meeting-list-head">
-//                     <th>Meeting Name</th>
-//                     <th>Location</th>
-//                     <th>Date</th>
-//                     <th>Invitees</th>
-//                 </thead>
-//                 {
-//                     meetings.length ?
-//                     meetings.map((meeting) =>
-//                     <tr className="meeting-list-record" onClick={() => {history.push(`/meeting/${meeting.id}`)}}>
-//                         <td>{meeting.name}</td>
-//                         <td>{meeting.location}</td>
-//                         <td>{meeting.date}</td>
-//                         <td>{meeting.invitees}</td>
-//                     </tr>
-//                     ) : <p>no meeting</p>
-//                 }
-
-//             </table>
-//         </div>
-//     )
-// }
 
 const Detail = () => {
     let history = useHistory();
@@ -215,7 +189,7 @@ const Edit = () => {
                 </div>
 
                 <div class="meetingForm-Info">
-                    {/* <div class="meetingForm-record">
+                    <div class="meetingForm-record">
                         <label>Date: </label>
                         <input
                             type="date"
@@ -243,7 +217,7 @@ const Edit = () => {
                                 Date(meetings[meetingID].Date) + meetings[meetingID].EndTime.$date.slice(0, 10)
                             ).toISOString()}
                         />
-                    </div> */}
+                    </div>
 
                     <div class="meetingForm-record">
                         <label>Repeat: </label>
@@ -325,56 +299,3 @@ export const Meeting = () => {
 };
 
 export default Meeting;
-
-// // sample meetings data
-// const meetings = [
-//     {
-//         id: 1,
-//         name: "COMP30022 Lecture",
-//         location: "Zoom",
-//         date: "20-09-2021",
-//         invitees: "John Doe, Jane Doe",
-//     },
-//     {
-//         id: 2,
-//         name: "COMP30019 Lecture",
-//         location: "Sydney Myer G01",
-//         date: "22-09-2021",
-//         invitees: "Tony Gilbert, Ivy Wong, Chris Collins",
-//     }
-// ]
-
-// // if meetingID is specified, return single meeting with requested id.
-// // Otherwise, return all meetings
-// const getOneMeeting = (meetingID) => {
-//     return meetings.find(({ id }) => id == meetingID);
-// }
-
-// const getAllMeeting = () => {
-//     return meetings;
-// }
-
-// const Meeting = () => {
-//     let { path } = useRouteMatch();
-
-//     return (
-//         <div className="three-part-layout">
-//             <NavigationBar />
-//             <SideMenu tab="meeting"/>
-//             <Switch>
-//                 <Route path={`${path}/edit/:id`}>
-//                     <p>edit</p>
-//                 </Route>
-//                 <Route path={`${path}/create`}>
-//                     <p>create</p>
-//                 </Route>
-//                 <Route path={`${path}/:id`}>
-//                     <p>detail</p>
-//                 </Route>
-//                 <Route exact path={path}>
-//                     <p>list</p>
-//                 </Route>
-//             </Switch>
-//         </div>
-//     );
-// };

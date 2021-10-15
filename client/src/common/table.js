@@ -58,7 +58,7 @@ const Table = ({ tab, data, option }) => {
                   },
                   {
                       Header: "Date",
-                      accessor: (row) => row.StartTime.$date.slice(0, 10),
+                      accessor: (row) => new Date(Date(row.StartTime)).toLocaleDateString(),
                   },
               ]
     );
