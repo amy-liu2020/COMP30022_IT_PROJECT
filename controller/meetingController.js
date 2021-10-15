@@ -3,6 +3,7 @@ const Meeting = require("../models/meeting");
 const Tag = require("../models/tag")
 
 const fs = require('fs');
+const mongoose = require("mongoose")
 const getFullMeeting = async (req, res) => {
     try {
         let uid = req.token.userId
@@ -90,11 +91,21 @@ const meetingCreate = async (req, res) => {
         Notes,
         NotesKeyWords,
         Attachment,
-        Invitees,
+        InviteeIds,
         Tags
     } = req.body
 
     let uid = req.token.userId
+
+    var Invitees = [{
+        InviteeName:String,
+        InviteeId:mongoose.Schema.Types.ObjectId
+    }]
+    
+    InviteeIds.forEach(async (iid) => {
+        let InviteeName = await Meeting.findById(iid).lean().InviteeName;
+        Invitees.push({InviteeName:InviteeName, InviteeId:iid})
+    })
 
     const meeting = new Meeting({
         AccountID: uid,
@@ -140,10 +151,21 @@ const meetingEdit = async (req, res) => {
             Notes,
             NotesKeyWords,
             Attachment,
-            Invitees,
+            InviteeIds,
             Tags
         } = req.body
         let MeetingId = req.params.id;
+
+        var Invitees = [{
+            InviteeName:String,
+            InviteeId:mongoose.Schema.Types.ObjectId
+        }]
+
+        InviteeIds.forEach(async (iid) => {
+            let InviteeName = await Meeting.findById(iid).lean().InviteeName;
+            Invitees.push({InviteeName:InviteeName, InviteeId:iid})
+        })
+
         Meeting.findByIdAndUpdate(MeetingId, {
             Title: Title,
             URL: URL,
