@@ -13,6 +13,10 @@ const BinSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         required:true
     },
+    Name:{
+        type:String,
+        required:true
+    },
     Type:{
         type:String,
         enum:["C","M"],

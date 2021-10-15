@@ -39,11 +39,6 @@ contactRouter.get("/fuzzySearch/:keyword", (req,res) => {
     contactController.fuzzySearch(req,res)
 });
 
-// present the bin page
-contactRouter.get("/bin", (req,res) => {
-    contactController.getDeletedItems(req,res)
-});
-
 // assign contact to meeting as invitees
 contactRouter.post("/addTo/:id", ensureAuthorized, (req,res) => {
     contactController.addToMeeting(req,res)

@@ -260,9 +260,41 @@ const autoDeleteItems = async (req, res) => {
     })
 }
 
+const fuzzySearch = async (req, res) => {
+    let keyword = req.params.keyword
+    let uid = req.token.userId
+    let reg = new RegExp(keyword, "i")
+    const searchResult = await Meeting.find({
+        $and: [
+            {
+                Name:reg
+            },
+            { IsActive: true, AccountID: uid }
+        ]
+    }, (err) => {
+        if (err) {
+                res.status(400).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }
+    }).lean()
+    res.status(200).json({
+        msg: "Search bin successfully",
+        searchResult: searchResult
+    });
+};
 
 
-module.exports = {getBinList, getBinItem, deleteBinItem, restoreBinItem, clearAll, autoDeleteItems}
+module.exports = {
+    getBinList, 
+    getBinItem, 
+    deleteBinItem, 
+    restoreBinItem, 
+    clearAll, 
+    autoDeleteItems, 
+    fuzzySearch
+}
 
 
 
