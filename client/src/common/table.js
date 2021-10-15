@@ -108,7 +108,7 @@ const Table = ({ tab, data, option }) => {
         }
     );
 
-    const [selectedContacts, setSelectedContacts] = useState([]);
+    const [selected, setSelected] = useState([]);
     const [showSelect, setShowSelect] = useState(false);
     let history = useHistory();
 
@@ -123,11 +123,11 @@ const Table = ({ tab, data, option }) => {
         } else {
             console.log("export");
         }
-        console.log(selectedContacts);
+        console.log(selected);
     };
 
     useEffect(() => {
-        setSelectedContacts(selectedFlatRows.map((d) => data[d.index]._id));
+        setSelected(selectedFlatRows.map((d) => data[d.index]._id));
     }, [data, selectedFlatRows]);
 
     // Render the UI for your table

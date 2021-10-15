@@ -431,19 +431,56 @@ export function EditMeeting(meeting) {
     return { loading, error };
 }
 
-export function DeleteOneMeeting(id) {
-    const [data, setData] = useState([]);
+// export function DeleteOneMeeting(id) {
+//     const [data, setData] = useState([]);
+//     const [loading, setLoading] = useState("loading...");
+//     const [error, setError] = useState(null);
+
+//     useEffect(() => {
+//         const source = axios.CancelToken.source();
+//         axios
+//             .delete(`/api/meeting/${id}`, { cancelToken: source.token })
+//             .then((res) => {
+//                 setLoading(false);
+//                 res.data && setData(res.data);
+//                 console.log(res);
+//             })
+//             .catch((err) => {
+//                 setLoading(false);
+//                 errHandler(err);
+//                 setError("An error occured.");
+//             });
+//         return () => {
+//             source.cancel();
+//         };
+//     }, [id]);
+
+//     return { data, loading, error };
+// }
+
+export async function DeleteMeeting(id) {
+    const data = await axios
+        .delete(`/api/meeting/delete/${id}`)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+
+export function GetMeetingsByTag(tagName) {
+    const [meetings, setMeetings] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .delete(`/api/meeting/${id}`, { cancelToken: source.token })
+            .get(`/api/meeting/getByTag/${tagName}`, {
+                cancelToken: source.token,
+            })
             .then((res) => {
                 setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
+                res.data && setMeetings(res.data.meetings);
             })
             .catch((err) => {
                 setLoading(false);
@@ -453,10 +490,11 @@ export function DeleteOneMeeting(id) {
         return () => {
             source.cancel();
         };
-    }, [id]);
+    }, [tagName]);
 
-    return { data, loading, error };
+    return { meetings, loading, error };
 }
+
 
 function errHandler(error) {
     if (error.response) {
@@ -513,6 +551,35 @@ export function GetRegister(register) {
         const source = axios.CancelToken.source();
         axios
             .get(`/api/register`, { cancelToken: source.token })
+            .then((res) => {
+                setLoading(false);
+                res.data && setData(res.data);
+                console.log(res);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, []);
+
+    return { data, loading, error };
+}
+
+
+// setting
+export function ChangeColor(color) {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .patch(`/api/setting`, color, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
                 res.data && setData(res.data);

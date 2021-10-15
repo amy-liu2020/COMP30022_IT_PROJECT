@@ -10,7 +10,8 @@ import {
     GetOneMeeting,
     CreateMeeting,
     EditMeeting,
-    DeleteOneMeeting,
+    DeleteMeeting,
+    GetMeetingsByTag
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import NavigationBar from "../common/nav";
@@ -19,7 +20,7 @@ import meetings from "../json/MeetingList.json";
 import { useForm } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import Tag from "../common/tag";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 const List = ({ mode }) => {
     const { meetings, loading, error } = GetMeetings();
@@ -35,17 +36,102 @@ const List = ({ mode }) => {
     return <Table tab="meeting" data={meetings} option={mode} />;
 };
 
+const ListWithTag = () => {
+    let { tagName } = useParams();
+    const { meetings, loading, error } = GetMeetingsByTag(tagName);
+
+    if (loading) {
+        return <p>{loading}</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+
+    return <Table tab="meeting" data={meetings} option={"delete"} />;
+};
 
 const Detail = () => {
     let history = useHistory();
     let { meetingID } = useParams();
-    const [meeting, setMeeting] = useState([]);
+    const { meeting, loading, error } = GetOneMeeting(meetingID);
+    const [tags, setTags] = useState(
+        useMemo(
+            () =>
+                meeting.Tags &&
+                meeting.Tags.map((tag) => ({ value: tag, label: tag })),
+            [meeting]
+        )
+    );
 
-    // fetch meeting from data
+
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { isDirty, isSubmitting },
+    } = useForm({
+        defaultValues: useMemo(() => meeting, [meeting]),
+    });
+    const [inputDisable, setInputDisable] = useState(true);
+
+    const selectedTagsHandler = (options) => {
+        setTags(options.map((opt) => opt.label));
+    };
+
+    const onSubmitHandler = (data) => {
+        // check if there is any change
+        if (isDirty) {
+            // update tags
+            data.Tags = tags;
+            console.log(data);
+
+            // send data to server
+            EditMeeting(data, meetingID).then((data) => {
+                if (data === undefined) {
+                    alert("error");
+                } else {
+                    alert(data.msg);
+                    window.location.reload(); // refresh page
+                }
+            });
+        }
+
+        // switch to view mode
+        setInputDisable(true);
+    };
+
+    const onCancelHandler = () => {
+        reset(meeting);
+        setInputDisable(true);
+    };
+
+    const onDeleteHandler = () => {
+        // send request to server
+        DeleteMeeting(meetingID).then((res) => {
+            console.log(res);
+        });
+
+        // redirect to list page
+        history.push("/meeting");
+    };
+
     useEffect(() => {
-        setMeeting(meetings.filter((meeting) => meeting._id == meetingID)[0]);
-        // console.log(meetings[meetingID]);
-    }, [meetingID]);
+        reset(meeting);
+    }, [meeting, reset]);
+
+    if (loading || isSubmitting) {
+        return <p>loading...</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+    // // fetch meeting from data
+    // useEffect(() => {
+    //     setMeeting(meetings.filter((meeting) => meeting._id == meetingID)[0]);
+    //     // console.log(meetings[meetingID]);
+    // }, [meetingID]);
 
     return (
         <div className="meeting">
@@ -285,13 +371,13 @@ export const Meeting = () => {
                     <Edit />
                 </Route>
                 <Route path={`${path}/tag/:tagName`}>
-                    <List />
+                    <ListWithTag />
                 </Route>
                 <Route path={`${path}/:meetingID`}>
                     <Detail />
                 </Route>
                 <Route exact path={path}>
-                    <List />
+                    <List mode="delete"/>
                 </Route>
             </Switch>
         </div>

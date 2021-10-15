@@ -4,6 +4,7 @@ import { Route, useRouteMatch, useParams } from "react-router-dom";
 import { useState} from "react";
 import { useForm } from "react-hook-form";
 import users from "../json/UserList.json";
+import { ChangeColor } from "../api";
 
 const SettingP = () => {
     let { userID } = useParams();
@@ -17,40 +18,47 @@ const SettingP = () => {
         defaultValues: users[userID],
     });
 
+    const onSubmitHandler = (data) => {
+        console.log(data);
+        ChangeColor(data);
+    }
+
     return (
         <div className="setting">
-            <div className="setting-form">SETTING</div>
-            <div className="setting-form">change colour theme</div>
-            <button
-                className="detail-edit"
-                type="button"
-                onClick={() => setTheme(user.Color)}
-            >
-                cancel
-            </button>
-            <button className="detail-edit" type="submit">
-                save
-            </button>
-            <div
-                class="box blue"
-                onClick={() => setTheme("blue")}
-                {...register("Color")}
-            ></div>
-            <div
-                class="box red"
-                onClick={() => setTheme("red")}
-                {...register("Color")}
-            ></div>
-            <div
-                class="box green"
-                onClick={() => setTheme("green")}
-                {...register("Color")}
-            ></div>
-            <div
-                class="box dark"
-                onClick={() => setTheme("dark")}
-                {...register("Color")}
-            ></div>
+            <div className="setting-form" onSubmit={handleSubmit(onSubmitHandler)}>
+                SETTING
+                <div className="setting-form">change colour theme</div>
+                <button
+                    className="setting-button"
+                    type="button"
+                    onClick={() => setTheme(user.Color)}
+                >
+                    cancel
+                </button>
+                <button className="setting-button" type="submit">
+                    save
+                </button>
+                <div
+                    class="box blue"
+                    onClick={() => setTheme("blue")}
+                    {...register("Color")}
+                ></div>
+                <div
+                    class="box red"
+                    onClick={() => setTheme("red")}
+                    {...register("Color")}
+                ></div>
+                <div
+                    class="box green"
+                    onClick={() => setTheme("green")}
+                    {...register("Color")}
+                ></div>
+                <div
+                    class="box dark"
+                    onClick={() => setTheme("dark")}
+                    {...register("Color")}
+                ></div>
+            </div>
         </div>
     );
 };
@@ -92,7 +100,7 @@ const setTheme = (color) => {
             "#FFF8F9"
         );
     } else if (color === "blue") {
-        document.documentElement.style.setProperty("--nav-bg-color", "#D0EBEE");
+        document.documentElement.style.setProperty("--nav-bg-color", "#63D5DA");
         document.documentElement.style.setProperty(
             "--sideM-bg-color",
             "#63ADB8"
