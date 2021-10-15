@@ -62,7 +62,7 @@ const getSingleContact = async (req, res) => {
                     return;
                 }
             }).lean();
-        const relatedMeeting = await Meeting.find({ Invitees: { $elemMatch: { $InviteeId: cid } } }, "Title StartTime", (err) => {
+        const relatedMeeting = await Meeting.find({ Invitees: { $elemMatch: { InviteeId: cid } } }, "Title StartTime", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
