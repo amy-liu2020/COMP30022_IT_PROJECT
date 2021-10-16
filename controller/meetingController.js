@@ -97,55 +97,69 @@ const meetingCreate = async (req, res) => {
 
     let uid = req.token.userId
 
-    var Invitees = [{
-        InviteeName:String,
-        InviteeId:mongoose.Schema.Types.ObjectId
-    }]
-    
-    InviteeIds.forEach(async (iid) => {
-        let InviteeName = await Meeting.findById(iid).lean().InviteeName;
-        Invitees.push({InviteeName:InviteeName, InviteeId:iid})
+
+    const getInvitees = async () => {
+        return Promise.all(InviteeIds.map(async iid => {
+            let Invitee = await Contact.findById(iid).lean()
+            var InviteeName = Invitee.InviteeName
+
+            let result = {}
+            result["InviteeName"] = InviteeName
+            result["InviteeId"] = iid
+
+            return Promise.resolve(result)
+
+        }))
+    }
+
+    getInvitees().then(async (Invitees) => {
+        const getTags = async () => {
+            return Promise.all(TagIds.map(async tid => {
+                let aTag = await Tag.findById(tid).lean()
+                var TagName = aTag.TagName
+
+                let result = {}
+                result["TagName"] = TagName
+                result["TagId"] = tid
+
+                return Promise.resolve(result)
+
+            }))
+        }
+
+        getTags().then(async (Tags) => {
+            const meeting = new Meeting({
+                AccountID: uid,
+                Title: Title,
+                URL: URL,
+                Frequency: Frequency,
+                Location: Location,
+                StartTime: StartTime,
+                EndTime: EndTime,
+                OtherInvitees: OtherInvitees,
+                IsActive: true,
+                Notes: Notes,
+                NotesKeyWords: NotesKeyWords,
+                Invitees: Invitees,
+                Attachment: Attachment,
+                Tags: Tags
+            });
+
+            meeting.save((err) => {
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                }
+                else {
+                    res.status(200).json({
+                        msg: "Create a new meeting successfully"
+                    })
+                }
+            });
+        })
     })
 
-    var Tags = [{
-        TagName:String,
-        TagId:mongoose.Schema.Types.ObjectId
-    }]
-
-    TagIds.forEach(async (tid) => {
-        let TagName = await Meeting.findById(tid).lean().TagName;
-        Tags.push({TagName:TagName, TagId:tid})
-    })
-
-    const meeting = new Meeting({
-        AccountID: uid,
-        Title: Title,
-        URL: URL,
-        Frequency: Frequency,
-        Location: Location,
-        StartTime: StartTime,
-        EndTime: EndTime,
-        OtherInvitees: OtherInvitees,
-        IsActive: true,
-        Notes: Notes,
-        NotesKeyWords: NotesKeyWords,
-        Invitees: Invitees,
-        Attachment: Attachment,
-        Tags: Tags
-    });
-
-    meeting.save((err) => {
-        if (err) {
-            res.status(400).json({
-                msg: "Error occurred: " + err
-            })
-        }
-        else {
-            res.status(200).json({
-                msg: "Create a new meeting successfully"
-            })
-        }
-    });
 };
 
 const meetingEdit = async (req, res) => {
@@ -166,53 +180,64 @@ const meetingEdit = async (req, res) => {
         } = req.body
         let MeetingId = req.params.id;
 
-        var Invitees = [{
-            InviteeName:String,
-            InviteeId:mongoose.Schema.Types.ObjectId
-        }]
+        const getInvitees = async () => {
+            return Promise.all(InviteeIds.map(async iid => {
+                let Invitee = await Contact.findById(iid).lean()
+                var InviteeName = Invitee.InviteeName
 
-        InviteeIds.forEach(async (iid) => {
-            let InviteeName = await Meeting.findById(iid).lean().InviteeName;
-            Invitees.push({InviteeName:InviteeName, InviteeId:iid})
-        })
+                let result = {}
+                result["InviteeName"] = InviteeName
+                result["InviteeId"] = iid
 
-        var Tags = [{
-            TagName:String,
-            TagId:mongoose.Schema.Types.ObjectId
-        }]
-    
-        TagIds.forEach(async (tid) => {
-            let TagName = await Meeting.findById(tid).lean().TagName;
-            Tags.push({TagName:TagName, TagId:tid})
-        })
+                return Promise.resolve(result)
 
-        Meeting.findByIdAndUpdate(MeetingId, {
-            Title: Title,
-            URL: URL,
-            Frequency: Frequency,
-            Location: Location,
-            StartTime: StartTime,
-            EndTime: EndTime,
-            OtherInvitees: OtherInvitees,
-            Notes: Notes,
-            NotesKeyWords: NotesKeyWords,
-            Invitees: Invitees,
-            Attachment: Attachment,
-            Tags: Tags
-        }, (err) => {
-            if (err) {
-                res.status(400).json({
-                    msg: "Error occurred: " + err
-                })
-                return;
+            }))
+        }
+
+        getInvitees().then(async (Invitees) => {
+            const getTags = async () => {
+                return Promise.all(TagIds.map(async tid => {
+                    let aTag = await Tag.findById(tid).lean()
+                    var TagName = aTag.TagName
+
+                    let result = {}
+                    result["TagName"] = TagName
+                    result["TagId"] = tid
+
+                    return Promise.resolve(result)
+
+                }))
             }
-        })
-        const meeting = await Meeting.findById(MeetingId).lean();
-        res.status(200).json({
-            msg: "Edit meeting successfully",
-            meeting: meeting
-        })
 
+            getTags().then(async (Tags) => {
+                Meeting.findByIdAndUpdate(MeetingId, {
+                    Title: Title,
+                    URL: URL,
+                    Frequency: Frequency,
+                    Location: Location,
+                    StartTime: StartTime,
+                    EndTime: EndTime,
+                    OtherInvitees: OtherInvitees,
+                    Notes: Notes,
+                    NotesKeyWords: NotesKeyWords,
+                    Invitees: Invitees,
+                    Attachment: Attachment,
+                    Tags: Tags
+                }, (err) => {
+                    if (err) {
+                        res.status(400).json({
+                            msg: "Error occurred: " + err
+                        })
+                        return;
+                    }
+                })
+                const meeting = await Meeting.findById(MeetingId).lean();
+                res.status(200).json({
+                    msg: "Edit meeting successfully",
+                    meeting: meeting
+                })
+            })
+        })
 
     } catch (err) {
         console.log(err)
@@ -266,7 +291,7 @@ const fuzzySearch = async (req, res) => {
                     { Title: reg },
                     { Location: reg },
                     { URL: reg },
-                    { Invitees: { $elemMatch : {InviteeName : reg }}},
+                    { Invitees: { $elemMatch: { InviteeName: reg } } },
                     { OtherInvitees: reg },
                     { Notes: reg }
                 ]
@@ -319,12 +344,12 @@ const uploadAttachment = async (req, res) => {
 }
 
 const assignTag = async (req, res) => {
-    let {tagName} = req.body
+    let { tagName } = req.body
     let uid = req.token.userId
     let cid = req.params.id
 
-    
-    let tag = await Tag.findOne({TagName:tagName, TagOf:"M", AccountID:uid}, "TagName", (err) => {
+
+    let tag = await Tag.findOne({ TagName: tagName, TagOf: "M", AccountID: uid }, "TagName", (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
@@ -333,7 +358,7 @@ const assignTag = async (req, res) => {
         }
     }).lean()
 
-    Contact.findByIdAndUpdate(cid, {$push:{Tags:{TagName:tag.TagName, TagId:tag._id}}}, (err) => {
+    Contact.findByIdAndUpdate(cid, { $push: { Tags: { TagName: tag.TagName, TagId: tag._id } } }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
@@ -342,7 +367,7 @@ const assignTag = async (req, res) => {
         }
     })
 
-    
+
     res.status(200).json({
         msg: "Add tag to this contact successfully"
     })
