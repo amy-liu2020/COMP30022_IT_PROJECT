@@ -2,6 +2,8 @@ const Contact = require("../models/contact");
 const Bin = require("../models/bin");
 const Meeting = require("../models/meeting");
 const Tag = require("../models/tag")
+const mongoose = require("mongoose")
+
 
 const getFullContact = async (req, res) => {
     try {
@@ -96,9 +98,20 @@ const contactEdit = async (req, res) => {
             Notes,
             DOB,
             Relationship,
-            Tags
+            TagIds
         } = req.body
         let ContactId = req.params.id;
+
+        var Tags = [{
+            TagName:String,
+            TagId:mongoose.Schema.Types.ObjectId
+        }]
+    
+        TagIds.forEach(async (tid) => {
+            let TagName = await Contact.findById(tid).lean().TagName;
+            Tags.push({TagName:TagName, TagId:tid})
+        })
+
         Contact.findByIdAndUpdate(ContactId,
             {
                 FirstName: FirstName,
@@ -147,10 +160,20 @@ const contactCreate = async (req, res) => {
         Notes,
         DOB,
         Relationship,
-        Tags
+        TagIds
     } = req.body
 
     let uid = req.token.userId
+
+    var Tags = [{
+        TagName:String,
+        TagId:mongoose.Schema.Types.ObjectId
+    }]
+
+    TagIds.forEach(async (tid) => {
+        let TagName = await Contact.findById(tid).lean().TagName;
+        Tags.push({TagName:TagName, TagId:tid})
+    })
 
     const contact = new Contact({
         AccountID: uid,
