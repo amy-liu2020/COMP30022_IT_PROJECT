@@ -103,13 +103,13 @@ const contactEdit = async (req, res) => {
         let ContactId = req.params.id;
 
         var Tags = [{
-            TagName:String,
-            TagId:mongoose.Schema.Types.ObjectId
+            TagName: String,
+            TagId: mongoose.Schema.Types.ObjectId
         }]
-    
+
         TagIds.forEach(async (tid) => {
             let TagName = await Contact.findById(tid).lean().TagName;
-            Tags.push({TagName:TagName, TagId:tid})
+            Tags.push({ TagName: TagName, TagId: tid })
         })
 
         Contact.findByIdAndUpdate(ContactId,
@@ -165,44 +165,60 @@ const contactCreate = async (req, res) => {
 
     let uid = req.token.userId
 
-    var Tags = [{
-        TagName:String,
-        TagId:mongoose.Schema.Types.ObjectId
-    }]
+    const functionThatReturnsAPromise = async tid => {
+        let aTag = await Tag.findById(tid).lean()
+        var TagName = aTag.TagName
 
-    TagIds.forEach(async (tid) => {
-        let TagName = await Contact.findById(tid).lean().TagName;
-        Tags.push({TagName:TagName, TagId:tid})
+        let result = {}
+        result["TagName"] = TagName
+        result["TagId"] = tid
+
+        return Promise.resolve(result)
+
+    }
+
+    const doSomethingAsync = async item => {
+        return functionThatReturnsAPromise(item)
+    }
+
+    const getData = async () => {
+        return Promise.all(TagIds.map(tid => doSomethingAsync(tid)))
+    }
+
+    getData().then(Tags => {
+        console.log(Tags)
+        const contact = new Contact({
+            AccountID: uid,
+            IsActive: true,
+            FirstName: FirstName,
+            LastName: LastName,
+            Company: Company,
+            Email: Email,
+            Address: Address,
+            JobTitle: JobTitle,
+            Notes: Notes,
+            MobileNo: MobileNo,
+            HomeNo: HomeNo,
+            DOB: DOB,
+            Relationship: Relationship,
+            Tags: Tags
+        });
+        contact.save((err) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+            }
+            else {
+                res.status(200).json({
+                    msg: "Create a new contact successfully",
+                    contact: contact
+                });
+            }
+        });
     })
 
-    const contact = new Contact({
-        AccountID: uid,
-        IsActive: true,
-        FirstName: FirstName,
-        LastName: LastName,
-        Company: Company,
-        Email: Email,
-        Address: Address,
-        JobTitle: JobTitle,
-        Notes: Notes,
-        MobileNo: MobileNo,
-        HomeNo: HomeNo,
-        DOB: DOB,
-        Relationship: Relationship,
-        Tags: Tags
-    });
-    contact.save((err) => {
-        if (err) {
-            res.status(400).json({
-                msg: "Error occurred: " + err
-            })
-        }
-        else {
-            res.status(200).json({
-                msg: "Create a new contact successfully"
-            });
-        }
-    });
+
 }
 
 const contactDelete = async (req, res) => {
@@ -281,7 +297,7 @@ const addToMeeting = async (req, res) => {
     let cid = req.params.id
 
     mids.forEach(async (mid) => {
-        let meeting = await Meeting.findOne({_id:mid, Invitees:{$elemMatch:{$InviteeId:cid}}, IsAlive:true}, "Invitees", (err) => {
+        let meeting = await Meeting.findOne({ _id: mid, Invitees: { $elemMatch: { $InviteeId: cid } }, IsAlive: true }, "Invitees", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -289,8 +305,8 @@ const addToMeeting = async (req, res) => {
                 return;
             }
         }).lean()
-    
-        if(!meeting){
+
+        if (!meeting) {
             let thisMeeting = await Meeting.findById(mid, (err) => {
                 if (err) {
                     res.status(400).json({
@@ -308,9 +324,9 @@ const addToMeeting = async (req, res) => {
                     return;
                 }
             })
-            
-            thisMeeting.Invitees.splice(0,0,{InviteeName:contact.FirstName, InviteeId:cid})
-            thisMeeting.save((err)=>{
+
+            thisMeeting.Invitees.splice(0, 0, { InviteeName: contact.FirstName, InviteeId: cid })
+            thisMeeting.save((err) => {
                 if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
@@ -327,12 +343,12 @@ const addToMeeting = async (req, res) => {
 }
 
 const assignTag = async (req, res) => {
-    let {tagName} = req.body
+    let { tagName } = req.body
     let uid = req.token.userId
     let cid = req.params.id
 
-    
-    let tag = await Tag.findOne({TagName:tagName, TagOf:"C", AccountID:uid}, "TagName", (err) => {
+
+    let tag = await Tag.findOne({ TagName: tagName, TagOf: "C", AccountID: uid }, "TagName", (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
@@ -341,7 +357,7 @@ const assignTag = async (req, res) => {
         }
     }).lean()
 
-    Contact.findByIdAndUpdate(cid, {$push:{Tags:{TagName:tag.TagName, TagId:tag._id}}}, (err) => {
+    Contact.findByIdAndUpdate(cid, { $push: { Tags: { TagName: tag.TagName, TagId: tag._id } } }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
@@ -350,20 +366,20 @@ const assignTag = async (req, res) => {
         }
     })
 
-    
+
     res.status(200).json({
         msg: "Add tag to this contact successfully"
     })
 }
 
-module.exports = { 
-    getFullContact, 
-    getContactsByTag, 
-    getSingleContact, 
-    contactEdit, 
-    contactCreate, 
-    contactDelete, 
-    fuzzySearch, 
-    addToMeeting, 
+module.exports = {
+    getFullContact,
+    getContactsByTag,
+    getSingleContact,
+    contactEdit,
+    contactCreate,
+    contactDelete,
+    fuzzySearch,
+    addToMeeting,
     assignTag
 }
