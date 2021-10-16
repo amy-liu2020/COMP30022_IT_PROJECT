@@ -73,7 +73,7 @@ const doLogin = (req, res) => {
 
 const getQuestionList = async (req, res) => {
     try {
-        let questions = await SecurityQuestion.findOne((err) => {
+        let questions = await SecurityQuestion.find((err) => {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
@@ -191,6 +191,29 @@ const getProfile = async (req, res) => {
         })
     }
 };
+
+const getPhoto = async (req, res) => {
+    try {
+        let uid = req.token.userId
+        var thisAccount = await User.findOne({ UserID: uid }, (err) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        });
+        res.status(200).json({
+            msg: "Get user photo successfully",
+            photo: thisAccount.photo
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
+    }
+}
 
 const forgetPassword = async (req, res) => {
     try {
@@ -341,6 +364,7 @@ module.exports = {
     userDoRegister,
     userPreferredColor,
     getProfile,
+    getPhoto,
     forgetPassword,
     changeForgottenPassword,
     changePassword,

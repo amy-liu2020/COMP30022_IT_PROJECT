@@ -35,7 +35,7 @@ contactRouter.post("/delete/:id", ensureAuthorized, (req,res)=>{
 })
 
 // present the searching results 
-contactRouter.get("/fuzzySearch/:keyword", (req,res) => {
+contactRouter.get("/fuzzySearch/:keyword", ensureAuthorized, (req,res) => {
     contactController.fuzzySearch(req,res)
 });
 
