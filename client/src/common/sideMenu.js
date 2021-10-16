@@ -211,11 +211,11 @@ const SideMenu = ({ tagOf }) => {
                     ) : (
                         tags.map((tag, index) => (
                             <Chip
-                                label={tag.label}
+                                label={tag.TagName}
                                 onClick={() =>
-                                    history.push(`/${tab}/tag/${tag.value}`)
+                                    history.push(`/${tab}/tag/${tag.TagName}`)
                                 }
-                                onDelete={() => onDeleteTagHandler(tag.label)}
+                                onDelete={() => onDeleteTagHandler(tag.TagName)}
                                 sx={{
                                     "&": {
                                         textAlign: "left",

@@ -104,15 +104,7 @@ export function GetTags(tagOf) {
             .then((res) => {
                 setLoading(false);
                 console.log(res);
-                if (res.data) {
-                    // re-group tags
-                    setTags(
-                        res.data.tags.map((tag) => ({
-                            value: tag.TagName,
-                            label: tag.TagName,
-                        }))
-                    );
-                }
+                res.data && setTags(res.data.tags);
             })
             .catch((err) => {
                 setLoading(false);
@@ -305,7 +297,7 @@ export function GetContactsBySearch(keyword) {
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setContacts(res.data.contacts);
+                res.data && setContacts(res.data.searchResult);
                 console.log(res.data);
             })
             .catch((err) => {
@@ -458,7 +450,6 @@ export async function DeleteMeeting(id) {
     return data;
 }
 
-
 function errHandler(error) {
     if (error.response) {
         // The request was made and the server responded with a status code
@@ -531,7 +522,6 @@ export function GetRegister(register) {
 
     return { data, loading, error };
 }
-
 
 // setting
 export function ChangeColor(color) {

@@ -24,6 +24,7 @@ import NavigationBar from "../common/nav";
 import Tag from "../common/tag";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
+import { MultipleSelectChip } from "../common/tag";
 
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -34,7 +35,6 @@ import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Avatar } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -220,13 +220,7 @@ const ContactSearch = () => {
         return <p>{error}</p>;
     }
     return (
-        <>
-            {contacts.length ? (
-                <p>{contacts.length} record(s) found.</p>
-            ) : (
-                <p>no record found.</p>
-            )}
-        </>
+        <BasicTable contacts={contacts} />
     );
 };
 
@@ -235,33 +229,19 @@ const ContactDetail = () => {
     let { contactId } = useParams();
     let history = useHistory();
     const { contact, loading, error } = GetOneContact(contactId);
-    const [tags, setTags] = useState(
-        useMemo(
-            () =>
-                contact.Tags &&
-                contact.Tags.map((tag) => ({ value: tag, label: tag })),
-            [contact]
-        )
-    );
     const {
         register,
         reset,
+        control,
         handleSubmit,
         formState: { isDirty, isSubmitting },
-    } = useForm({
-        defaultValues: useMemo(() => contact, [contact]),
-    });
+    } = useForm();
     const [inputDisable, setInputDisable] = useState(true);
-
-    const selectedTagsHandler = (options) => {
-        setTags(options.map((opt) => opt.label));
-    };
 
     const onSubmitHandler = (data) => {
         // check if there is any change
         if (isDirty) {
-            // update tags
-            // data.Tags = tags;
+
             console.log(data);
 
             // send data to server
@@ -294,9 +274,22 @@ const ContactDetail = () => {
         history.push("/contact");
     };
 
+    const customReset = (contact) => {
+        let defa = JSON.parse(JSON.stringify(contact)); // clone tags
+
+        if (defa.Tags) {
+            defa.Tags.map(opt => {
+                opt.value = opt.TagName;
+                opt.label = opt.TagName;
+            })
+        }
+
+        reset(defa);
+    }
+
     useEffect(() => {
-        reset(contact);
-    }, [contact, reset]);
+        customReset(contact);
+    }, [contact]);
 
     if (loading || isSubmitting) {
         return <p>loading...</p>;
@@ -367,9 +360,10 @@ const ContactDetail = () => {
                     {/* <Tag
                         tagOf="C"
                         isDisabled={inputDisable}
-                        defaultValue={tags}
+                        defaultValue={[]}
                         setSelectedTags={selectedTagsHandler}
                     /> */}
+                    <MultipleSelectChip tagOf="C" control={control}/>
                     <div className="form-record">
                         <label>Home: </label>
                         <input
@@ -464,6 +458,7 @@ const ContactCreate = () => {
     const {
         register,
         handleSubmit,
+        control,
         formState: { isDirty },
     } = useForm();
 
@@ -478,7 +473,7 @@ const ContactCreate = () => {
             // data.Tags = tags;
 
             // send data to server
-            console.log(tags);
+            console.log(data);
             CreateContact(data).then((res) => console.log(res));
         }
 
@@ -512,6 +507,7 @@ const ContactCreate = () => {
                         />
                     </div>
                     {/* <Tag tagOf="C" setSelectedTags={selectedTagsHandler} /> */}
+                    <MultipleSelectChip control={control} tagOf="C"/>
                     <div className="form-record">
                         <label>Home: </label>
                         <input type="tel" {...register("HomeNo")} />

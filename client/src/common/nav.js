@@ -6,6 +6,7 @@ import SearchBar from "./searchBar";
 import { Link, useHistory } from "react-router-dom";
 // import { useState } from "react/cjs/react.development";
 import { useState } from "react";
+import Stack from '@mui/material/Stack';
 
 // navigate user to selected tab
 const NavigationBar = () => {
@@ -44,5 +45,13 @@ const NavigationBar = () => {
         </div>
     );
 };
+
+const Nav = () => {
+    return (
+        <Stack>
+            
+        </Stack>
+    )
+}
 
 export default NavigationBar;

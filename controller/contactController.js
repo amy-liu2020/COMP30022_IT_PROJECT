@@ -253,7 +253,6 @@ const fuzzySearch = async (req, res) => {
     });
 };
 
-
 const addToMeeting = async (req, res) => {
     let mids = req.body.mids
     let cid = req.params.id
