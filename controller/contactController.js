@@ -185,7 +185,7 @@ const contactCreate = async (req, res) => {
 const contactDelete = async (req, res) => {
     let cid = req.params.id
     let uid = req.token.userId
-    Contact.findByIdAndUpdate(cid, { IsActive: false }, (err) => {
+    let contact = await Contact.findByIdAndUpdate(cid, { IsActive: false }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
@@ -198,6 +198,7 @@ const contactDelete = async (req, res) => {
         AccountID: uid,
         DeleteDate: new Date(),
         ID: cid,
+        Name: contact.FirstName,
         Type: "C"
     })
     deletedItem.save((err) => {

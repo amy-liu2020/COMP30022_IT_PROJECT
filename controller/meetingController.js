@@ -205,7 +205,7 @@ const meetingEdit = async (req, res) => {
 const meetingDelete = async (req, res) => {
     let mid = req.params.id
     let uid = req.token
-    Contact.findByIdAndUpdate(mid, { IsActive: false }, (err) => {
+    let meeting = await Meeting.findByIdAndUpdate(mid, { IsActive: false }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
@@ -218,6 +218,7 @@ const meetingDelete = async (req, res) => {
         AccountID: uid,
         DeleteDate: new Date(),
         ID: mid,
+        Name: meeting.Title,
         Type: "M"
     })
     deletedItem.save((err) => {
@@ -264,7 +265,7 @@ const fuzzySearch = async (req, res) => {
         }
     ).lean()
     res.status(200).json({
-        msg: "Search contact successfully",
+        msg: "Search meeting successfully",
         searchResult: searchResult
     });
 };

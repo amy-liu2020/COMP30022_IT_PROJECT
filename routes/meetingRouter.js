@@ -34,6 +34,7 @@ meetingRouter.post("/edit/:id", (req,res) =>
 meetingRouter.delete("/delete/:id", ensureAuthorized, (req,res) => 
     meetingController.meetingDelete(req,res)
 );
+
 // present the searching results 
 meetingRouter.get("/fuzzySearch/:keyword",ensureAuthorized, (req,res) =>
     meetingController.fuzzySearch(req,res)

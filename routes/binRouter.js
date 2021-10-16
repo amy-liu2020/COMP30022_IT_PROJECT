@@ -30,6 +30,10 @@ binRouter.post("/clear",ensureAuthorized, (req,res) => {
     binController.clearAll(req,res)
 });
 
+// present the searching results 
+binRouter.get("/fuzzySearch/:keyword",ensureAuthorized, (req,res) =>
+    binController.fuzzySearch(req,res)
+);
 
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
