@@ -4,7 +4,8 @@ import Logo from "./logo";
 import Avatar from "./avatar";
 import SearchBar from "./searchBar";
 import { Link, useHistory } from "react-router-dom";
-import { useState } from "react/cjs/react.development";
+// import { useState } from "react/cjs/react.development";
+import { useState } from "react";
 
 // navigate user to selected tab
 const NavigationBar = () => {
@@ -13,7 +14,7 @@ const NavigationBar = () => {
 
     return (
         <div className="nav">
-            <Logo width={70}/>
+            <Logo width={70} />
             <Link className="nav-tab" to="/contact">
                 contact
             </Link>

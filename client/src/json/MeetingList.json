@@ -1,7 +1,5 @@
 [{
-  "_id": {
-    "$oid": "6136f6666c2ed3113385c138"
-  },
+  "_id": "6136f6666c2ed3113385c138",
   "AccountID": "Nemesis00",
   "Title": "House Party",
   "Location": "Winterfell",
@@ -11,6 +9,7 @@
   "EndTime": {
     "$date": "2021-10-22T15:00:00Z"
   },
+  "Frequency": "Every Year",
   "URL": "http://zoom.com",
   "NotesKeyWords": [
     "Booking"
@@ -31,11 +30,10 @@
       "$oid": "6132267b43c1ad80f1bd58a7"
     }
   ],
-  "OtherInvitees": ""
+  "OtherInvitees": "",
+  "Attachment": ""
 },{
-  "_id": {
-    "$oid": "6136f8b76c2ed3113385c139"
-  },
+  "_id": "6136f8b76c2ed3113385c139",
   "AccountID": "Nemesis00",
   "Title": "Preset Party",
   "Location": "Winterfell",
@@ -45,6 +43,7 @@
   "EndTime": {
     "$date": "2021-10-20T15:00:00Z"
   },
+  "Frequency": "Every Year",
   "URL": "http://zoom.com",
   "NotesKeyWords": [],
   "Notes": "nothing special",
@@ -60,11 +59,10 @@
       "$oid": "6136ee6b6c2ed3113385c135"
     }
   ],
-  "OtherInvitees": "Parcitipants from House Baratheon"
+  "OtherInvitees": "Parcitipants from House Baratheon",
+  "Attachment": ""
 },{
-  "_id": {
-    "$oid": "615677ba39d1f1621bc5d5c8"
-  },
+  "_id": "6136f8b76c2ed3113385c139",
   "AccountID": "Nemesis00",
   "Title": "House Party2",
   "Location": "sumerday",
@@ -74,6 +72,7 @@
   "EndTime": {
     "$date": "2021-10-22T15:00:00Z"
   },
+  "Frequency": "Every Month",
   "URL": "",
   "NotesKeyWords": [],
   "Notes": "nothing special",
@@ -86,11 +85,10 @@
       "$oid": "6136f5b36c2ed3113385c137"
     }
   ],
-  "OtherInvitees": ""
+  "OtherInvitees": "",
+  "Attachment": ""
 },{
-  "_id": {
-    "$oid": "6156e31e2799516f0bbb3464"
-  },
+  "_id": "6136f8b76c2ed3113385c139",
   "AccountID": "Nemesis00",
   "Title": "Birthday Party",
   "Location": "sumerday",
@@ -100,6 +98,7 @@
   "EndTime": {
     "$date": "2021-10-22T15:00:00Z"
   },
+  "Frequency": "Never",
   "URL": "",
   "NotesKeyWords": [],
   "Notes": "nothing special",
@@ -108,5 +107,6 @@
     "Party"
   ],
   "Invitees": [],
-  "OtherInvitees": ""
+  "OtherInvitees": "",
+  "Attachment": ""
 }]
