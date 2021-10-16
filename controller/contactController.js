@@ -85,65 +85,69 @@ const getSingleContact = async (req, res) => {
 };
 
 const contactEdit = async (req, res) => {
-    try {
-        let {
-            FirstName,
-            LastName,
-            MobileNo,
-            HomeNo,
-            Company,
-            Email,
-            Address,
-            JobTitle,
-            Notes,
-            DOB,
-            Relationship,
-            TagIds
-        } = req.body
-        let ContactId = req.params.id;
 
-        var Tags = [{
-            TagName: String,
-            TagId: mongoose.Schema.Types.ObjectId
-        }]
+    let {
+        FirstName,
+        LastName,
+        MobileNo,
+        HomeNo,
+        Company,
+        Email,
+        Address,
+        JobTitle,
+        Notes,
+        DOB,
+        Relationship,
+        TagIds
+    } = req.body
+    let ContactId = req.params.id;
 
-        TagIds.forEach(async (tid) => {
-            let TagName = await Contact.findById(tid).lean().TagName;
-            Tags.push({ TagName: TagName, TagId: tid })
-        })
-
-        Contact.findByIdAndUpdate(ContactId,
-            {
-                FirstName: FirstName,
-                LastName: LastName,
-                Company: Company, Email: Email,
-                Address: Address, JobTitle: JobTitle,
-                Notes: Notes,
-                MobileNo: MobileNo,
-                HomeNo: HomeNo,
-                DOB: DOB,
-                Relationship: Relationship,
-                Tags: Tags
-            },
-            { IsActive: 0, AccountID: 0 }, (err, doc) => {
-                if (err) {
-                    res.status(400).json({
-                        msg: "Error occurred: " + err
-                    })
-                    return;
-                }
-            })
-        const contact = await Contact.findById(ContactId).lean();
-        res.status(200).json({
-            msg: "Edit successfully",
-            contact: contact
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(400).json({
-            msg: "Error occurred: " + err
-        });
+    const getData = async () => {
+        return Promise.all(TagIds.map(async tid => {
+            let aTag = await Tag.findById(tid).lean()
+            var TagName = aTag.TagName
+    
+            let result = {}
+            result["TagName"] = TagName
+            result["TagId"] = tid
+    
+            return Promise.resolve(result)
+    
+        }))
     }
+
+    getData().then(async Tags => {
+        console.log(Tags)
+        Contact.findByIdAndUpdate(ContactId,{
+            IsActive: true,
+            FirstName: FirstName,
+            LastName: LastName,
+            Company: Company,
+            Email: Email,
+            Address: Address,
+            JobTitle: JobTitle,
+            Notes: Notes,
+            MobileNo: MobileNo,
+            HomeNo: HomeNo,
+            DOB: DOB,
+            Relationship: Relationship,
+            Tags: Tags
+        }, (err, contact) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+            }
+            else {
+                res.status(200).json({
+                    msg: "Edit a new contact successfully",
+                    contact: contact
+                });
+            }
+        });
+    })
+
+
 };
 
 const contactCreate = async (req, res) => {
@@ -165,24 +169,20 @@ const contactCreate = async (req, res) => {
 
     let uid = req.token.userId
 
-    const functionThatReturnsAPromise = async tid => {
-        let aTag = await Tag.findById(tid).lean()
-        var TagName = aTag.TagName
-
-        let result = {}
-        result["TagName"] = TagName
-        result["TagId"] = tid
-
-        return Promise.resolve(result)
-
-    }
-
-    const doSomethingAsync = async item => {
-        return functionThatReturnsAPromise(item)
-    }
+    
 
     const getData = async () => {
-        return Promise.all(TagIds.map(tid => doSomethingAsync(tid)))
+        return Promise.all(TagIds.map(async tid => {
+            let aTag = await Tag.findById(tid).lean()
+            var TagName = aTag.TagName
+    
+            let result = {}
+            result["TagName"] = TagName
+            result["TagId"] = tid
+    
+            return Promise.resolve(result)
+    
+        }))
     }
 
     getData().then(Tags => {
