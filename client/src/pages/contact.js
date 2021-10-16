@@ -140,17 +140,14 @@ export function BasicTable({ contacts, columns, data}) {
 }
 
 // handle related meetings
-const RelatedMeeting = ({ defaultValue }) => {
+const RelatedMeeting = ({ meetings }) => {
     const meetingsTest = [
         { value: "hbibhbki", label: "hbibhbki" },
         { value: "hbibhb", label: "hbibhb" },
         { value: "cat", label: "cat" },
     ];
 
-    return (
-        <div>
-            <Select options={meetingsTest} isMulti={true} />
-        </div>
+    return (<p>meetings</p>
     );
 };
 
@@ -242,6 +239,9 @@ const ContactDetail = () => {
         // check if there is any change
         if (isDirty) {
 
+            if (data.Tags) {
+                data.TagIds = data.Tags.map(opt => opt.TagId);
+            }
             console.log(data);
 
             // send data to server
@@ -279,7 +279,7 @@ const ContactDetail = () => {
 
         if (defa.Tags) {
             defa.Tags.map(opt => {
-                opt.value = opt.TagName;
+                opt.value = opt.TagId;
                 opt.label = opt.TagName;
             })
         }
@@ -453,7 +453,6 @@ const ContactDetail = () => {
 // create a new contact
 const ContactCreate = () => {
     let history = useHistory();
-    const [tags, setTags] = useState([]);
 
     const {
         register,
@@ -462,15 +461,13 @@ const ContactCreate = () => {
         formState: { isDirty },
     } = useForm();
 
-    const selectedTagsHandler = (options) => {
-        setTags(options.map((opt) => opt.label));
-    };
-
     const onSubmitHandler = (data) => {
         // check if there any input
         if (isDirty) {
             // add tags to contact
-            // data.Tags = tags;
+            if (data.Tags) {
+                data.TagIds = data.Tags.map(opt => opt.TagId);
+            }
 
             // send data to server
             console.log(data);

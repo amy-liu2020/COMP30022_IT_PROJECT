@@ -73,6 +73,7 @@ export const MultipleSelectChip = ({control, tagOf}) => {
         let options = JSON.parse(JSON.stringify(tags)); // clone tags
 
         options.map(opt => {
+            opt.TagId = opt._id;
             opt.value = opt._id;
             opt.label = opt.TagName;
         })
