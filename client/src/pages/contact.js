@@ -5,6 +5,8 @@ import {
     CreateContact,
     EditContact,
     GetContactsByTag,
+    GetBinList,
+    GetContactsBySearch
 } from "../api";
 import { MdAdd } from "react-icons/md";
 import {
@@ -16,27 +18,159 @@ import {
 } from "react-router-dom";
 // import { useState, useMemo, useEffect } from "react/cjs/react.development";
 import { useState, useMemo, useEffect } from "react";
-import Table from "../common/table";
+
 import SideMenu from "../common/sideMenu";
 import NavigationBar from "../common/nav";
 import Tag from "../common/tag";
 import { useForm } from "react-hook-form";
+import Select from "react-select";
 
-const List = ({ mode }) => {
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TablePagination from "@mui/material/TablePagination";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import CircularProgress from "@mui/material/CircularProgress";
+import { Avatar } from "@mui/material";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: theme.palette.secondary.main,
+        fontSize: 18,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+    },
+}));
+
+const Div = styled('div')(({ theme }) => ({
+    ...theme.typography.h4,
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1),
+    margin: "auto"
+}));
+
+export function BasicTable({ contacts, columns, data}) {
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 10;
+    let history = useHistory();
+
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    return (
+        <>
+        {contacts.length ? (        <div>
+            <TableContainer>
+                <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                    <colgroup>
+                        <col width="40%" />
+                        <col width="30%" />
+                        <col width="30%" />
+                    </colgroup>
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell>Name</StyledTableCell>
+                            <StyledTableCell>Phone number</StyledTableCell>
+                            <StyledTableCell>Email</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {contacts
+                            .slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage
+                            )
+                            .map((row) => (
+                                <TableRow
+                                    key={row.name}
+                                    sx={{
+                                        "&:hover": {
+                                            background: "#ddd",
+                                            cursor: "pointer",
+                                        },
+                                    }}
+                                    onClick={() =>
+                                        history.push(`/contact/${row._id}`)
+                                    }
+                                >
+                                    <StyledTableCell component="th" scope="row">
+                                        {row.FirstName + " " + row.LastName}
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                        {row.MobileNo}
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                        {row.Email}
+                                    </StyledTableCell>
+                                </TableRow>
+                            ))}
+                        {emptyRows > 0 && (
+                            <TableRow
+                                style={{
+                                    height: 53 * emptyRows,
+                                }}
+                            >
+                                <StyledTableCell colSpan={3} />
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[]}
+                component="div"
+                count={contacts.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+            />
+        </div>)
+        : (<Div>no record found.</Div>)}
+        </>
+
+    );
+}
+
+// handle related meetings
+const RelatedMeeting = ({ defaultValue }) => {
+    const meetingsTest = [
+        { value: "hbibhbki", label: "hbibhbki" },
+        { value: "hbibhb", label: "hbibhb" },
+        { value: "cat", label: "cat" },
+    ];
+
+    return (
+        <div>
+            <Select options={meetingsTest} isMulti={true} />
+        </div>
+    );
+};
+
+// show all active contacts
+const ContactAll = () => {
     const { contacts, loading, error } = GetContacts();
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <CircularProgress size={100} />;
     }
 
     if (error) {
         return <p>{error}</p>;
     }
 
-    return <Table tab="contact" data={contacts} option={mode} />;
+    return <BasicTable contacts={contacts} />;
 };
 
-const ListWithTag = () => {
+// show contact with specific tag
+const ContactWithTag = () => {
     let { tagName } = useParams();
     const { contacts, loading, error } = GetContactsByTag(tagName);
 
@@ -48,10 +182,56 @@ const ListWithTag = () => {
         return <p>{error}</p>;
     }
 
-    return <Table tab="contact" data={contacts} option={"delete"} />;
+    return <BasicTable contacts={contacts} />;
 };
 
-const Detail = () => {
+// show all deleted contacts
+const ContactBin = () => {
+    const { data, loading, error } = GetBinList("C");
+
+    if (loading) {
+        return <p>{loading}</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+    return (
+        <>
+            {data.length ? (
+                <p>{data.length} record(s) found.</p>
+            ) : (
+                <p>no record found.</p>
+            )}
+        </>
+    );
+};
+
+// show all from search keyword
+const ContactSearch = () => {
+    let {keyword} = useParams()
+    const { contacts, loading, error } = GetContactsBySearch(keyword);
+
+    if (loading) {
+        return <p>{loading}</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+    return (
+        <>
+            {contacts.length ? (
+                <p>{contacts.length} record(s) found.</p>
+            ) : (
+                <p>no record found.</p>
+            )}
+        </>
+    );
+};
+
+// show details of specific contact
+const ContactDetail = () => {
     let { contactId } = useParams();
     let history = useHistory();
     const { contact, loading, error } = GetOneContact(contactId);
@@ -81,7 +261,7 @@ const Detail = () => {
         // check if there is any change
         if (isDirty) {
             // update tags
-            data.Tags = tags;
+            // data.Tags = tags;
             console.log(data);
 
             // send data to server
@@ -166,6 +346,7 @@ const Detail = () => {
                 <div className="form-avatar">
                     <MdAdd id="form-addPhoto" size={50} />
                 </div>
+                {/* <Avatar sx={{ width: 150, height: 150 }}/> */}
                 <div className="form-keyInfo">
                     <div className="form-name">
                         <input
@@ -183,12 +364,12 @@ const Detail = () => {
                             required
                         />
                     </div>
-                    <Tag
+                    {/* <Tag
                         tagOf="C"
                         isDisabled={inputDisable}
                         defaultValue={tags}
                         setSelectedTags={selectedTagsHandler}
-                    />
+                    /> */}
                     <div className="form-record">
                         <label>Home: </label>
                         <input
@@ -275,7 +456,8 @@ const Detail = () => {
     );
 };
 
-const Create = () => {
+// create a new contact
+const ContactCreate = () => {
     let history = useHistory();
     const [tags, setTags] = useState([]);
 
@@ -293,11 +475,11 @@ const Create = () => {
         // check if there any input
         if (isDirty) {
             // add tags to contact
-            data.Tags = tags;
+            // data.Tags = tags;
 
             // send data to server
             console.log(tags);
-            CreateContact(data).then((res) => alert(res.msg));
+            CreateContact(data).then((res) => console.log(res));
         }
 
         // redirect to list page
@@ -329,7 +511,7 @@ const Create = () => {
                             required
                         />
                     </div>
-                    <Tag tagOf="C" setSelectedTags={selectedTagsHandler} />
+                    {/* <Tag tagOf="C" setSelectedTags={selectedTagsHandler} /> */}
                     <div className="form-record">
                         <label>Home: </label>
                         <input type="tel" {...register("HomeNo")} />
@@ -393,19 +575,22 @@ export const Contact = () => {
             <SideMenu tagOf="C" />
             <Switch>
                 <Route path={`${path}/create`}>
-                    <Create />
+                    <ContactCreate />
                 </Route>
-                <Route path={`${path}/export`}>
-                    <List mode="export" />
+                <Route path={`${path}/bin`}>
+                    <ContactBin />
                 </Route>
                 <Route path={`${path}/tag/:tagName`}>
-                    <ListWithTag />
+                    <ContactWithTag />
+                </Route>
+                <Route path={`${path}/search/:keyword`}>
+                    <ContactSearch/>
                 </Route>
                 <Route path={`${path}/:contactId`}>
-                    <Detail />
+                    <ContactDetail />
                 </Route>
                 <Route exact path={path}>
-                    <List mode="delete" />
+                    <ContactAll />
                 </Route>
             </Switch>
         </div>

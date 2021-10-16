@@ -50,9 +50,11 @@ export async function loginUser(user) {
         // create url for profile image
         if (data.Photo) {
             console.log(data.Photo);
-            localStorage.setItem("avatar", URL.createObjectURL(new Blob(data.Photo.data)));
+            localStorage.setItem(
+                "avatar",
+                URL.createObjectURL(new Blob(data.Photo.data))
+            );
         }
-        
     }
 
     return data;
@@ -156,6 +158,7 @@ export function GetBinList(type) {
             })
             .then((res) => {
                 setLoading(false);
+                console.log(res.data);
                 res.data && setData(res.data.binList);
             })
             .catch((err) => {
@@ -289,6 +292,35 @@ export function GetContactsByTag(tagName) {
     return { contacts, loading, error };
 }
 
+export function GetContactsBySearch(keyword) {
+    const [contacts, setContacts] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/contact/fuzzySearch/${keyword}`, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setContacts(res.data.contacts);
+                console.log(res.data);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [keyword]);
+
+    return { contacts, loading, error };
+}
+
 export async function CreateContact(contact) {
     let data = await axios
         .post(`/api/contact/create`, contact)
@@ -318,7 +350,7 @@ export async function DeleteContact(id) {
 // meeting section -------------------------
 
 export function GetOneMeeting(id) {
-    const [meeting, setMeeting] = useState([]);
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -328,8 +360,8 @@ export function GetOneMeeting(id) {
             .get(`/api/meeting/${id}`, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
-                res.data && setMeeting(res.data);
-                console.log(res);
+                setData(res.data.meeting);
+                console.log(res.data.meeting);
             })
             .catch((err) => {
                 setLoading(false);
@@ -341,11 +373,11 @@ export function GetOneMeeting(id) {
         };
     }, [id]);
 
-    return { meeting, loading, error };
+    return { data, loading, error };
 }
 
 export function GetMeetings() {
-    const [meetings, setMeetings] = useState([]);
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -354,11 +386,10 @@ export function GetMeetings() {
         axios
             .get(`/api/meeting`, {
                 cancelToken: source.token,
-                params: { _limit: 5 }
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setMeetings(res.data.meetings);
+                res.data && setData(res.data.meetings);
                 console.log(res);
             })
             .catch((err) => {
@@ -371,104 +402,11 @@ export function GetMeetings() {
         };
     }, []);
 
-    return { meetings, loading, error };
-}
-
-export function CreateMeeting(meeting) {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState("loading...");
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios
-            .post(`/api/meeting/create`, meeting, { cancelToken: source.token })
-            .then((res) => {
-                setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
-            })
-            .catch((err) => {
-                setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            });
-        return () => {
-            source.cancel();
-        };
-    }, [meeting]);
-
     return { data, loading, error };
 }
 
-export function EditMeeting(meeting) {
+export function GetMeetingsWithTag(tagName) {
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState("loading...");
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios
-            .patch(`/api/meeting/${meeting.id}`, meeting, {
-                cancelToken: source.token,
-            })
-            .then((res) => {
-                setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
-            })
-            .catch((err) => {
-                setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            });
-        return () => {
-            source.cancel();
-        };
-    }, [meeting]);
-
-    //return { data, loading, error };
-    return { loading, error };
-}
-
-// export function DeleteOneMeeting(id) {
-//     const [data, setData] = useState([]);
-//     const [loading, setLoading] = useState("loading...");
-//     const [error, setError] = useState(null);
-
-//     useEffect(() => {
-//         const source = axios.CancelToken.source();
-//         axios
-//             .delete(`/api/meeting/${id}`, { cancelToken: source.token })
-//             .then((res) => {
-//                 setLoading(false);
-//                 res.data && setData(res.data);
-//                 console.log(res);
-//             })
-//             .catch((err) => {
-//                 setLoading(false);
-//                 errHandler(err);
-//                 setError("An error occured.");
-//             });
-//         return () => {
-//             source.cancel();
-//         };
-//     }, [id]);
-
-//     return { data, loading, error };
-// }
-
-export async function DeleteMeeting(id) {
-    const data = await axios
-        .delete(`/api/meeting/delete/${id}`)
-        .then((res) => res.data)
-        .catch((err) => errHandler(err));
-    return data;
-}
-
-
-export function GetMeetingsByTag(tagName) {
-    const [meetings, setMeetings] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -480,7 +418,8 @@ export function GetMeetingsByTag(tagName) {
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setMeetings(res.data.meetings);
+                res.data && setData(res.data.meetings);
+                console.log(res);
             })
             .catch((err) => {
                 setLoading(false);
@@ -490,9 +429,33 @@ export function GetMeetingsByTag(tagName) {
         return () => {
             source.cancel();
         };
-    }, [tagName]);
+    }, []);
 
-    return { meetings, loading, error };
+    return { data, loading, error };
+}
+
+export async function CreateMeeting(meeting) {
+    let data = await axios
+        .post(`/api/meeting/create`, meeting)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+export async function EditMeeting(meeting, id) {
+    let data = await axios
+        .post(`/api/meeting/edit/${id}`, meeting)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+export async function DeleteMeeting(id) {
+    let data = await axios
+        .delete(`/api/meeting/delete/${id}`)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
 }
 
 

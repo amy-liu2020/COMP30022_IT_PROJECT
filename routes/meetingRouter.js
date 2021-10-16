@@ -31,7 +31,7 @@ meetingRouter.post("/edit/:id", (req,res) =>
 );
 
 // delete single meeting
-meetingRouter.post("/delete/:id", ensureAuthorized, (req,res) => 
+meetingRouter.delete("/delete/:id", ensureAuthorized, (req,res) => 
     meetingController.meetingDelete(req,res)
 );
 // present the searching results 

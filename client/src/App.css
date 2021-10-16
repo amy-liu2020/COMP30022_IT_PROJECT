@@ -14,7 +14,7 @@ body {
     display: grid;
     width: 100vw;
     height: 100vh;
-    grid-template-columns: 200px auto;
+    grid-template-columns: 230px auto;
     grid-template-rows: 50px auto;
     grid-template-areas:
         "nav nav"
@@ -328,28 +328,11 @@ body {
     padding: 20px;
 }
 
-.sideM > * {
-    border: none;
-    padding: 10px 16px;
-    text-align: left;
-    border-radius: 20px;
-    background-color: inherit;
-}
-
-.sideM > *:hover {
-    cursor: pointer;
-}
-
 .sideM-group {
     text-decoration: none;
     color: black;
 }
 
-.sideM > *:hover,
-.sideM-create,
-.sideM-addGroup {
-    background-color: #ebf8f6;
-}
 
 .sideM-create:hover,
 .sideM-addGroup:hover {

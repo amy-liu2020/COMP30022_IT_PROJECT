@@ -30,7 +30,7 @@ const getContactsByTag = async (req, res) => {
     try {
         let uid = req.token.userId
         let tag = req.params.tag;
-        const contacts = await Contact.find({ AccountID: uid, Tags: { $elemMatch: { TagName: tag } }, IsActive: true }, "FirstName LastName MobileNo Email", (err) => {
+        const contacts = await Contact.find({ AccountID: uid, Tags: { elemMatch: { TagName: tag } }, IsActive: true }, "FirstName LastName MobileNo Email", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -62,7 +62,7 @@ const getSingleContact = async (req, res) => {
                     return;
                 }
             }).lean();
-        const relatedMeeting = await Meeting.find({ Invitees: { $elemMatch: { $InviteeId: cid } } }, "Title StartTime", (err) => {
+        const relatedMeeting = await Meeting.find({ Invitees: { elemMatch: { InviteeId: cid } } }, "Title StartTime", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err

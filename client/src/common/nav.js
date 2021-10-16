@@ -1,7 +1,7 @@
 // navigation bar which contains logo, tabs, search bar, setting and profile photo
 import { MdSettings } from "react-icons/md";
 import Logo from "./logo";
-import Avatar from "./avatar";
+import Avatar from '@mui/material/Avatar';
 import SearchBar from "./searchBar";
 import { Link, useHistory } from "react-router-dom";
 // import { useState } from "react/cjs/react.development";
@@ -29,14 +29,14 @@ const NavigationBar = () => {
                 />
             </div>
             <div className="avatar-buttons" onClick={() => setShow(!show)}>
-                <Avatar />
+                <Avatar>H</Avatar>
                 {show && (
                     <ul>
                         <li>
                             <Link to="/user/profile">profile</Link>
                         </li>
                         <li>
-                            <Link to="/">log out</Link>
+                            <Link to="/" onClick={() => localStorage.setItem("token", "")}>log out</Link>
                         </li>
                     </ul>
                 )}

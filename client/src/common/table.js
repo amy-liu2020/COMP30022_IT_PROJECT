@@ -1,4 +1,5 @@
 import { useTable, useRowSelect } from "react-table";
+
 import { useEffect, useState } from "react";
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -58,7 +59,7 @@ const Table = ({ tab, data, option }) => {
                   },
                   {
                       Header: "Date",
-                      accessor: (row) => new Date(Date(row.StartTime)).toLocaleDateString(),
+                      accessor: (row) => row.StartTime && row.StartTime.slice(0, 10),
                   },
               ]
     );
@@ -76,6 +77,7 @@ const Table = ({ tab, data, option }) => {
             data,
             initialState: {
                 hiddenColumns: ["selection"],
+                pageSize: 20,
             },
         },
         useRowSelect,

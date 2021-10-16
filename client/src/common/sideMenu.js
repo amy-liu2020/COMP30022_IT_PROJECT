@@ -5,6 +5,75 @@ import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { GetTags, AddTag, DeleteTag } from "../api";
 
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Divider from "@mui/material/Divider";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
+const AddTagDialog = ({ open, setOpen, tagOf }) => {
+    const [tagName, setTagName] = useState(null);
+    const [isPending, setPending] = useState(false);
+
+    const handleCreate = () => {
+        // re-group data
+        const tag = {
+            tagName: tagName,
+            tagOf: tagOf,
+        };
+
+        // send data to server
+        setPending(true);
+        AddTag(tag).then((data) => {
+            setPending(false);
+            if (data === undefined) {
+                alert("error");
+            } else {
+                // alert(data.msg);
+                window.location.reload(); // refresh page
+            }
+        });
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    return (
+        <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Add new Tag</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Please enter a name for new tag.
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="tagName"
+                    label="Tag name"
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                    onChange={(e) => {setTagName(e.target.value)}}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleCreate}>{isPending ? "uploading..." : "create"}</Button>
+            </DialogActions>
+        </Dialog>
+    );
+};
+
 // pop-up that allow user to enter tagName
 const PopUp = ({ tagOf, turnOff }) => {
     const [tagName, setTagName] = useState(null);
@@ -102,50 +171,85 @@ const SideMenu = ({ tagOf }) => {
 
     return (
         <>
-            {showPopup && (
-                <PopUp tagOf={tagOf} turnOff={() => setShowPopup(false)} />
-            )}
+            <AddTagDialog open={showPopup} setOpen={setShowPopup} tagOf={tagOf}/>
             <div className="sideM">
-                <button
-                    className="sideM-create"
+                <Fab
+                    variant="extended"
                     onClick={() => history.push(`/${tab}/create`)}
                 >
-                    <MdAdd />
-                    create {tab}
-                </button>
-                <Link className="sideM-group" to={`/${tab}`}>
-                    all
-                </Link>
-                {pending ? (
-                    <p>updating...</p>
-                ) : (
-                    tags.map((tag, index) => (
-                        <Link
-                            className="sideM-group"
-                            key={index}
-                            to={`/${tab}/tag/${tag.value}`}
-                        >
-                            {tag.label}
-                            <FaTimes
-                                onClick={() => onDeleteTagHandler(tag.label)}
+                    <AddIcon sx={{ mr: 1 }} />
+                    {`create ${tab}`}
+                </Fab>
+
+                <Divider />
+                <Chip
+                    label="all"
+                    onClick={() => history.push(`/${tab}/`)}
+                    sx={{
+                        "&": {
+                            textAlign: "left",
+                            display: "flex",
+                            justifyContent: "space-between",
+                        },
+                        "&:hover": {
+                            cursor: "pointer",
+                        },
+                    }}
+                />
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 1,
+                        overflow: "auto",
+                        maxHeight: 200,
+                        alignItems: "stretch",
+                    }}
+                >
+                    {pending ? (
+                        <p>updating...</p>
+                    ) : (
+                        tags.map((tag, index) => (
+                            <Chip
+                                label={tag.label}
+                                onClick={() =>
+                                    history.push(`/${tab}/tag/${tag.value}`)
+                                }
+                                onDelete={() => onDeleteTagHandler(tag.label)}
+                                sx={{
+                                    "&": {
+                                        textAlign: "left",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        width: "100%",
+                                    },
+                                    "&:hover": {
+                                        cursor: "pointer",
+                                    },
+                                }}
+                                deleteIcon={<DeleteIcon />}
                             />
-                        </Link>
-                    ))
-                )}
-                <button
-                    className="sideM-addGroup"
-                    onClick={() => setShowPopup(true)}
-                >
+                        ))
+                    )}
+                </Box>
+                <Button variant="contained" onClick={() => setShowPopup(true)}>
                     add new tag
-                </button>
-                <button className="sideM-import">import</button>
-                <button
-                    className="sideM-export"
-                    onClick={() => history.push(`/${tab}/export`)}
-                >
-                    export
-                </button>
-                <button className="sideM-bin">bin</button>
+                </Button>
+                <Divider />
+                <Chip
+                    label="bin"
+                    onClick={() => history.push(`/${tab}/bin`)}
+                    sx={{
+                        "&": {
+                            textAlign: "left",
+                            display: "flex",
+                            justifyContent: "space-between",
+                        },
+                        "&:hover": {
+                            cursor: "pointer",
+                        },
+                    }}
+                />
             </div>
         </>
     );
