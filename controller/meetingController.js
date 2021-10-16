@@ -92,7 +92,7 @@ const meetingCreate = async (req, res) => {
         NotesKeyWords,
         Attachment,
         InviteeIds,
-        Tags
+        TagIds
     } = req.body
 
     let uid = req.token.userId
@@ -105,6 +105,16 @@ const meetingCreate = async (req, res) => {
     InviteeIds.forEach(async (iid) => {
         let InviteeName = await Meeting.findById(iid).lean().InviteeName;
         Invitees.push({InviteeName:InviteeName, InviteeId:iid})
+    })
+
+    var Tags = [{
+        TagName:String,
+        TagId:mongoose.Schema.Types.ObjectId
+    }]
+
+    TagIds.forEach(async (tid) => {
+        let TagName = await Meeting.findById(tid).lean().TagName;
+        Tags.push({TagName:TagName, TagId:tid})
     })
 
     const meeting = new Meeting({
@@ -152,7 +162,7 @@ const meetingEdit = async (req, res) => {
             NotesKeyWords,
             Attachment,
             InviteeIds,
-            Tags
+            TagIds
         } = req.body
         let MeetingId = req.params.id;
 
@@ -164,6 +174,16 @@ const meetingEdit = async (req, res) => {
         InviteeIds.forEach(async (iid) => {
             let InviteeName = await Meeting.findById(iid).lean().InviteeName;
             Invitees.push({InviteeName:InviteeName, InviteeId:iid})
+        })
+
+        var Tags = [{
+            TagName:String,
+            TagId:mongoose.Schema.Types.ObjectId
+        }]
+    
+        TagIds.forEach(async (tid) => {
+            let TagName = await Meeting.findById(tid).lean().TagName;
+            Tags.push({TagName:TagName, TagId:tid})
         })
 
         Meeting.findByIdAndUpdate(MeetingId, {

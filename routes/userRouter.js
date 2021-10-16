@@ -35,6 +35,11 @@ userRouter.get("/profile", ensureAuthorized, (req, res) => {
     userController.getProfile(req, res)
 });
 
+// get photo
+userRouter.get("/getPhoto", ensureAuthorized, (req, res) => {
+    userController.getPhoto(req, res)
+});
+
 userRouter.get("/uploadPhoto", (req,res)=>{
     res.render("userProfile",{})
 })
