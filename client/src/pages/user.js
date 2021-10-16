@@ -2,7 +2,7 @@ import { Switch, Route, useRouteMatch, useHistory } from "react-router-dom";
 import NavigationBar from "../common/nav";
 import Logo from "../common/logo";
 import Setting from "../common/setting";
-import { loginUser } from "../api";
+import { loginUser, GetRegister, registerUser, Getprofile } from "../api";
 import { useState } from "react";
 
 const Reset = () => {
@@ -70,25 +70,30 @@ const Edit = () => {
 
 const Detail = () => {
     let history = useHistory();
+    const { data, loading } = Getprofile();
+    let info = {};
+    if (data && data.info) {
+        info = data.info
+    }
 
     return (
         <div className="container">
-            <div className="profile">
+            {loading ? <span>{loading}</span> : <div className="profile">
                 <div className="info">
                     <div className="avatar"></div>
-                    <span>Amy Liu</span>
+                    <span></span>
                 </div>
                 <div className="label">
                     <label>USERNAME</label>
-                    <span>AMYLI201</span>
+                    <span>{info.UserName}</span>
                 </div>
                 <div className="label">
                     <label>EMAIL</label>
-                    <span>amytest2@student.edu.au</span>
+                    <span>{info.Email}</span>
                 </div>
                 <div className="label">
                     <label>PHONE NO</label>
-                    <span>****3882</span>
+                    <span>{info.PhoneNumber}</span>
                 </div>
                 <div className="buttons">
                     <button onClick={() => history.push(`/user/profile/edit`)}>
@@ -98,7 +103,7 @@ const Detail = () => {
                         Change Password
                     </button>
                 </div>
-            </div>
+            </div>}
         </div>
     );
 };
@@ -175,21 +180,56 @@ const Login = () => {
 
 const Register = () => {
     let history = useHistory();
+    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [questionCode, setQuestionCode] = useState(0);
+    const [answer, setAnswer] = useState('');
+
+    let questions = [];
+    const { data } = GetRegister();
+    if (data && data.questions) {
+        questions = data.questions;
+    }
+
+    const handleRegister = () => {
+        if (username.length === 0 || password.length === 0 || confirmPassword.length === 0 || answer.length === 0) {
+            return;
+        }
+        if (password !== confirmPassword) {
+            return;
+        }
+        registerUser({
+            userId: username,
+            password,
+            username: name,
+            securityQuestion: questionCode,
+            securityAnswer: answer
+        }).then((data) => {
+            if (data !== undefined) {
+                history.push("/user/login");
+            }
+        });
+    }
 
     return (
         <div className="login-bg">
             <div className="login-form">
                 <Logo />
-                <input type="text" placeholder="username" />
-                <input type="password" placeholder="password" />
-                <input type="password" placeholder="confirm password" />
-                <select placeholder="security question">
-                    <option>How old are you?</option>
+                <input type="text" placeholder="username" value={username} onChange={(e) => { setUsername(e.target.value) }} />
+                <input type="password" placeholder="password" value={password} onChange={(e) => { setPassword(e.target.value) }} />
+                <input type="password" placeholder="confirm password" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value) }} />
+                <input type="text" placeholder="name" value={name} onChange={(e) => { setName(e.target.value) }} />
+                <select placeholder="security question" value={questionCode} onChange={(e) => { setQuestionCode(e.target.value) }}>
+                    {questions.map(({ Code, Question }) => (
+                        <option value={Code}>{Question}</option>
+                    ))}
                 </select>
-                <input type="text" placeholder="answer" />
+                <input type="text" placeholder="answer" value={answer} onChange={(e) => { setAnswer(e.target.value) }} />
                 <div className="login-buttons">
                     <button onClick={() => history.goBack()}>cancel</button>
-                    <button onClick={() => history.goBack()}>confirm</button>
+                    <button onClick={handleRegister}>confirm</button>
                 </div>
             </div>
         </div>
