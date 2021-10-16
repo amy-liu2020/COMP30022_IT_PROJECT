@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useParams } from "react-router";
-import { useEffect, useState } from "react/cjs/react.development";
-
+// import { useEffect, useState } from "react/cjs/react.development";
+import { useState, useEffect } from "react";
 // Axios interceptors are functions that Axios calls for every request
 axios.interceptors.request.use(
     (config) => {
@@ -17,7 +16,6 @@ axios.interceptors.request.use(
 
 // component for handling user login
 export async function loginUser(user) {
-
     const endpoint = `/api/login`;
 
     // POST the email and password to FoodBuddy API to
@@ -46,7 +44,11 @@ export async function loginUser(user) {
 
     if (data !== undefined) {
         console.log(data);
+
+        // set token
         localStorage.setItem("token", data.token);
+
+        // create url for profile image
     }
 
     return data;
@@ -79,8 +81,10 @@ export async function registerUser(user) {
     return data;
 }
 
+// tag section ----------------------------------
+
 // for contact tag, group = 'C'; for meeting tag, group = 'M'
-export function GetTagList(group) {
+export function GetTags(tagOf) {
     const [tags, setTags] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
@@ -88,12 +92,21 @@ export function GetTagList(group) {
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .get(`/api/tag/getTagList/${group}`, {
+            .get(`/api/tag/getTagList/${tagOf}`, {
                 cancelToken: source.token,
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setTags(res.data.tags);
+                console.log(res);
+                if (res.data) {
+                    // re-group tags
+                    setTags(
+                        res.data.tags.map((tag) => ({
+                            value: tag.TagName,
+                            label: tag.TagName,
+                        }))
+                    );
+                }
             })
             .catch((err) => {
                 setLoading(false);
@@ -103,49 +116,28 @@ export function GetTagList(group) {
         return () => {
             source.cancel();
         };
-    }, [group]);
+    }, [tagOf]);
 
     return { tags, loading, error };
 }
 
-export function getGroups(tab) {
-
-    if (tab === "contact") {
-        return [
-            {
-                value: 1,
-                label: "all",
-            },
-            {
-                value: 2,
-                label: "family",
-            },
-            {
-                value: 3,
-                label: "friend",
-            },
-        ];
-    } else {
-        return [
-            {
-                value: 1,
-                label: "all",
-            },
-            {
-                value: 2,
-                label: "party",
-            },
-            {
-                value: 3,
-                label: "business",
-            },
-            {
-                value: 4,
-                label: "date",
-            },
-        ];
-    }
+export async function AddTag(tag) {
+    const data = await axios
+        .post("/api/tag/addTag", tag)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
 }
+
+export async function DeleteTag(tag) {
+    const data = await axios
+        .post("/api/tag/deleteTag", tag)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+// contact section ------------------------------
 
 export function GetOneContact(id) {
     const [contact, setContact] = useState([]);
@@ -161,6 +153,11 @@ export function GetOneContact(id) {
             .then((res) => {
                 setLoading(false);
                 res.data && setContact(res.data.contact);
+                console.log(res.data.contact);
+                setContact((values) => ({
+                    ...values,
+                    DOB: values.DOB && values.DOB.slice(0, 10),
+                }));
             })
             .catch((err) => {
                 setLoading(false);
@@ -182,13 +179,10 @@ export function GetContacts() {
 
     useEffect(() => {
         const source = axios.CancelToken.source();
-        const endpoint = `/api/contact`;
         axios
-            .get(endpoint,
-                {
-                    cancelToken: source.token,
-                }
-            )
+            .get("/api/contact", {
+                cancelToken: source.token,
+            })
             .then((res) => {
                 setLoading(false);
                 res.data && setContacts(res.data.contacts);
@@ -206,46 +200,20 @@ export function GetContacts() {
     return { contacts, loading, error };
 }
 
-export async function CreateContact(contact) {
-    let data = await axios
-        .post(`/api/contact/create`, contact)
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
-    return data;
-}
-
-export async function EditContact(contact) {
-    let data = await axios
-        .post(`/api/contact/edit/${contact._id.$oid}`, contact)
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
-    return data;
-}
-
-export async function DeleteContact(id) {
-    let data = await axios
-        .post(`/api/contact/delete/${id}`)
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
-    return data;
-}
-
-export function DeleteOneContact(id) {
-    const [data, setData] = useState([]);
+export function GetContactsByTag(tagName) {
+    const [contacts, setContacts] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .post(`/api/contact/delete/${id}`, { cancelToken: source.token })
+            .get(`/api/contact/getByTag/${tagName}`, {
+                cancelToken: source.token,
+            })
             .then((res) => {
                 setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
+                res.data && setContacts(res.data.contacts);
             })
             .catch((err) => {
                 setLoading(false);
@@ -255,10 +223,38 @@ export function DeleteOneContact(id) {
         return () => {
             source.cancel();
         };
-    }, [id]);
+    }, [tagName]);
 
-    return { data, loading, error };
+    return { contacts, loading, error };
 }
+
+export async function CreateContact(contact) {
+    let data = await axios
+        .post(`/api/contact/create`, contact)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+
+    return data;
+}
+
+export async function EditContact(contact, id) {
+    let data = await axios
+        .post(`/api/contact/edit/${id}`, contact)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+
+    return data;
+}
+
+export async function DeleteContact(id) {
+    const data = await axios
+        .delete(`/api/contact/delete/${id}`)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+// meeting section -------------------------
 
 export function GetOneMeeting(id) {
     const [meeting, setMeeting] = useState([]);

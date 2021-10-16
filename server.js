@@ -23,25 +23,25 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 // Interceptor
-app.use(function (req, res, next) {
-    let arr = req.url.split("/")
-    console.log(arr)
-    if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
-        console.log("white list")
-    } else {
+// app.use(function (req, res, next) {
+//     let arr = req.url.split("/")
+//     console.log(arr)
+//     if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
+//         console.log("white list")
+//     } else {
 
-        var bearerHeader = req.headers.authorization
+//         var bearerHeader = req.headers.authorization
         
-        if (!bearerHeader) {
-            console.log("intercept")
-            res.status(403).json({
-                msg:"token expired"
-            })
-        }
+//         if (!bearerHeader) {
+//             console.log("intercept")
+//             res.status(403).json({
+//                 msg:"token expired"
+//             })
+//         }
         
-    }
-    next()
-})
+//     }
+//     next()
+// })
 
 
 // link to routes 
@@ -58,6 +58,13 @@ app.use("/api/meeting", meetingRouter);
 app.use("/api", userRouter);
 app.use("/api/tag", tagRouter);
 app.use("/api/bin", binRouter);
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    console.log(req.url);
+});
 
 // 'default' route to catch user errors
 app.all('*', (req, res) => {

@@ -4,7 +4,7 @@ const User = require("../models/user")
 const fs = require('fs');
 const { PRIVATE_KEY, EXPIRESD } = require("../utils/token")
 const jwt = require("jsonwebtoken");
-const { encrypt} = require("../utils/encrypt");
+const { encrypt, decrypt } = require("../utils/encrypt");
 const SecurityQuestion = require("../models/securityQuestion");
 
 
@@ -73,17 +73,21 @@ const doLogin = (req, res) => {
 
 const getQuestionList = async (req, res) => {
     try {
-        let questions = await SecurityQuestion.find((err) => {
-            res.status(400).json({
-                msg: "Error occurred: " + err
-            })
-            return;
+        SecurityQuestion.find((err,questions) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            } else {
+                res.status(200).json({
+                    msg: "Get security question list successfully",
+                    questions: questions
+                })
+            }
         })
 
-        res.status(200).json({
-            msg: "Get security question list successfully",
-            questions: questions
-        })
+
     } catch (err) {
         console.log(err);
         res.status(400).json({
@@ -156,7 +160,7 @@ const userPreferredColor = async (req, res) => {
                 })
             })
         }
-        res.status(200).json({  
+        res.status(200).json({
             msg: "Get color successfully",
             color: color
         })
