@@ -373,7 +373,7 @@ const changePassword = async (req, res) => {
 
 const savePhoto = async (req, res) => {
     try {
-        let photoFile = req.body.photo;
+        let photoFile = req.body.file;
         let photoData = fs.readFileSync(photoFile.path)
 
 
@@ -428,5 +428,6 @@ module.exports = {
     changeForgottenPassword,
     changePassword,
     savePhoto,
-    changeDetails
+    changeDetails,
+    userChangePreferredColor
 }
