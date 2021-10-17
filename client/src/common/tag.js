@@ -1,4 +1,4 @@
-import { GetTags } from "../api";
+import { GetTags, GetContacts } from "../api";
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -66,7 +66,7 @@ const names = [
     "Kelly Snyder",
 ];
 
-export const MultipleSelectChip = ({control, tagOf}) => {
+export const MultipleSelectChip = ({control, tagOf,isDisabled=false}) => {
     const { tags, loading, error } = GetTags(tagOf);
 
     const formatTag = (tags) => {
@@ -90,7 +90,40 @@ export const MultipleSelectChip = ({control, tagOf}) => {
                     isMulti={true}
                     isLoading={loading || error}
                     {...field}
+                    isDisabled={isDisabled}
                     options={tags ? formatTag(tags) : []}
+                />
+            )}
+        />
+    );
+};
+
+
+export const SelectContact = ({control}) => {
+    const { contacts, loading, error } = GetContacts();
+
+    const formatOpt = (contacts) => {
+        let options = JSON.parse(JSON.stringify(contacts)); // clone tags
+
+        options.map(opt => {
+            opt.TagId = opt._id;
+            opt.value = opt._id;
+            opt.label = opt.TagName;
+        })
+
+        return options;
+    }
+
+    return (
+        <Controller
+            control={control}
+            name="Invitees"
+            render={({ field }) => (
+                <Select
+                    isMulti={true}
+                    isLoading={loading || error}
+                    {...field}
+                    options={contacts ? formatOpt(contacts) : []}
                 />
             )}
         />

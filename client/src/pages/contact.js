@@ -6,7 +6,7 @@ import {
     EditContact,
     GetContactsByTag,
     GetBinList,
-    GetContactsBySearch
+    GetContactsBySearch,
 } from "../api";
 import { MdAdd } from "react-icons/md";
 import {
@@ -46,14 +46,14 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
 }));
 
-const Div = styled('div')(({ theme }) => ({
+const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(1),
-    margin: "auto"
+    margin: "auto",
 }));
 
-export function BasicTable({ contacts, columns, data}) {
+export function BasicTable({ contacts }) {
     const [page, setPage] = useState(0);
     const rowsPerPage = 10;
     let history = useHistory();
@@ -67,75 +67,176 @@ export function BasicTable({ contacts, columns, data}) {
 
     return (
         <>
-        {contacts.length ? (        <div>
-            <TableContainer>
-                <Table sx={{ minWidth: 400 }} aria-label="simple table">
-                    <colgroup>
-                        <col width="40%" />
-                        <col width="30%" />
-                        <col width="30%" />
-                    </colgroup>
-                    <TableHead>
-                        <TableRow>
-                            <StyledTableCell>Name</StyledTableCell>
-                            <StyledTableCell>Phone number</StyledTableCell>
-                            <StyledTableCell>Email</StyledTableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {contacts
-                            .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                            )
-                            .map((row) => (
-                                <TableRow
-                                    key={row.name}
-                                    sx={{
-                                        "&:hover": {
-                                            background: "#ddd",
-                                            cursor: "pointer",
-                                        },
-                                    }}
-                                    onClick={() =>
-                                        history.push(`/contact/${row._id}`)
-                                    }
-                                >
-                                    <StyledTableCell component="th" scope="row">
-                                        {row.FirstName + " " + row.LastName}
-                                    </StyledTableCell>
+            {contacts.length ? (
+                <div>
+                    <TableContainer>
+                        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                            <colgroup>
+                                <col width="40%" />
+                                <col width="30%" />
+                                <col width="30%" />
+                            </colgroup>
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Name</StyledTableCell>
                                     <StyledTableCell>
-                                        {row.MobileNo}
+                                        Phone number
                                     </StyledTableCell>
+                                    <StyledTableCell>Email</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {contacts
+                                    .slice(
+                                        page * rowsPerPage,
+                                        page * rowsPerPage + rowsPerPage
+                                    )
+                                    .map((row) => (
+                                        <TableRow
+                                            key={row.name}
+                                            sx={{
+                                                "&:hover": {
+                                                    background: "#ddd",
+                                                    cursor: "pointer",
+                                                },
+                                            }}
+                                            onClick={() =>
+                                                history.push(
+                                                    `/contact/${row._id}`
+                                                )
+                                            }
+                                        >
+                                            <StyledTableCell
+                                                component="th"
+                                                scope="row"
+                                            >
+                                                {row.FirstName +
+                                                    " " +
+                                                    row.LastName}
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                {row.MobileNo}
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                {row.Email}
+                                            </StyledTableCell>
+                                        </TableRow>
+                                    ))}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: 53 * emptyRows,
+                                        }}
+                                    >
+                                        <StyledTableCell colSpan={3} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[]}
+                        component="div"
+                        count={contacts.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                    />
+                </div>
+            ) : (
+                <Div>no record found.</Div>
+            )}
+        </>
+    );
+}
+
+function MeetingTable({ meetings }) {
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 10;
+    let history = useHistory();
+
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - meetings.length) : 0;
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    return (
+        <>
+            {meetings.length ? (
+                <div>
+                    <TableContainer>
+                        <Table sx={{ maxWidth: 200 }} aria-label="simple table">
+                            <colgroup>
+                                <col width="60%" />
+                                <col width="40%" />
+                            </colgroup>
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Title</StyledTableCell>
                                     <StyledTableCell>
-                                        {row.Email}
+                                        Start Time
                                     </StyledTableCell>
                                 </TableRow>
-                            ))}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows,
-                                }}
-                            >
-                                <StyledTableCell colSpan={3} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[]}
-                component="div"
-                count={contacts.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-            />
-        </div>)
-        : (<Div>no record found.</Div>)}
+                            </TableHead>
+                            <TableBody>
+                                {meetings
+                                    .slice(
+                                        page * rowsPerPage,
+                                        page * rowsPerPage + rowsPerPage
+                                    )
+                                    .map((row) => (
+                                        <TableRow
+                                            key={row.name}
+                                            sx={{
+                                                "&:hover": {
+                                                    background: "#ddd",
+                                                    cursor: "pointer",
+                                                },
+                                            }}
+                                            onClick={() =>
+                                                history.push(
+                                                    `/meeting/${row._id}`
+                                                )
+                                            }
+                                        >
+                                            <StyledTableCell
+                                                component="th"
+                                                scope="row"
+                                            >
+                                                {row.Title}
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                {row.StartTime}
+                                            </StyledTableCell>
+                                        </TableRow>
+                                    ))}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: 53 * emptyRows,
+                                        }}
+                                    >
+                                        <StyledTableCell colSpan={3} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    {/* <TablePagination
+                        rowsPerPageOptions={[]}
+                        component="div"
+                        count={meetings.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                    /> */}
+                </div>
+            ) : (
+                <Div>no record found.</Div>
+            )}
         </>
-
     );
 }
 
@@ -147,8 +248,7 @@ const RelatedMeeting = ({ meetings }) => {
         { value: "cat", label: "cat" },
     ];
 
-    return (<p>meetings</p>
-    );
+    return <p>meetings</p>;
 };
 
 // show all active contacts
@@ -206,7 +306,7 @@ const ContactBin = () => {
 
 // show all from search keyword
 const ContactSearch = () => {
-    let {keyword} = useParams()
+    let { keyword } = useParams();
     const { contacts, loading, error } = GetContactsBySearch(keyword);
 
     if (loading) {
@@ -216,16 +316,14 @@ const ContactSearch = () => {
     if (error) {
         return <p>{error}</p>;
     }
-    return (
-        <BasicTable contacts={contacts} />
-    );
+    return <BasicTable contacts={contacts} />;
 };
 
 // show details of specific contact
 const ContactDetail = () => {
     let { contactId } = useParams();
     let history = useHistory();
-    const { contact, loading, error } = GetOneContact(contactId);
+    const { contact, meetings, loading, error } = GetOneContact(contactId);
     const {
         register,
         reset,
@@ -238,9 +336,8 @@ const ContactDetail = () => {
     const onSubmitHandler = (data) => {
         // check if there is any change
         if (isDirty) {
-
             if (data.Tags) {
-                data.TagIds = data.Tags.map(opt => opt.TagId);
+                data.TagIds = data.Tags.map((opt) => opt.TagId);
             }
             console.log(data);
 
@@ -278,17 +375,18 @@ const ContactDetail = () => {
         let defa = JSON.parse(JSON.stringify(contact)); // clone tags
 
         if (defa.Tags) {
-            defa.Tags.map(opt => {
+            defa.Tags.map((opt) => {
                 opt.value = opt.TagId;
                 opt.label = opt.TagName;
-            })
+            });
         }
 
         reset(defa);
-    }
+    };
 
     useEffect(() => {
         customReset(contact);
+        console.log(meetings);
     }, [contact]);
 
     if (loading || isSubmitting) {
@@ -340,6 +438,7 @@ const ContactDetail = () => {
                     <MdAdd id="form-addPhoto" size={50} />
                 </div>
                 {/* <Avatar sx={{ width: 150, height: 150 }}/> */}
+                {/* <MeetingTable meetings={meetings}/> */}
                 <div className="form-keyInfo">
                     <div className="form-name">
                         <input
@@ -363,7 +462,7 @@ const ContactDetail = () => {
                         defaultValue={[]}
                         setSelectedTags={selectedTagsHandler}
                     /> */}
-                    <MultipleSelectChip tagOf="C" control={control}/>
+                    <MultipleSelectChip tagOf="C" control={control} isDisabled={inputDisable}/>
                     <div className="form-record">
                         <label>Home: </label>
                         <input
@@ -466,8 +565,9 @@ const ContactCreate = () => {
         if (isDirty) {
             // add tags to contact
             if (data.Tags) {
-                data.TagIds = data.Tags.map(opt => opt.TagId);
+                data.TagIds = data.Tags.map((opt) => opt.TagId);
             }
+            data.Invitees = [];
 
             // send data to server
             console.log(data);
@@ -504,7 +604,7 @@ const ContactCreate = () => {
                         />
                     </div>
                     {/* <Tag tagOf="C" setSelectedTags={selectedTagsHandler} /> */}
-                    <MultipleSelectChip control={control} tagOf="C"/>
+                    <MultipleSelectChip control={control} tagOf="C" />
                     <div className="form-record">
                         <label>Home: </label>
                         <input type="tel" {...register("HomeNo")} />
@@ -577,7 +677,7 @@ export const Contact = () => {
                     <ContactWithTag />
                 </Route>
                 <Route path={`${path}/search/:keyword`}>
-                    <ContactSearch/>
+                    <ContactSearch />
                 </Route>
                 <Route path={`${path}/:contactId`}>
                     <ContactDetail />

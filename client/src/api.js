@@ -197,6 +197,7 @@ export async function ClearBinItem() {
 
 export function GetOneContact(id) {
     const [contact, setContact] = useState([]);
+    const [meetings, setMeetings] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -208,8 +209,8 @@ export function GetOneContact(id) {
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setContact(res.data.contact);
-                console.log(res.data.contact);
+                res.data && setContact(res.data.contact) && setMeetings(res.data.relatedMeeting);
+                console.log(res.data);
                 setContact((values) => ({
                     ...values,
                     DOB: values.DOB && values.DOB.slice(0, 10),
@@ -225,11 +226,12 @@ export function GetOneContact(id) {
         };
     }, [id]);
 
-    return { contact, loading, error };
+    return { contact, meetings, loading, error };
 }
 
 export function GetContacts() {
     const [contacts, setContacts] = useState([]);
+    
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -270,6 +272,7 @@ export function GetContactsByTag(tagName) {
             .then((res) => {
                 setLoading(false);
                 res.data && setContacts(res.data.contacts);
+                console.log(res.data);
             })
             .catch((err) => {
                 setLoading(false);

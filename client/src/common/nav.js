@@ -1,12 +1,15 @@
 // navigation bar which contains logo, tabs, search bar, setting and profile photo
 import { MdSettings } from "react-icons/md";
 import Logo from "./logo";
-import Avatar from '@mui/material/Avatar';
+import Avatar from "@mui/material/Avatar";
 import SearchBar from "./searchBar";
 import { Link, useHistory } from "react-router-dom";
 // import { useState } from "react/cjs/react.development";
 import { useState } from "react";
-import Stack from '@mui/material/Stack';
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import SettingsIcon from "@mui/icons-material/Settings";
+import IconButton from "@mui/material/IconButton";
 
 // navigate user to selected tab
 const NavigationBar = () => {
@@ -48,10 +51,22 @@ const NavigationBar = () => {
 
 const Nav = () => {
     return (
-        <Stack>
-            
+        <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
+        >
+            <Logo />
+            <Button variant="text">Contact</Button>
+            <Button variant="text">Meeting</Button>
+            <IconButton color="primary">
+                <SettingsIcon sx={{ fontSize: 30 }}/>
+            </IconButton>
+
+            <Avatar>H</Avatar>
         </Stack>
-    )
-}
+    );
+};
 
 export default NavigationBar;
