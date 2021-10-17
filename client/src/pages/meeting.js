@@ -13,6 +13,7 @@ import {
     EditMeeting,
     DeleteMeeting,
     GetBinList,
+    GetMeetingsBySearch,
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import NavigationBar from "../common/nav";
@@ -30,15 +31,17 @@ import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import CircularProgress from "@mui/material/CircularProgress";
+import { ArrowRight } from "@mui/icons-material";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: "--sideM-bg-color",
         fontSize: 18,
     },
     [`&.${tableCellClasses.body}`]: {
+        backgroundColor: "--content-bg-color",
         fontSize: 14,
-    },
+    }
 }));
 
 const Div = styled("div")(({ theme }) => ({
@@ -71,7 +74,7 @@ export function BasicTable({ meetings }) {
                                 <col width="30%" />
                                 <col width="30%" />
                             </colgroup>
-                            <TableHead>
+                            <TableHead id="tableHead">
                                 <TableRow>
                                     <StyledTableCell>Meeting Name</StyledTableCell>
                                     <StyledTableCell>Location</StyledTableCell>
@@ -95,7 +98,7 @@ export function BasicTable({ meetings }) {
                                             }}
                                             onClick={() =>
                                                 history.push(
-                                                    `/contact/${row._id}`
+                                                    `/meeting/${row._id}`
                                                 )
                                             }
                                         >
@@ -157,38 +160,60 @@ const MeetingAll = () => {
     return <BasicTable meetings={meetings} />;
 };
 
+// show meeting with specific tag
 const MeetingWithTag = () => {
     let { tagName } = useParams();
-    const { data, loading, error } = GetMeetingsWithTag(tagName);
+    const { meetings, loading, error } = GetMeetingsWithTag(tagName);
 
     if (loading) {
-        return <p>loading</p>;
+        return <p>{loading}</p>;
     }
 
     if (error) {
-        return <p>error</p>;
+        return <p>{error}</p>;
     }
 
-    return <Table tab="meeting" data={data} option="delete"/>;
+    return <BasicTable meetings={meetings} />;
 };
 
+// show all deleted meetings
 const MeetingBin = () => {
     const { data, loading, error } = GetBinList("M");
 
     if (loading) {
-        return <p>loading</p>;
+        return <p>{loading}</p>;
     }
 
     if (error) {
-        return <p>error</p>;
+        return <p>{error}</p>;
     }
 
     return (
-        <div>
-            {data.length ? <p>meetings in bin</p> : <p>no meetings found.</p>}
-        </div>
+        <>
+            {data.length ? (
+                <p>{data.length} record(s) found.</p>
+            ) : (
+                <p>no record found.</p>
+            )}
+        </>
     );
 };
+
+// show all from search keyword
+const MeeingSearch = () => {
+    let { keyword } = useParams();
+    const { meetings, loading, error } = GetMeetingsBySearch(keyword);
+
+    if (loading) {
+        return <p>{loading}</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+    return <BasicTable meetings={meetings} />;
+};
+
 
 const MeetingDetail = () => {
     let history = useHistory();
@@ -204,31 +229,6 @@ const MeetingDetail = () => {
     } = useForm({
         defaultValues: [],
     });
-
-    const CustomReset = (data) => {
-
-        // get copy of data
-        let defaultValue = JSON.parse(JSON.stringify(data));
-
-        // re-format data
-        defaultValue.Attachment = undefined;
-        if (defaultValue.Tags) {
-            defaultValue.Tags.map(opt => {
-                opt.value = opt.TagId;
-                opt.label = opt.TagName;
-            })
-        }
-        if (defaultValue.StartTime) {
-            defaultValue.Date = defaultValue.StartTime.slice(0, 10);
-            defaultValue.StartTime = defaultValue.StartTime.slice(11, 16);
-        }
-        if (defaultValue.EndTime) {
-            defaultValue.EndTime = defaultValue.EndTime.slice(11, 16);
-        }
-
-        // reset defaultValue
-        reset(defaultValue);
-    }
 
     const onSubmitHandler = (data) => {
 
@@ -267,6 +267,19 @@ const MeetingDetail = () => {
             console.log(data); // test only
         }
 
+    };
+
+    const CustomReset = (meeting) => {
+            let defa = JSON.parse(JSON.stringify(meeting)); // clone tags
+
+            if (defa.Tags) {
+                defa.Tags.map((opt) => {
+                    opt.value = opt.TagId;
+                    opt.label = opt.TagName;
+                });
+            }
+
+            reset(defa);
     };
 
     const onCancelHandler = () => {
@@ -835,8 +848,8 @@ const MeetingCreate = () => {
 //     );
 // };
 
-// decide which subPage will be render based on path
 
+// decide which subPage will be render based on path
 export const Meeting = () => {
     let { path } = useRouteMatch();
 
@@ -859,6 +872,9 @@ export const Meeting = () => {
                 </Route>
                 <Route exact path={path}>
                     <MeetingAll />
+                </Route>
+                <Route path={`${path}/search/:keyword`}>
+                    <MeeingSearch />
                 </Route>
             </Switch>
         </div>

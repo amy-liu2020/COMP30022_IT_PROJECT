@@ -232,7 +232,7 @@ const SideMenu = ({ tagOf }) => {
                         ))
                     )}
                 </Box>
-                <Button variant="contained" onClick={() => setShowPopup(true)}>
+                <Button id="addTagButton" variant="contained" onClick={() => setShowPopup(true)}>
                     add new tag
                 </Button>
                 <Divider />

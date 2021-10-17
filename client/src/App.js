@@ -13,11 +13,12 @@ import React from "react";
 import { useState, useMemo, useEffect } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const theme = createTheme({
+const dark = createTheme({
     palette: {
       primary: {
-        light: "#a7fff5",
-        main: "#5cb2a5",
+        lighter: "#6E7F8A",
+        main: "#d3e5fa",
+        darker: "#2F4656",
         contrastText: '#000',
       },
       secondary: {
@@ -30,7 +31,7 @@ const theme = createTheme({
 
 function App() {
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={dark}>
             <Router>
                 <Switch>
                     <Route path="/contact">

@@ -38,10 +38,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: "--sideM-bg-color",
         fontSize: 18,
     },
     [`&.${tableCellClasses.body}`]: {
+        backgroundColor: "--content-bg-color",
         fontSize: 14,
     },
 }));

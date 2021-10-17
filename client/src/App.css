@@ -21,6 +21,11 @@ body {
         "sideM content";
 }
 
+#addTagButton {
+    background-color: var(--sideM-bg-color);
+    color: black;
+}
+
 .two-part-layout {
     display: grid;
     width: 100vw;
@@ -351,6 +356,9 @@ body {
 }
 
 /* contact section */
+#tableHead {
+    background-color: var(--sideM-bg-color);
+}
 
 .pop-up {
     position: fixed; /* Stay in place */
@@ -370,24 +378,6 @@ body {
     background-color: white;
     display: flex;
     flex-direction: column;
-}
-
-.contact-list {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-    border: none;
-    overflow-y: auto;
-}
-
-.contact-list-head {
-    background-color: white;
-    border: 2px solid grey;
-}
-
-.contact-list-record:hover {
-    background-color: var(--button-hover-lightGrey);
-    cursor: pointer;
 }
 
 .contact-form {
@@ -476,24 +466,6 @@ input:valid {
 } */
 
 /* meeting section */
-
-.meeting-list {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-    border: none;
-    overflow-y: auto;
-}
-
-.meeting-list-head {
-    background-color: white;
-    border: 2px solid grey;
-}
-
-.meeting-list-record:hover {
-    background-color: var(--button-hover-lightGrey);
-    cursor: pointer;
-}
 
 .meeting {
     background-color: var(--content-bg-color);
