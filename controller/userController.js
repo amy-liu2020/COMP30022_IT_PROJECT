@@ -1,6 +1,7 @@
 const MAX_ATTEMPT_TIME = 5;
 
 const User = require("../models/user")
+const Theme = require("../models/theme")
 const fs = require('fs');
 const { PRIVATE_KEY, EXPIRESD } = require("../utils/token")
 const jwt = require("jsonwebtoken");
@@ -73,7 +74,7 @@ const doLogin = (req, res) => {
 
 const getQuestionList = async (req, res) => {
     try {
-        SecurityQuestion.find((err,questions) => {
+        SecurityQuestion.find((err, questions) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -132,9 +133,8 @@ const userDoRegister = async (req, res) => {
                         msg: "Error occurred: " + err
                     })
                 } else {
-                    res.json({
-                        status: 200,
-                        msg: "register success"
+                    res.status(200).json({
+                        msg: "Register successfully"
                     })
                 }
             })
@@ -155,14 +155,26 @@ const userPreferredColor = async (req, res) => {
         if (!color) {
             color = "Green"
             User.findOneAndUpdate({ UserID: uid }, { Color: color }, (err) => {
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+
+            })
+        }
+        let theme = Theme.findOne({ ColorName: color }, (err) => {
+            if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
                 })
-            })
-        }
+                return;
+            }
+        })
         res.status(200).json({
-            msg: "Get color successfully",
-            color: color
+            msg: "Get preferred color successfully",
+            theme: theme
         })
     } catch (err) {
         console.log(err)
@@ -172,6 +184,37 @@ const userPreferredColor = async (req, res) => {
     }
 };
 
+const userChangePreferredColor = async (req, res) => {
+    let uid = req.token.userId
+
+    let { colorName } = req.body
+
+    const theme = Theme.findOne({ ColorName: colorName }, (err) => {
+        if (err) {
+            res.status(400).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }
+    })
+    if (!theme) {
+        res.status(404).json({
+            msg: "Error occurred: " + err
+        })
+        return;
+    }
+    User.findOneAndUpdate({ UserID: uid }, { Color: colorName }, (err) => {
+        if (err) {
+            res.status(400).json({
+                msg: "Error occurred: " + err
+            })
+        } else {
+            res.status(200).json({
+                msg: "Change preferred color successfully"
+            })
+        }
+    })
+}
 
 const getProfile = async (req, res) => {
     try {
@@ -358,8 +401,8 @@ const savePhoto = async (req, res) => {
 
 const changeDetails = (req, res) => {
     let uid = req.token.userId
-    let {userName, phoneNumber, Email} = req.body
-    User.findOneAndUpdate({UserID:uid},{UserName:userName, PhoneNumber:phoneNumber, Email:Email}, (err)=>{
+    let { userName, phoneNumber, Email } = req.body
+    User.findOneAndUpdate({ UserID: uid }, { UserName: userName, PhoneNumber: phoneNumber, Email: Email }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
