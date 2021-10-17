@@ -31,7 +31,6 @@ import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import CircularProgress from "@mui/material/CircularProgress";
-import { ArrowRight } from "@mui/icons-material";
 
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
@@ -46,7 +45,7 @@ const StyledTableCell = styled(TableCell)(() => ({
 
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "--content-bg-color",
     padding: theme.spacing(1),
     margin: "auto",
 }));
@@ -269,18 +268,24 @@ const MeetingDetail = () => {
 
     };
 
-    const CustomReset = (meeting) => {
-            let defa = JSON.parse(JSON.stringify(meeting)); // clone tags
+    const CustomReset = (data) => {
 
-            if (defa.Tags) {
-                defa.Tags.map((opt) => {
-                    opt.value = opt.TagId;
-                    opt.label = opt.TagName;
-                });
-            }
+        // get copy of data
+        let defaultValue = JSON.parse(JSON.stringify(data));
 
-            reset(defa);
-    };
+        // re-format data
+        defaultValue.Attachment = undefined;
+        if (defaultValue.StartTime) {
+            defaultValue.Date = defaultValue.StartTime.slice(0, 10);
+            defaultValue.StartTime = defaultValue.StartTime.slice(11, 16);
+        }
+        if (defaultValue.EndTime) {
+            defaultValue.EndTime = defaultValue.EndTime.slice(11, 16);
+        }
+
+        // reset defaultValue
+        reset(defaultValue);
+    }
 
     const onCancelHandler = () => {
 
@@ -855,7 +860,7 @@ export const Meeting = () => {
 
     return (
         <div className="three-part-layout">
-            <NavigationBar />
+            <NavigationBar tagOf="M"/>
             <SideMenu tagOf="M" />
             <Switch>
                 <Route path={`${path}/create`}>

@@ -665,7 +665,7 @@ export const Contact = () => {
 
     return (
         <div className="three-part-layout">
-            <NavigationBar />
+            <NavigationBar tagOf="C"/>
             <SideMenu tagOf="C" />
             <Switch>
                 <Route path={`${path}/create`}>
