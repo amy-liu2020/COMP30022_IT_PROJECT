@@ -372,7 +372,7 @@ export function GetOneMeeting(id) {
 }
 
 export function GetMeetings() {
-    const [data, setData] = useState([]);
+    const [meetings, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -397,7 +397,7 @@ export function GetMeetings() {
         };
     }, []);
 
-    return { data, loading, error };
+    return { meetings, loading, error };
 }
 
 export function GetMeetingsWithTag(tagName) {

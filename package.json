@@ -21,6 +21,9 @@
   "license": "ISC",
   "homepage": "https://github.com/amy-liu2020/COMP30022_IT_PROJECT#readme",
   "dependencies": {
+    "@emotion/styled": "^11.3.0",
+    "@mui/icons-material": "^5.0.4",
+    "@mui/material": "^5.0.4",
     "@types/core-js": "^2.5.5",
     "body-parser": "^1.19.0",
     "connect-mongo": "^4.5.0",

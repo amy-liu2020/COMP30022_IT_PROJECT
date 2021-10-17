@@ -16,27 +16,145 @@ import {
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import NavigationBar from "../common/nav";
-import Table from "../common/table";
-import meetings from "../json/MeetingList.json";
 import { useForm } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import { MultipleSelectChip } from "../common/tag";
 import { useState, useEffect, useMemo} from "react";
 
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TablePagination from "@mui/material/TablePagination";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import CircularProgress from "@mui/material/CircularProgress";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: theme.palette.secondary.main,
+        fontSize: 18,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+    },
+}));
+
+const Div = styled("div")(({ theme }) => ({
+    ...theme.typography.h4,
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1),
+    margin: "auto",
+}));
+
+export function BasicTable({ meetings }) {
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 10;
+    let history = useHistory();
+
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - meetings.length) : 0;
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    return (
+        <>
+            {meetings.length ? (
+                <div>
+                    <TableContainer>
+                        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                            <colgroup>
+                                <col width="40%" />
+                                <col width="30%" />
+                                <col width="30%" />
+                            </colgroup>
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Meeting Name</StyledTableCell>
+                                    <StyledTableCell>Location</StyledTableCell>
+                                    <StyledTableCell>Date</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {meetings
+                                    .slice(
+                                        page * rowsPerPage,
+                                        page * rowsPerPage + rowsPerPage
+                                    )
+                                    .map((row) => (
+                                        <TableRow
+                                            key={row.name}
+                                            sx={{
+                                                "&:hover": {
+                                                    background: "#ddd",
+                                                    cursor: "pointer",
+                                                },
+                                            }}
+                                            onClick={() =>
+                                                history.push(
+                                                    `/contact/${row._id}`
+                                                )
+                                            }
+                                        >
+                                            <StyledTableCell
+                                                component="th"
+                                                scope="row"
+                                            >
+                                                {row.Title}
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                {row.Location}
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                {row.Date}
+                                            </StyledTableCell>
+                                        </TableRow>
+                                    ))}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: 53 * emptyRows,
+                                        }}
+                                    >
+                                        <StyledTableCell colSpan={3} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[]}
+                        component="div"
+                        count={meetings.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                    />
+                </div>
+            ) : (
+                <Div>no record found.</Div>
+            )}
+        </>
+    );
+}
+
+
+// show all active meetings
 const MeetingAll = () => {
-    const { data, loading, error } = GetMeetings();
+    const { meetings, loading, error } = GetMeetings();
 
     if (loading) {
-        return <p>loading</p>;
+        return <CircularProgress size={100} />;
     }
 
     if (error) {
-        return <p>error</p>;
+        return <p>{error}</p>;
     }
 
-    return (
-        <Table tab="meeting" data={data} option="delete"/>
-    );
+    return <BasicTable meetings={meetings} />;
 };
 
 const MeetingWithTag = () => {
@@ -176,12 +294,12 @@ const MeetingDetail = () => {
         CustomReset(data);
     }, [data]);
 
-    if (loading) {
+    if (loading || isSubmitting) {
         return <p>loading</p>;
     }
 
     if (error) {
-        return <p>error</p>;
+        return <p>{error}</p>;
     }
 
     return (
