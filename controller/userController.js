@@ -357,8 +357,20 @@ const savePhoto = async (req, res) => {
 };
 
 const changeDetails = (req, res) => {
-    res.send("Details")
-    console.log("Details")
+    let uid = req.token.userId
+    let {userName, phoneNumber, Email} = req.body
+    User.findOneAndUpdate({UserID:uid},{UserName:userName, PhoneNumber:phoneNumber, Email:Email}, (err)=>{
+        if (err) {
+            res.status(400).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        } else {
+            res.status(200).json({
+                msg: "Edit user information successfully"
+            })
+        }
+    })
 };
 
 module.exports = {
