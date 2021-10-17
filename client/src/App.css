@@ -360,6 +360,10 @@ body {
     background-color: var(--sideM-bg-color);
 }
 
+#tableBody {
+    background-color: var(--content-bg-color);
+}
+
 .pop-up {
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -442,6 +446,7 @@ body {
     width: 200px;
     height: 100px;
     resize: none;
+    border: 3px solid var(--nav-bg-color);
 }
 
 .form-note {
@@ -481,9 +486,15 @@ input:valid {
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
-    row-gap: 5px;
+    row-gap: 3px;
     margin-left: 45px;
-    font-size: 22px;
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+.meetingForm-keyInfo input {
+    margin-bottom: 7px;
+    padding: 6px 17px;
 }
 
 .meetingForm-name > * {
@@ -491,13 +502,12 @@ input:valid {
     border: none;
     outline: none;
     font-size: 35px;
-    width: 180px;
+    width: 500px;
 }
 
 .meetingForm-record {
     position: flex;
     width: 400px;
-    justify-content: space-between;
     margin: 15px;
 }
 
@@ -505,18 +515,12 @@ input:valid {
     border: none;
 }
 
-.meetingForm-record select {
-    height: 20px;
-    width: 200px;
-    border: none;
-    cursor: pointer;
-}
-
 .meetingForm-record input[type="text"],
 [type="url"] {
     height: 20px;
     width: 200px;
     border: none;
+    float: right;
 }
 
 .meetingForm-record input[type="time"],
@@ -525,6 +529,7 @@ input:valid {
     width: 200px;
     border: none;
     cursor: text;
+    float: right;
 }
 
 .meetingForm-record input:focus {
@@ -532,8 +537,8 @@ input:valid {
 }
 
 .meetingForm-Info {
-    position: block;
     margin: 30px;
+    margin-bottom: 20px;
 }
 
 #meetingForm-noteArea {
@@ -568,6 +573,7 @@ input:valid {
 
 .meeting-form > button[type="submit"],
 .detail-edit {
+    margin-right: 20px;
     float: right;
     border-radius: 20px;
     border: 2px solid gray;
@@ -578,6 +584,10 @@ input:valid {
 
 .meetingForm-attachment {
     margin-left: 45px;
+}
+
+#meetingTag {
+    color: #000;
 }
 
 /*  setting section */

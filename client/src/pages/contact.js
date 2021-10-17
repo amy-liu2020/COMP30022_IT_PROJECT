@@ -36,7 +36,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: "--sideM-bg-color",
         fontSize: 18,
@@ -49,7 +49,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "--content-bg-color",
     padding: theme.spacing(1),
     margin: "auto",
 }));
@@ -77,7 +77,7 @@ export function BasicTable({ contacts }) {
                                 <col width="30%" />
                                 <col width="30%" />
                             </colgroup>
-                            <TableHead>
+                            <TableHead id="tableHead">
                                 <TableRow>
                                     <StyledTableCell>Name</StyledTableCell>
                                     <StyledTableCell>
@@ -86,7 +86,7 @@ export function BasicTable({ contacts }) {
                                     <StyledTableCell>Email</StyledTableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody id="tableBody">
                                 {contacts
                                     .slice(
                                         page * rowsPerPage,
@@ -136,6 +136,7 @@ export function BasicTable({ contacts }) {
                         </Table>
                     </TableContainer>
                     <TablePagination
+                        id="tableBody"
                         rowsPerPageOptions={[]}
                         component="div"
                         count={contacts.length}

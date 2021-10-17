@@ -80,7 +80,7 @@ export function BasicTable({ meetings }) {
                                     <StyledTableCell>Date</StyledTableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody id="tableBody">
                                 {meetings
                                     .slice(
                                         page * rowsPerPage,
@@ -128,6 +128,7 @@ export function BasicTable({ meetings }) {
                         </Table>
                     </TableContainer>
                     <TablePagination
+                        id="tableBody"
                         rowsPerPageOptions={[]}
                         component="div"
                         count={meetings.length}
@@ -199,7 +200,7 @@ const MeetingBin = () => {
 };
 
 // show all from search keyword
-const MeeingSearch = () => {
+const MeetingSearch = () => {
     let { keyword } = useParams();
     const { meetings, loading, error } = GetMeetingsBySearch(keyword);
 
@@ -269,10 +270,7 @@ const MeetingDetail = () => {
     };
 
     const CustomReset = (data) => {
-
-        // get copy of data
         let defaultValue = JSON.parse(JSON.stringify(data));
-
         // re-format data
         defaultValue.Attachment = undefined;
         if (defaultValue.StartTime) {
@@ -283,6 +281,12 @@ const MeetingDetail = () => {
             defaultValue.EndTime = defaultValue.EndTime.slice(11, 16);
         }
 
+        if (defaultValue.Tags) {
+            defaultValue.Tags.map((opt) => {
+                opt.value = opt.TagId;
+                opt.label = opt.TagName;
+            });
+        }
         // reset defaultValue
         reset(defaultValue);
     }
@@ -427,10 +431,11 @@ const MeetingDetail = () => {
                     />
                 </div> */}
 
-                <div class="meetingForm-notes">
+                <div className="meetingForm-notes">
                     <label>Notes: </label>
                     <input
-                        type="text"
+                        type="textarea"
+                        id = "form-noteArea"
                         {...register("Notes")}
                         disabled={isDisabled}
                     />
@@ -440,6 +445,7 @@ const MeetingDetail = () => {
                     <label>Key words:</label>
                     <input
                         type="text"
+                        id = "form-noteArea"
                         {...register("NotesKeyWords")}
                         disabled={isDisabled}
                     />
@@ -511,7 +517,7 @@ const MeetingCreate = () => {
                             required
                         />
                     </div>
-                    <MultipleSelectChip control={control} tagOf="M"/>
+                    <MultipleSelectChip id="meetingTag" control={control} tagOf="M"/>
                     <div class="meetingForm-record">
                         <label>Location: </label>
                         <input type="text" {...register("Location")} />
@@ -559,300 +565,6 @@ const MeetingCreate = () => {
     );
 };
 
-// const Detail = () => {
-//     let history = useHistory();
-//     let { meetingID } = useParams();
-//     const { meeting, loading, error } = GetOneMeeting(meetingID);
-
-//     const {
-//         register,
-//         reset,
-//         handleSubmit,
-//         formState: { isDirty, isSubmitting },
-//     } = useForm({
-//         defaultValues: useMemo(() => meeting, [meeting]),
-//     });
-//     const [inputDisable, setInputDisable] = useState(true);
-
-
-//     const onSubmitHandler = (data) => {
-//         // check if there is any change
-//         if (isDirty) {
-//             // update tags
-//             console.log(data);
-
-//             // send data to server
-//             // EditMeeting(data, meetingID).then((data) => {
-//             //     if (data === undefined) {
-//             //         alert("error");
-//             //     } else {
-//             //         alert(data.msg);
-//             //         window.location.reload(); // refresh page
-//             //     }
-//             // });
-//         }
-
-//         // switch to view mode
-//         setInputDisable(true);
-//     };
-
-//     const onCancelHandler = () => {
-//         reset(meeting);
-//         setInputDisable(true);
-//     };
-
-//     const onDeleteHandler = () => {
-//         // send request to server
-//         DeleteMeeting(meetingID).then((res) => {
-//             console.log(res);
-//         });
-
-//         // redirect to list page
-//         history.push("/meeting");
-//     };
-
-//     useEffect(() => {
-//         reset(meeting);
-//     }, [meeting, reset]);
-
-//     if (loading || isSubmitting) {
-//         return <p>loading...</p>;
-//     }
-
-//     if (error) {
-//         return <p>{error}</p>;
-//     }
-//     // // fetch meeting from data
-//     // useEffect(() => {
-//     //     setMeeting(meetings.filter((meeting) => meeting._id == meetingID)[0]);
-//     //     // console.log(meetings[meetingID]);
-//     // }, [meetingID]);
-
-//     return (
-//         <div className="meeting">
-//             <form className="meeting-form">
-//                 <button
-//                     className="detail-edit"
-//                     type="button"
-//                     onClick={() => history.push(`/meeting/edit/${meeting._id}`)}
-//                 >
-//                     edit meeting
-//                 </button>
-
-//                 <div class="meetingForm-keyInfo">
-//                     <div class="meetingForm-name">
-//                         {/* <text type="text" name="name" maxLength="30" placeholder="name">{meeting.name}</text> */}
-//                         <text> {meeting.Title} </text>
-//                     </div>
-//                     <button type="button">
-//                         <MdAdd size={15} />
-//                     </button>
-//                     <div class="meetingForm-record">
-//                         <label>Location: </label>
-//                         <text type="text" name="location">
-//                             {meeting.Location}
-//                         </text>
-//                     </div>
-//                 </div>
-
-//                 <div class="meetingForm-Info">
-//                     <div class="meetingForm-record">
-//                         <label>Date: </label>
-//                         <text name="Date">
-//                             {meeting.StartTime &&
-//                                 new Date(
-//                                     Date(meeting.StartTime)
-//                                 ).toLocaleDateString()}
-//                         </text>
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>Start Time: </label>
-//                         <text name="Date">
-//                             {meeting.StartTime &&
-//                                 new Date(Date(meeting.StartTime))
-//                                     .toUTCString()
-//                                     .slice(17, 22)}
-//                         </text>
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>End Time: </label>
-//                         <text name="Date">
-//                             {meeting.EndTime &&
-//                                 new Date(Date(meeting.EndTime))
-//                                     .toUTCString()
-//                                     .slice(17, 22)}
-//                         </text>
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>Repeat: </label>
-//                         <text type="frequency" name="frequency">
-//                             {meeting.Frequency}
-//                         </text>
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>URL: </label>
-//                         <text type="url" name="url">
-//                             {meeting.URL}
-//                         </text>
-//                     </div>
-//                 </div>
-
-//                 <div class="meetingForm-attachment">
-//                     <label>Attachment: </label>
-//                     <file
-//                         id="form-attachmentArea"
-//                         placeholder="add files..."
-//                         name="attachment"
-//                     >
-//                         {meeting.attachment}
-//                     </file>
-//                 </div>
-
-//                 <div class="meetingForm-notes">
-//                     <label>Notes: </label>
-//                     <text id="meetingForm-noteArea" name="notes">
-//                         {meeting.Notes}
-//                     </text>
-//                 </div>
-
-//                 <div class="meetingForm-keyWords">
-//                     <label>Key words:</label>
-//                     <text id="meetingForm-keyWordsArea" name="keyWords">
-//                         {meeting.NotesKeyWords}
-//                     </text>
-//                 </div>
-//             </form>
-//         </div>
-//     );
-// };
-
-// const Edit = () => {
-//     let history = useHistory();
-//     let { meetingID } = useParams();
-//     const {
-//         register,
-//         formState: { errors },
-//         handleSubmit,
-//     } = useForm({
-//         criteriaMode: "all",
-//         defaultValues: meetings.filter(
-//             (meeting) => meeting._id == meetingID
-//         )[0],
-//     });
-
-//     const setSelectedTags = () => {
-//         // set tags
-//     };
-
-//     const onSubmit = (data) => {
-//         console.log(data);
-//         history.push("/meeting");
-//     };
-
-//     return (
-//         <div className="content">
-//             <form className="meeting-form" onSubmit={handleSubmit(onSubmit)}>
-//                 <button type="submit">save</button>
-
-//                 <div class="meetingForm-keyInfo">
-//                     <div class="meetingForm-name">
-//                         <input type="text" {...register("Title")} />
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>Location: </label>
-//                         <input type="text" {...register("Location")} />
-//                     </div>
-//                 </div>
-
-//                 <div class="meetingForm-Info">
-//                     <div class="meetingForm-record">
-//                         <label>Date: </label>
-//                         <input
-//                             type="date"
-//                             defaultValue={new Date(
-//                                 Date(meetings[meetingID].Date)
-//                             ).toISOString()}
-//                         />
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>Start Time: </label>
-//                         <input
-//                             type="date"
-//                             defaultValue={new Date(
-//                                 Date(meetings[meetingID].Date) + meetings[meetingID].StartTime.$date.slice(0, 10)
-//                             ).toISOString()}
-//                         />
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>End Time: </label>
-//                         <input
-//                             type="date"
-//                             defaultValue={new Date(
-//                                 Date(meetings[meetingID].Date) + meetings[meetingID].EndTime.$date.slice(0, 10)
-//                             ).toISOString()}
-//                         />
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>Repeat: </label>
-//                         <select name="frequency" {...register("Frequency")}>
-//                             <option disabled selected>
-//                                 --select--
-//                             </option>
-//                             <option>every day</option>
-//                             <option>every week</option>
-//                             <option>every month</option>
-//                             <option>every year</option>
-//                             <option>never</option>
-//                         </select>
-//                     </div>
-
-//                     <div class="meetingForm-record">
-//                         <label>URL: </label>
-//                         <input type="url" {...register("URL")} />
-//                     </div>
-//                 </div>
-
-//                 <div class="meetingForm-attachment">
-//                     <label>Attachment: </label>
-//                     <input
-//                         class="attach"
-//                         type="file"
-//                         {...register("Attachment")}
-//                     />
-//                 </div>
-
-//                 <div class="meetingForm-notes">
-//                     <label>Notes: </label>
-//                     <textarea
-//                         id="meetingForm-noteArea"
-//                         maxlength="140"
-//                         placeholder="add notes..."
-//                         {...register("Notes")}
-//                     ></textarea>
-//                 </div>
-
-//                 <div class="meetingForm-keyWords">
-//                     <label>Key words:</label>
-//                     <textarea
-//                         id="meetingForm-keyWordsArea"
-//                         maxlength="60"
-//                         placeholder="add key words..."
-//                         {...register("NotesKeyWords")}
-//                     ></textarea>
-//                 </div>
-//             </form>
-//         </div>
-//     );
-// };
-
 
 // decide which subPage will be render based on path
 export const Meeting = () => {
@@ -879,7 +591,7 @@ export const Meeting = () => {
                     <MeetingAll />
                 </Route>
                 <Route path={`${path}/search/:keyword`}>
-                    <MeeingSearch />
+                    <MeetingSearch />
                 </Route>
             </Switch>
         </div>
