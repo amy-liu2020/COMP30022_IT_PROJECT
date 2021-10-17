@@ -748,3 +748,85 @@ export const Meeting = () => {
 };
 
 export default Meeting;
+
+{/* <Box
+sx={{
+    gridArea: "main",
+    bgcolor: "#EBF8F6",
+    padding: "10px 25px",
+}}
+>
+<Grid container direction="row" marginBottom="25px">
+    <Grid item xs={4}>
+        <Stack spacing={2} maxWidth="300px">
+            <Input
+                placeholder="Title"
+                sx={{
+                    fontSize: "40px",
+                    width: "180px",
+                }}
+            />
+            <Select />
+            <FormField>
+                <Box>Location:</Box>
+                <Input />
+            </FormField>
+        </Stack>
+    </Grid>
+    <Grid item xs={4} marginRight="50px">
+        <Select />
+    </Grid>
+    <Grid item xs={1} marginRight="50px">
+        <Chip
+            label="delete"
+            variant="outlined"
+            clickable={true}
+        />
+        <Chip
+            label="edit"
+            variant="outlined"
+            clickable={true}
+        />
+    </Grid>
+</Grid>
+<Divider />
+<Grid container direction="row">
+    <Grid item xs={4}>
+        <FormField>
+            <Box>Date:</Box>
+            <Input type="date" />
+        </FormField>
+        <FormField>
+            <Box>Start Time:</Box>
+            <Input type="time" />
+        </FormField>
+        <FormField>
+            <Box>End Time:</Box>
+            <Input type="time" />
+        </FormField>
+        <FormField>
+            <Box>URL:</Box>
+            <Input type="url" />
+        </FormField>
+        <FormField>
+            <Box>Attachment:</Box>
+            <Input type="file" />
+        </FormField>
+    </Grid>
+
+    <Grid item xs={4} marginLeft="400px" marginTop="25px">
+        <Box component={Paper} padding="10px">
+            <Box>Notes</Box>
+            <Input placeholder="keywords" fullWidth />
+            <TextField
+                multiline
+                rows={5}
+                placeholder="Write something..."
+                fullWidth
+                margin="normal"
+                variant="outlined"
+            />
+        </Box>
+    </Grid>
+</Grid>
+</Box> */}

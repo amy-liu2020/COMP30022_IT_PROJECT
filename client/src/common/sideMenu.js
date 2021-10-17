@@ -1,12 +1,9 @@
-import { MdAdd } from "react-icons/md";
-import { FaTimes } from "react-icons/fa";
-// import { useState } from "react/cjs/react.development";
+
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { GetTags, AddTag, DeleteTag } from "../api";
 
 import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Divider from "@mui/material/Divider";
 import Fab from "@mui/material/Fab";
@@ -74,62 +71,6 @@ const AddTagDialog = ({ open, setOpen, tagOf }) => {
     );
 };
 
-// pop-up that allow user to enter tagName
-const PopUp = ({ tagOf, turnOff }) => {
-    const [tagName, setTagName] = useState(null);
-    const [isPending, setPending] = useState(false);
-
-    // handle the tag creation
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-
-        // re-group data
-        const tag = {
-            tagName: tagName,
-            tagOf: tagOf,
-        };
-
-        // send data to server
-        setPending(true);
-        AddTag(tag).then((data) => {
-            setPending(false);
-            if (data === undefined) {
-                alert("error");
-            } else {
-                // alert(data.msg);
-                window.location.reload(); // refresh page
-            }
-        });
-    };
-
-    // todo: add styling for pop-up
-    return (
-        <div className="pop-up">
-            <form onSubmit={onSubmitHandler}>
-                <input
-                    type="text"
-                    placeholder="tagName"
-                    onChange={(e) => setTagName(e.target.value)}
-                    style={{
-                        marginBottom: "10px",
-                        width: "200px",
-                        height: "30px",
-                        fontSize: "20px",
-                    }}
-                />
-                <div>
-                    <button type="button" onClick={turnOff}>
-                        cancel
-                    </button>
-                    <button type="submit" style={{ float: "right" }}>
-                        {isPending ? "uploading..." : "create"}
-                    </button>
-                </div>
-            </form>
-        </div>
-    );
-};
-
 // for contact, tagOf = 'C'; for meeting, tagOf = 'M'
 const SideMenu = ({ tagOf }) => {
     const { tags, loading, error } = GetTags(tagOf);
@@ -172,7 +113,7 @@ const SideMenu = ({ tagOf }) => {
     return (
         <>
             <AddTagDialog open={showPopup} setOpen={setShowPopup} tagOf={tagOf}/>
-            <div className="sideM">
+            <Box sx={{ gridArea: "sidebar", bgcolor: "#77CFC3", display: "flex", flexDirection: "column", rowGap: "20px", padding: "20px"}}>
                 <Fab
                     variant="extended"
                     onClick={() => history.push(`/${tab}/create`)}
@@ -243,14 +184,14 @@ const SideMenu = ({ tagOf }) => {
                         "&": {
                             textAlign: "left",
                             display: "flex",
-                            justifyContent: "space-between",
+                            justifyContent: "space-between"
                         },
                         "&:hover": {
                             cursor: "pointer",
                         },
                     }}
                 />
-            </div>
+            </Box>
         </>
     );
 };

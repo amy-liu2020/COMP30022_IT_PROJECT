@@ -10,6 +10,15 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import SearchIcon from "@mui/icons-material/Search";
+import Popper from "@mui/material/Popper";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { Paper } from "@mui/material";
+import { useForm } from "react-hook-form";
 
 // navigate user to selected tab
 const NavigationBar = () => {
@@ -40,7 +49,14 @@ const NavigationBar = () => {
                             <Link to="/user/profile">profile</Link>
                         </li>
                         <li>
-                            <Link to="/" onClick={() => localStorage.setItem("token", "")}>log out</Link>
+                            <Link
+                                to="/"
+                                onClick={() =>
+                                    localStorage.setItem("token", "")
+                                }
+                            >
+                                log out
+                            </Link>
                         </li>
                     </ul>
                 )}
@@ -49,23 +65,123 @@ const NavigationBar = () => {
     );
 };
 
-const Nav = () => {
-    return (
-        <Stack
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
-        >
-            <Logo />
-            <Button variant="text">Contact</Button>
-            <Button variant="text">Meeting</Button>
-            <IconButton color="primary">
-                <SettingsIcon sx={{ fontSize: 30 }}/>
-            </IconButton>
+const Search = () => {
+    const { register, handleSubmit } = useForm();
+    let history = useHistory();
 
-            <Avatar>H</Avatar>
-        </Stack>
+    const onSubmitHandler = (data) => {
+        history.push(`/contact/search/${data.keyword}`);
+    };
+
+    return (
+        <Box
+            sx={{
+                marginLeft: "auto",
+                paddingLeft: "20px",
+                borderRadius: "20px",
+                bgcolor: "#ffffff",
+                opacity: 0.4,
+                "&:hover": {
+                    opacity: 0.7,
+                },
+            }}
+        ><form onSubmit={handleSubmit(onSubmitHandler)}>
+            <TextField
+                variant="standard"
+                placeholder="search..."
+                color="secondary"
+                {...register("keyword", {
+                    required: true,
+                })}
+                type="search"
+                sx={{ margin: "5px" }}
+            />
+            <IconButton type="submit">
+                <SearchIcon color="secondary" />
+            </IconButton>
+            </form>
+        </Box>
+    );
+};
+
+export const Nav = () => {
+    let history = useHistory();
+    const [anchorEl, setAnchorEl] = useState(false);
+    const open = Boolean(anchorEl);
+
+    const onLogOutHandler = () => {
+        // clear token
+        localStorage.clear();
+
+        // redirect to login page
+        history.push("/");
+    };
+
+    return (
+        <Box
+            sx={{
+                gridArea: "header",
+                bgcolor: "#8BE8DA",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                columnGap: "20px",
+                paddingLeft: "40px",
+            }}
+        >
+            <Logo width={70} />
+            <Button
+                variant="text"
+                color="secondary"
+                onClick={() => history.push("/contact")}
+            >
+                Contact
+            </Button>
+            <Button
+                variant="text"
+                color="secondary"
+                onClick={() => history.push("/meeting")}
+            >
+                Meeting
+            </Button>
+            <Search />
+            <IconButton onClick={() => history.push("/user/setting")}>
+                <SettingsIcon color="secondary" sx={{ fontSize: 30 }} />
+            </IconButton>
+            <Button
+                disableRipple
+                sx={{ marginRight: "20px" }}
+                onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)}
+            >
+                <Avatar
+                    sx={{
+                        bgcolor: "#ffffff",
+                        color: "#000000",
+                    }}
+                />
+            </Button>
+            <Popper open={open} anchorEl={anchorEl} placement="bottom-end">
+                <Paper>
+                    <ClickAwayListener
+                        onClickAway={() => {
+                            setAnchorEl(null);
+                        }}
+                    >
+                        <MenuList autoFocusItem={open}>
+                            <MenuItem
+                                onClick={() => history.push("/user/profile")}
+                            >
+                                Profile
+                            </MenuItem>
+                            <MenuItem onClick={onLogOutHandler}>
+                                Logout
+                            </MenuItem>
+                        </MenuList>
+                    </ClickAwayListener>
+                </Paper>
+            </Popper>
+        </Box>
     );
 };
 
