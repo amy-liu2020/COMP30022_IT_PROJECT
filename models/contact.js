@@ -29,6 +29,10 @@ const ContactSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
+    Photo: {
+        type: Buffer,
+        default: ""
+    },
     Tags:[{
         _id:false,
         TagName:String,

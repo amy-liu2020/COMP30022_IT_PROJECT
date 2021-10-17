@@ -21,7 +21,7 @@ function uploadFile (req, res, next) {
         } else if (err){
             res.send("other err:"+ err)
         } else {
-            req.body.photo = req.file;
+            req.body.file = req.file;
             next();
         }
     })
