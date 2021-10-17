@@ -33,8 +33,7 @@ const doLogin = (req, res) => {
         })
         return;
     }
-
-
+    
     try {
         let { userId, password } = req.body;
         let ePassword = encrypt(password)
@@ -51,7 +50,6 @@ const doLogin = (req, res) => {
                     res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
                     res.status(200).json({
                         msg: "Login successfully",
-                        account: account,
                         token: token
                     })
                     return;

@@ -30,6 +30,7 @@ app.use(function (req, res, next) {
     console.log(arr)
     if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
         console.log("white list")
+        next()
     } else {
 
         var bearerHeader = req.headers.authorization
