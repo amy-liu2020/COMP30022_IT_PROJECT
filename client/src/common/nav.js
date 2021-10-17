@@ -66,12 +66,12 @@ const NavigationBar = ({tagOf}) => {
     );
 };
 
-const Search = () => {
+const Search = ({tab}) => {
     const { register, handleSubmit } = useForm();
     let history = useHistory();
 
     const onSubmitHandler = (data) => {
-        history.push(`/contact/search/${data.keyword}`);
+        history.push(`/${tab}/search/${data.keyword}`);
     };
 
     return (
@@ -105,7 +105,7 @@ const Search = () => {
     );
 };
 
-export const Nav = () => {
+export const Nav = ({tab}) => {
     let history = useHistory();
     const [anchorEl, setAnchorEl] = useState(false);
     const open = Boolean(anchorEl);
@@ -146,7 +146,7 @@ export const Nav = () => {
             >
                 Meeting
             </Button>
-            <Search />
+            <Search tab={tab} />
             <IconButton onClick={() => history.push("/user/setting")}>
                 <SettingsIcon color="secondary" sx={{ fontSize: 30 }} />
             </IconButton>

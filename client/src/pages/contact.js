@@ -63,7 +63,7 @@ const rows = [
     createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-const StyledTableCell = styled(TableCell)(() => ({
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.primary.light,
         fontSize: 18,
@@ -213,14 +213,16 @@ function BinTable({ contacts }) {
                 >
                     <TableContainer>
                         <Table sx={{ minWidth: 400 }}>
-                        <colgroup>
+                            <colgroup>
                                 <col width="50%" />
                                 <col width="50%" />
                             </colgroup>
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell>Name</StyledTableCell>
-                                    <StyledTableCell>Delete Time</StyledTableCell>
+                                    <StyledTableCell>
+                                        Delete Time
+                                    </StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -254,7 +256,7 @@ function BinTable({ contacts }) {
                                                 component="th"
                                                 scope="row"
                                             >
-                                                {row.DeleteDate.slice(0,10)}
+                                                {row.DeleteDate.slice(0, 10)}
                                             </StyledTableCell>
                                         </TableRow>
                                     ))}
@@ -705,82 +707,248 @@ const ContactCreate = () => {
     };
 
     return (
-        <div className="content">
-            <form
-                className="contact-form"
-                onSubmit={handleSubmit(onSubmitHandler)}
-            >
-                <button type="submit">save</button>
-                <div className="form-avatar">
-                    <MdAdd id="form-addPhoto" size={50} />
-                </div>
-                <div className="form-keyInfo">
-                    <div className="form-name">
-                        <input
-                            type="text"
-                            placeholder="FirstName"
-                            {...register("FirstName")}
-                            required
+        <Box
+            sx={{
+                gridArea: "main",
+                bgcolor: "#EBF8F6",
+                padding: "10px 25px",
+            }}
+        >
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="start"
+                    spacing={12}
+                    marginBottom="35px"
+                >
+                    <Grid item xs={2}>
+                        <Avatar
+                            sx={{
+                                width: "200px",
+                                height: "200px",
+                                cursor: "pointer",
+                            }}
                         />
-                        <input
-                            type="text"
-                            placeholder="LastName"
-                            {...register("LastName")}
-                            required
+                    </Grid>
+                    <Grid item xs>
+                        <Box
+                            height="170px"
+                            width="380px"
+                            sx={{
+                                paddingTop: "30px",
+                                display: "flex",
+                                justifyContent: "space-evenly",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Box marginBottom="20px">
+                                <Input
+                                    placeholder="Firstname"
+                                    sx={{
+                                        fontSize: "30px",
+                                        width: "180px",
+                                    }}
+                                />
+                                <Input
+                                    placeholder="Lastname"
+                                    sx={{
+                                        fontSize: "30px",
+                                        float: "right",
+                                        width: "180px",
+                                    }}
+                                />
+                            </Box>
+                            <Select autoWidth multiple />
+                            <FormField>
+                                <Box minWidth="130px">Mobile Number:</Box>
+                                <Input fullWidth />
+                            </FormField>
+                            <FormField>
+                                <Box minWidth="130px">Home Number:</Box>
+                                <Input fullWidth />
+                            </FormField>
+                        </Box>
+                    </Grid>
+                    <Grid item xs="auto">
+                        <Chip
+                            label="delete"
+                            variant="outlined"
+                            clickable={true}
                         />
-                    </div>
-                    {/* <Tag tagOf="C" setSelectedTags={selectedTagsHandler} /> */}
-                    <MultipleSelectChip control={control} tagOf="C" />
-                    <div className="form-record">
-                        <label>Home: </label>
-                        <input type="tel" {...register("HomeNo")} />
-                    </div>
-                    <div className="form-record">
-                        <label>Mobile: </label>
-                        <input type="tel" {...register("MobileNo")} />
-                    </div>
-                </div>
-                <div className="form-Info">
-                    <div className="form-record">
-                        <label>Email: </label>
-                        <input type="email" {...register("Email")} />
-                    </div>
-
-                    <div className="form-record">
-                        <label>Job tittle: </label>
-                        <input type="text" {...register("JobTitle")} />
-                    </div>
-
-                    <div className="form-record">
-                        <label>Company: </label>
-                        <input type="text" {...register("Company")} />
-                    </div>
-
-                    <div className="form-record">
-                        <label>DOB: </label>
-                        <input type="date" {...register("DOB")} />
-                    </div>
-
-                    <div className="form-record">
-                        <label>Relationship: </label>
-                        <input type="text" {...register("Relationship")} />
-                    </div>
-
-                    <div className="form-record">
-                        <label>Address: </label>
-                        <input type="text" {...register("Address")} />
-                    </div>
-                </div>
-                <div className="form-note">
-                    <label>Notes: </label>
-                    <textarea
-                        id="form-noteArea"
-                        placeholder="write something..."
-                        {...register("Notes")}
-                    ></textarea>
-                </div>
+                        <Chip
+                            label="edit"
+                            variant="outlined"
+                            clickable={true}
+                        />
+                    </Grid>
+                </Grid>
+                <Divider />
+                <Grid container direction="row">
+                    <Grid item xs={4}>
+                        <FormField>
+                            <Box minWidth="130px">Email:</Box>
+                            <Input fullWidth type="email" />
+                        </FormField>
+                        <FormField>
+                            <Box minWidth="130px">Job title:</Box>
+                            <Input fullWidth />
+                        </FormField>
+                        <FormField>
+                            <Box minWidth="130px">Company:</Box>
+                            <Input fullWidth />
+                        </FormField>
+                        <FormField>
+                            <Box minWidth="130px">DOB:</Box>
+                            <Input fullWidth type="date" />
+                        </FormField>
+                        <FormField>
+                            <Box minWidth="130px">Relationship:</Box>
+                            <Input fullWidth />
+                        </FormField>
+                        <FormField>
+                            <TextField
+                                label="Notes"
+                                multiline
+                                maxRows={3}
+                                placeholder="Write something..."
+                                fullWidth
+                                margin="normal"
+                                variant="filled"
+                            />
+                        </FormField>
+                    </Grid>
+                    <Grid item xs="auto" marginLeft="300px" marginTop="20px">
+                        <Paper>
+                            <Box padding="10px 15px 0px">
+                                <Typography variant="h6" gutterBottom>
+                                    Meetings
+                                </Typography>
+                            </Box>
+                            <TableContainer
+                                sx={{ height: "180px", width: "400px" }}
+                            >
+                                <Table size="small" stickyHeader>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell
+                                                sx={{ bgcolor: "#77CFC3" }}
+                                            >
+                                                Title
+                                            </TableCell>
+                                            <TableCell
+                                                sx={{ bgcolor: "#77CFC3" }}
+                                            >
+                                                Time
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows.map((row) => (
+                                            <TableRow
+                                                key={row.name}
+                                                sx={{
+                                                    "&:last-child td, &:last-child th":
+                                                        { border: 0 },
+                                                }}
+                                            >
+                                                <TableCell
+                                                    component="th"
+                                                    scope="row"
+                                                >
+                                                    {row.name}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {row.calories}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>
+                    </Grid>
+                </Grid>
             </form>
-        </div>
+        </Box>
+
+        // <div className="content">
+        //     <form
+        //         className="contact-form"
+        //         onSubmit={handleSubmit(onSubmitHandler)}
+        //     >
+        //         <button type="submit">save</button>
+        //         <div className="form-avatar">
+        //             <MdAdd id="form-addPhoto" size={50} />
+        //         </div>
+        //         <div className="form-keyInfo">
+        //             <div className="form-name">
+        //                 <input
+        //                     type="text"
+        //                     placeholder="FirstName"
+        //                     {...register("FirstName")}
+        //                     required
+        //                 />
+        //                 <input
+        //                     type="text"
+        //                     placeholder="LastName"
+        //                     {...register("LastName")}
+        //                     required
+        //                 />
+        //             </div>
+        //             {/* <Tag tagOf="C" setSelectedTags={selectedTagsHandler} /> */}
+        //             <MultipleSelectChip control={control} tagOf="C" />
+        //             <div className="form-record">
+        //                 <label>Home: </label>
+        //                 <input type="tel" {...register("HomeNo")} />
+        //             </div>
+        //             <div className="form-record">
+        //                 <label>Mobile: </label>
+        //                 <input type="tel" {...register("MobileNo")} />
+        //             </div>
+        //         </div>
+        //         <div className="form-Info">
+        //             <div className="form-record">
+        //                 <label>Email: </label>
+        //                 <input type="email" {...register("Email")} />
+        //             </div>
+
+        //             <div className="form-record">
+        //                 <label>Job tittle: </label>
+        //                 <input type="text" {...register("JobTitle")} />
+        //             </div>
+
+        //             <div className="form-record">
+        //                 <label>Company: </label>
+        //                 <input type="text" {...register("Company")} />
+        //             </div>
+
+        //             <div className="form-record">
+        //                 <label>DOB: </label>
+        //                 <input type="date" {...register("DOB")} />
+        //             </div>
+
+        //             <div className="form-record">
+        //                 <label>Relationship: </label>
+        //                 <input type="text" {...register("Relationship")} />
+        //             </div>
+
+        //             <div className="form-record">
+        //                 <label>Address: </label>
+        //                 <input type="text" {...register("Address")} />
+        //             </div>
+        //         </div>
+        //         <div className="form-note">
+        //             <label>Notes: </label>
+        //             <textarea
+        //                 id="form-noteArea"
+        //                 placeholder="write something..."
+        //                 {...register("Notes")}
+        //             ></textarea>
+        //         </div>
+        //     </form>
+        // </div>
     );
 };
 
@@ -799,8 +967,8 @@ export const Contact = () => {
                 gridTemplateAreas: `"header header header header""sidebar main main main "`,
             }}
         >
-            <Nav />
-            <SideMenu tagOf="C"/>
+            <Nav tab="contact" />
+            <SideMenu tagOf="C" />
             {/* <Box
                 sx={{
                     gridArea: "main",

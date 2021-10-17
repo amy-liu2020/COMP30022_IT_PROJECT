@@ -16,12 +16,12 @@ import {
     GetMeetingsBySearch,
 } from "../api";
 import SideMenu from "../common/sideMenu";
-import NavigationBar from "../common/nav";
+import NavigationBar, { Nav } from "../common/nav";
 import { useForm } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import { MultipleSelectChip } from "../common/tag";
 import { useState, useEffect, useMemo} from "react";
-
+import { Box } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -325,7 +325,11 @@ const MeetingDetail = () => {
     }
 
     return (
-        <div className="meeting">
+        <Box
+        sx={{
+            gridArea: "main",
+        }}
+    >
             <form
                 className="meeting-form"
                 onSubmit={handleSubmit(onSubmitHandler)}
@@ -451,7 +455,7 @@ const MeetingDetail = () => {
                     />
                 </div>
             </form>
-        </div>
+        </Box>
     );
 };
 
@@ -499,7 +503,11 @@ const MeetingCreate = () => {
     };
 
     return (
-        <div className="meeting">
+        <Box
+        sx={{
+            gridArea: "main",
+        }}
+    >
             <form
                 className="meeting-form"
                 onSubmit={handleSubmit(onSubmitHandler)}
@@ -559,7 +567,7 @@ const MeetingCreate = () => {
                     <input type="text" id = "form-noteArea" {...register("NotesKeyWords")} />
                 </div>
             </form>
-        </div>
+        </Box>
     );
 };
 
@@ -569,8 +577,17 @@ export const Meeting = () => {
     let { path } = useRouteMatch();
 
     return (
-        <div className="three-part-layout">
-            <NavigationBar tagOf="M"/>
+        <Box
+        sx={{
+            height: "100vh",
+            display: "grid",
+            gridTemplateColumns: "240px auto",
+            gap: 0,
+            gridTemplateRows: "60px auto",
+            gridTemplateAreas: `"header header header header""sidebar main main main "`,
+        }}
+    >
+            <Nav tab="meeting"/>
             <SideMenu tagOf="M" />
             <Switch>
                 <Route path={`${path}/create`}>
@@ -592,7 +609,7 @@ export const Meeting = () => {
                     <MeetingSearch />
                 </Route>
             </Switch>
-        </div>
+        </Box>
     );
 };
 
