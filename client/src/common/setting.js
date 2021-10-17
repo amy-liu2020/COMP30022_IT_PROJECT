@@ -6,7 +6,8 @@ import { useForm } from "react-hook-form";
 import users from "../json/UserList.json";
 import { ChangeColor } from "../api";
 
-const SettingP = () => {
+
+export const SettingP = () => {
     let { userID } = useParams();
     const [user, setUser] = useState([]);
     const {
@@ -31,7 +32,7 @@ const SettingP = () => {
                 <button
                     className="setting-button"
                     type="button"
-                    onClick={() => setTheme(user.Color)}
+                    onClick={() => SetTheme(user.Color)}
                 >
                     cancel
                 </button>
@@ -40,22 +41,22 @@ const SettingP = () => {
                 </button>
                 <div
                     class="box blue"
-                    onClick={() => setTheme("blue")}
+                    onClick={() => SetTheme("blue")}
                     {...register("Color")}
                 ></div>
                 <div
                     class="box red"
-                    onClick={() => setTheme("red")}
+                    onClick={() => SetTheme("red")}
                     {...register("Color")}
                 ></div>
                 <div
                     class="box green"
-                    onClick={() => setTheme("green")}
+                    onClick={() => SetTheme("green")}
                     {...register("Color")}
                 ></div>
                 <div
                     class="box dark"
-                    onClick={() => setTheme("dark")}
+                    onClick={() => SetTheme("dark")}
                     {...register("Color")}
                 ></div>
             </div>
@@ -78,47 +79,23 @@ const Setting = () => {
 };
 
 // set theme
-const setTheme = (color) => {
+export const SetTheme = (color) => {
     if (color === "dark") {
         document.documentElement.style.setProperty("--nav-bg-color", "#6E7F8A");
-        document.documentElement.style.setProperty(
-            "--sideM-bg-color",
-            "#2F4656"
-        );
-        document.documentElement.style.setProperty(
-            "--content-bg-color",
-            "#d3e5fa"
-        );
+        document.documentElement.style.setProperty("--sideM-bg-color", "#2F4656");
+        document.documentElement.style.setProperty("--content-bg-color", "#d3e5fa");
     } else if (color === "red") {
         document.documentElement.style.setProperty("--nav-bg-color", "#EDCACA");
-        document.documentElement.style.setProperty(
-            "--sideM-bg-color",
-            "#C97070"
-        );
-        document.documentElement.style.setProperty(
-            "--content-bg-color",
-            "#FFF8F9"
-        );
+        document.documentElement.style.setProperty("--sideM-bg-color", "#C97070");
+        document.documentElement.style.setProperty("--content-bg-color", "#FFF8F9");
     } else if (color === "blue") {
         document.documentElement.style.setProperty("--nav-bg-color", "#63D5DA");
-        document.documentElement.style.setProperty(
-            "--sideM-bg-color",
-            "#63ADB8"
-        );
-        document.documentElement.style.setProperty(
-            "--content-bg-color",
-            "#d4f4f8"
-        );
+        document.documentElement.style.setProperty("--sideM-bg-color", "#63ADB8");
+        document.documentElement.style.setProperty("--content-bg-color", "#d4f4f8");
     } else {
         document.documentElement.style.setProperty("--nav-bg-color", "#8BE8DA");
-        document.documentElement.style.setProperty(
-            "--sideM-bg-color",
-            "#77CFC3"
-        );
-        document.documentElement.style.setProperty(
-            "--content-bg-color",
-            "#EBF8F6"
-        );
+        document.documentElement.style.setProperty("--sideM-bg-color", "#77CFC3");
+        document.documentElement.style.setProperty("--content-bg-color", "#EBF8F6");
     }
 };
 

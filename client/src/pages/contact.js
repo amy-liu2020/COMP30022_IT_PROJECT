@@ -63,19 +63,20 @@ const rows = [
     createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.primary.light,
         fontSize: 18,
     },
     [`&.${tableCellClasses.body}`]: {
+        backgroundColor: "--content-bg-color",
         fontSize: 14,
     },
 }));
 
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "--content-bg-color",
     padding: theme.spacing(1),
     margin: "auto",
 }));
@@ -115,7 +116,7 @@ function BasicTable({ contacts }) {
                                 <col width="30%" />
                                 <col width="30%" />
                             </colgroup>
-                            <TableHead>
+                            <TableHead id="tableHead">
                                 <TableRow>
                                     <StyledTableCell>Name</StyledTableCell>
                                     <StyledTableCell>
@@ -124,7 +125,7 @@ function BasicTable({ contacts }) {
                                     <StyledTableCell>Email</StyledTableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody id="tableBody">
                                 {contacts
                                     .slice(
                                         page * rowsPerPage,
@@ -174,6 +175,7 @@ function BasicTable({ contacts }) {
                         </Table>
                     </TableContainer>
                     <TablePagination
+                        id="tableBody"
                         rowsPerPageOptions={[]}
                         component="div"
                         count={contacts.length}

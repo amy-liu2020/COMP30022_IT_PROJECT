@@ -21,9 +21,10 @@ import { Paper } from "@mui/material";
 import { useForm } from "react-hook-form";
 
 // navigate user to selected tab
-const NavigationBar = () => {
+const NavigationBar = ({tagOf}) => {
     const [show, setShow] = useState(false);
     let history = useHistory();
+    const tab = tagOf === "C" ? "C" : "M";
 
     return (
         <div className="nav">
@@ -34,7 +35,7 @@ const NavigationBar = () => {
             <Link className="nav-tab" to="/meeting">
                 meeting
             </Link>
-            <SearchBar className="nav-search" />
+            <SearchBar tagOf={tab} className="nav-search" />
             <div className="nav-setting">
                 <MdSettings
                     size={40}

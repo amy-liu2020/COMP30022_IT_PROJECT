@@ -54,7 +54,7 @@ const AddTagDialog = ({ open, setOpen, tagOf }) => {
                 </DialogContentText>
                 <TextField
                     autoFocus
-                    margin="dense"
+                    margin="loose"
                     id="tagName"
                     label="Tag name"
                     type="text"
@@ -173,7 +173,7 @@ const SideMenu = ({ tagOf }) => {
                         ))
                     )}
                 </Box>
-                <Button variant="contained" onClick={() => setShowPopup(true)}>
+                <Button id="addTagButton" variant="contained" onClick={() => setShowPopup(true)}>
                     add new tag
                 </Button>
                 <Divider />

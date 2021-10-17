@@ -372,7 +372,7 @@ export function GetOneMeeting(id) {
 }
 
 export function GetMeetings() {
-    const [data, setData] = useState([]);
+    const [meetings, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -397,11 +397,11 @@ export function GetMeetings() {
         };
     }, []);
 
-    return { data, loading, error };
+    return { meetings, loading, error };
 }
 
 export function GetMeetingsWithTag(tagName) {
-    const [data, setData] = useState([]);
+    const [meetings, setMeetings] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -413,7 +413,7 @@ export function GetMeetingsWithTag(tagName) {
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setData(res.data.meetings);
+                res.data && setMeetings(res.data.meetings);
                 console.log(res);
             })
             .catch((err) => {
@@ -426,7 +426,36 @@ export function GetMeetingsWithTag(tagName) {
         };
     }, []);
 
-    return { data, loading, error };
+    return { meetings, loading, error };
+}
+
+export function GetMeetingsBySearch(keyword) {
+    const [meetings, setMeetings] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/meeting/fuzzySearch/${keyword}`, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setMeetings(res.data.searchResult);
+                console.log(res.data);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [keyword]);
+
+    return { meetings, loading, error };
 }
 
 export async function CreateMeeting(meeting) {
@@ -552,4 +581,33 @@ export function ChangeColor(color) {
     }, []);
 
     return { data, loading, error };
+}
+
+export function GetColor() {
+    const [color, setColor] = useState([]);
+    
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get("/api/user", {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setColor(res.data.color);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, []);
+
+    return { color, loading, error };
 }

@@ -3,13 +3,15 @@ import { useHistory } from "react-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import TextField from "@mui/material/TextField";
+import { useRouteMatch } from "react-router";
 
-const SearchBar = () => {
+const SearchBar = ({tagOf}) => {
     let history = useHistory();
     const { register, handleSubmit } = useForm();
+    const tab = tagOf === "C" ? "contact" : "meeting";
 
-    const onSubmitHandler = (data) => {
-        history.push(`/contact/search/${data.keyword}`);
+    const onSubmitHandler = (data, path) => {
+        history.push(`/${tab}/search/${data.keyword}`);
     };
 
     return (
@@ -39,5 +41,4 @@ const SearchBar = () => {
         </form>
     );
 };
-
 export default SearchBar;
