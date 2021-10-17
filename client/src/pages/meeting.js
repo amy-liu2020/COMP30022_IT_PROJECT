@@ -495,7 +495,7 @@ const MeetingCreate = () => {
         CreateMeeting(data).then((res) => console.log(res));
 
         // redirect to list page
-        // history.push("/meeting");
+        history.push("/meeting");
     };
 
     return (
@@ -504,9 +504,7 @@ const MeetingCreate = () => {
                 className="meeting-form"
                 onSubmit={handleSubmit(onSubmitHandler)}
             >
-                <button className="detail-edit" type="submit">
-                    create
-                </button>
+                <button type="submit">save</button>
 
                 <div class="meetingForm-keyInfo">
                     <div class="meetingForm-name">
@@ -553,12 +551,12 @@ const MeetingCreate = () => {
 
                 <div class="meetingForm-notes">
                     <label>Notes: </label>
-                    <input type="text" {...register("Notes")} />
+                    <input type="text" id = "form-noteArea" {...register("Notes")} />
                 </div>
 
                 <div class="meetingForm-keyWords">
                     <label>Key words:</label>
-                    <input type="text" {...register("NotesKeyWords")} />
+                    <input type="text" id = "form-noteArea" {...register("NotesKeyWords")} />
                 </div>
             </form>
         </div>

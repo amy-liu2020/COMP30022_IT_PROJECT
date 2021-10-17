@@ -584,6 +584,11 @@ input:valid {
 
 .meetingForm-attachment {
     margin-left: 45px;
+    position: flex;
+    width: 450px;
+}
+.meetingForm-attachment input {
+    float: right;
 }
 
 #meetingTag {
