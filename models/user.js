@@ -41,6 +41,9 @@ const UserSchema = new mongoose.Schema({
     Color: {
         type: String,
         default: "Green"
+    },
+    Token: {
+        type: String,
     }
 }, {versionKey:false});
 
