@@ -217,7 +217,7 @@ const userChangePreferredColor = async (req, res) => {
 const getProfile = async (req, res) => {
     try {
         let uid = req.token.userId
-        var thisAccount = await User.findOne({ UserID: uid }, (err) => {
+        var thisAccount = await User.findOne({ UserID: uid },"Email PhoneNumber UserName UserID", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
