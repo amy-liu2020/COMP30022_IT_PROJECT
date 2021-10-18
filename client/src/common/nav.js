@@ -17,6 +17,7 @@ import MenuList from "@mui/material/MenuList";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { Paper } from "@mui/material";
 import { useForm } from "react-hook-form";
+import ProfilePhoto from "./avatar";
 
 const Search = ({tab}) => {
     const { register, handleSubmit } = useForm();
@@ -107,12 +108,7 @@ export const Nav = ({tab}) => {
                 sx={{ marginRight: "20px" }}
                 onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)}
             >
-                <Avatar
-                    sx={{
-                        bgcolor: "#ffffff",
-                        color: "#000000",
-                    }}
-                />
+                <ProfilePhoto size="40px"/>
             </Button>
             <Popper open={open} anchorEl={anchorEl} placement="bottom-end">
                 <Paper>

@@ -17,19 +17,34 @@ import {
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import SelectTags from "../common/tag";
 import { useState, useEffect } from "react";
-import { Box } from "@mui/system";
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TablePagination from "@mui/material/TablePagination";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+
+import { tableCellClasses } from "@mui/material/TableCell";
 import CircularProgress from "@mui/material/CircularProgress";
+
+import {
+    Table,
+    TableBody,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TablePagination,
+    TableCell,
+    Button,
+    TextField,
+    Typography,
+    Select,
+    Divider,
+    Paper,
+    Stack,
+    Grid,
+    Input,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Box } from "@mui/system";
+import InputField from "../common/inputField";
 
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
@@ -233,11 +248,10 @@ const MeetingDetail = () => {
     const { data, loading, error } = GetOneMeeting(id);
     const [isDisabled, setIsDisable] = useState(true);
     const {
-        register,
         reset,
         handleSubmit,
         control,
-        formState: { isDirty, isSubmitting, dirtyFields },
+        formState: { isDirty, isSubmitting },
     } = useForm({
         defaultValues: [],
     });
@@ -268,13 +282,12 @@ const MeetingDetail = () => {
             }
 
             // send data to server
-            data.Attachment = ""; // need to be update later
-            data.InviteeIds = ["6132267b43c1ad80f1bd58a7"];
-            EditMeeting(data, id).then((res) => console.log(res));
+            data.Attachment = []; // need to be update later
+            data.InviteeIds = []; // need to be update later
+            EditMeeting(data, id).then((res) => alert(res.msg));
 
-            // redirect to list page
-            // history.push("/meeting");
-            console.log(data); // test only
+            // switch to view mode
+            setIsDisable(true);
         }
     };
 
@@ -300,14 +313,6 @@ const MeetingDetail = () => {
         reset(defaultValue);
     };
 
-    const onCancelHandler = () => {
-        // disable input
-        setIsDisable(true);
-
-        // reset value to defaultValue
-        CustomReset(data);
-    };
-
     const onDeleteHandler = () => {
         // send request to server
         DeleteMeeting(id).then((res) => {
@@ -316,6 +321,11 @@ const MeetingDetail = () => {
 
         // redirect to list page
         history.push("/meeting");
+    };
+
+    const onChangeMode = () => {
+        CustomReset(data);
+        setIsDisable(!isDisabled);
     };
 
     useEffect(() => {
@@ -334,136 +344,133 @@ const MeetingDetail = () => {
         <Box
             sx={{
                 gridArea: "main",
+                bgcolor: "#EBF8F6",
+                padding: "10px 25px",
             }}
         >
             <form
                 className="meeting-form"
                 onSubmit={handleSubmit(onSubmitHandler)}
             >
-                <button
-                    className="detail-edit"
-                    type="button"
-                    hidden={isDisabled}
-                    onClick={onCancelHandler}
-                >
-                    cancel
-                </button>
-                <button
-                    className="detail-edit"
-                    type="submit"
-                    hidden={isDisabled}
-                >
-                    save
-                </button>
+                <Grid container direction="row" marginBottom="25px">
+                    <Grid item xs={4}>
+                        <Stack spacing={2}>
+                            <Controller
+                                name="Title"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        placeholder="Title"
+                                        variant="standard"
+                                        {...field}
+                                        disabled={isDisabled}
+                                        inputProps={{
+                                            style: {
+                                                fontSize: 40,
+                                            },
+                                        }}
+                                    />
+                                )}
+                            />
 
-                <button
-                    className="detail-edit"
-                    type="button"
-                    hidden={!isDisabled}
-                    onClick={() => setIsDisable(false)}
-                >
-                    edit
-                </button>
-                <button
-                    className="detail-edit"
-                    type="button"
-                    hidden={!isDisabled}
-                    onClick={onDeleteHandler}
-                >
-                    delete
-                </button>
-
-                <div class="meetingForm-keyInfo">
-                    <div class="meetingForm-name">
-                        <input
-                            type="text"
-                            placeholder="TITLE"
-                            {...register("Title")}
-                            required
+                            <SelectTags tagOf="M" control={control} />
+                            <InputField
+                                name="Location"
+                                control={control}
+                                disabled={isDisabled}
+                                label="Location"
+                            />
+                        </Stack>
+                    </Grid>
+                    <Grid item xs marginLeft="200px">
+                        <Select />
+                    </Grid>
+                    <Grid item xs="auto" marginRight="30px">
+                        <Button type="button" onClick={onChangeMode}>
+                            {isDisabled ? "edit" : "cancel"}
+                        </Button>
+                        {isDisabled ? (
+                            <Button type="button" onClick={onDeleteHandler}>
+                                delete
+                            </Button>
+                        ) : (
+                            <Button type="submit">save</Button>
+                        )}
+                    </Grid>
+                </Grid>
+                <Divider />
+                <Grid container direction="row">
+                    <Grid item xs={4}>
+                        <InputField
+                            name="Date"
+                            control={control}
                             disabled={isDisabled}
-                        />
-                    </div>
-                    <SelectTags
-                        control={control}
-                        tagOf="M"
-                        isDisabled={isDisabled}
-                    />
-                    <div class="meetingForm-record">
-                        <label>Location: </label>
-                        <input
-                            type="text"
-                            {...register("Location")}
-                            disabled={isDisabled}
-                        />
-                    </div>
-                </div>
-
-                <div class="meetingForm-Info">
-                    <div class="meetingForm-record">
-                        <label>Date: </label>
-                        <input
+                            label="Date"
                             type="date"
-                            {...register("Date")}
-                            disabled={isDisabled}
                         />
-                    </div>
-
-                    <div class="meetingForm-record">
-                        <label>Start Time: </label>
-                        <input
+                        <InputField
+                            name="StartTime"
+                            control={control}
+                            disabled={isDisabled}
+                            label="Start Time"
                             type="time"
-                            {...register("StartTime")}
-                            disabled={isDisabled}
                         />
-                    </div>
-
-                    <div class="meetingForm-record">
-                        <label>End Time: </label>
-                        <input
+                        <InputField
+                            name="EndTime"
+                            control={control}
+                            disabled={isDisabled}
+                            label="End Time"
                             type="time"
-                            {...register("EndTime")}
-                            disabled={isDisabled}
                         />
-                    </div>
-
-                    <div class="meetingForm-record">
-                        <label>URL: </label>
-                        <input
+                        <InputField
+                            name="URL"
+                            control={control}
+                            disabled={isDisabled}
+                            label="URL"
                             type="url"
-                            {...register("URL")}
-                            disabled={isDisabled}
                         />
-                    </div>
-                </div>
-
-                {/* <div class="meetingForm-attachment">
-                    <label>Attachment: </label>
-                    <input
-                        type="file"
-                        {...register("Attachment")}
-                        disabled={isDisabled}
-                    />
-                </div> */}
-
-                <div className="meetingForm-notes">
-                    <label>Notes: </label>
-                    <input
-                        type="textarea"
-                        id="form-noteArea"
-                        {...register("Notes")}
-                        disabled={isDisabled}
-                    />
-                </div>
-
-                <div class="meetingForm-keyWords">
-                    <label>Key words:</label>
-                    <input
-                        type="text"
-                        id="form-noteArea"
-                        {...register("NotesKeyWords")}
-                        disabled={isDisabled}
-                    />
-                </div>
+                        <InputField
+                            name="Attachment"
+                            control={control}
+                            disabled={isDisabled}
+                            label="Attachment"
+                            type="file"
+                        />
+                    </Grid>
+                    <Grid item xs={4} marginLeft="400px" marginTop="25px">
+                        <Box component={Paper} padding="10px">
+                            <Box>Notes</Box>
+                            <Controller
+                                name="NotesKeyWords"
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        placeholder="keywords"
+                                        disabled={isDisabled}
+                                        fullWidth
+                                        {...field}
+                                    />
+                                )}
+                            />
+                            <Controller
+                                name="Notes"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        multiline
+                                        rows={5}
+                                        disabled={isDisabled}
+                                        placeholder="Write something..."
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
+                        </Box>
+                    </Grid>
+                </Grid>
             </form>
         </Box>
     );
@@ -472,11 +479,24 @@ const MeetingDetail = () => {
 const MeetingCreate = () => {
     let history = useHistory();
     const {
-        register,
         control,
         handleSubmit,
         formState: { dirtyFields },
-    } = useForm();
+    } = useForm({
+        defaultValues: {
+            Title: "",
+            Location: "",
+            StartTime: "",
+            EndTime: "",
+            URL: "",
+            NotesKeyWords: "",
+            Notes: "",
+            Tags: [],
+            Invitees: [],
+            OtherInvitees: "",
+            Attachment: [],
+        },
+    });
 
     // handle user input data
     const onSubmitHandler = (data) => {
@@ -503,10 +523,10 @@ const MeetingCreate = () => {
         }
 
         // send data to server
-        data.Attachment = ""; // need to be update later
-        data.InviteeIds = [];
+        data.Attachment = []; // need to be update later
+        data.InviteeIds = []; // need to be update later
         console.log(data);
-        CreateMeeting(data).then((res) => console.log(res));
+        CreateMeeting(data).then((res) => alert(res));
 
         // redirect to list page
         history.push("/meeting");
@@ -516,74 +536,116 @@ const MeetingCreate = () => {
         <Box
             sx={{
                 gridArea: "main",
+                bgcolor: "#EBF8F6",
+                padding: "10px 25px",
             }}
         >
-            <form
-                className="meeting-form"
-                onSubmit={handleSubmit(onSubmitHandler)}
-            >
-                <button type="submit">save</button>
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Grid container direction="row" marginBottom="25px">
+                    <Grid item xs={4}>
+                        <Stack spacing={2}>
+                            <Controller
+                                name="Title"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        placeholder="Title"
+                                        variant="standard"
+                                        {...field}
+                                        inputProps={{
+                                            style: {
+                                                fontSize: 40,
+                                            },
+                                        }}
+                                    />
+                                )}
+                            />
 
-                <div class="meetingForm-keyInfo">
-                    <div class="meetingForm-name">
-                        <input
-                            type="text"
-                            placeholder="TITLE"
-                            {...register("Title")}
-                            required
+                            <SelectTags tagOf="M" control={control} />
+                            <InputField
+                                name="Location"
+                                control={control}
+                                label="Location"
+                            />
+                        </Stack>
+                    </Grid>
+                    <Grid item xs marginLeft="200px">
+                        <Controller
+                            name="Invitees"
+                            control={control}
+                            render={({ field }) => <Select multiple />}
                         />
-                    </div>
-                    <SelectTags id="meetingTag" control={control} tagOf="M" />
-                    <div class="meetingForm-record">
-                        <label>Location: </label>
-                        <input type="text" {...register("Location")} />
-                    </div>
-                </div>
-
-                <div class="meetingForm-Info">
-                    <div class="meetingForm-record">
-                        <label>Date: </label>
-                        <input type="date" {...register("Date")} />
-                    </div>
-
-                    <div class="meetingForm-record">
-                        <label>Start Time: </label>
-                        <input type="time" {...register("StartTime")} />
-                    </div>
-
-                    <div class="meetingForm-record">
-                        <label>End Time: </label>
-                        <input type="time" {...register("EndTime")} />
-                    </div>
-
-                    <div class="meetingForm-record">
-                        <label>URL: </label>
-                        <input type="url" {...register("URL")} />
-                    </div>
-                </div>
-
-                <div class="meetingForm-attachment">
-                    <label>Attachment: </label>
-                    <input type="file" {...register("Attachment")} />
-                </div>
-
-                <div class="meetingForm-notes">
-                    <label>Notes: </label>
-                    <input
-                        type="text"
-                        id="form-noteArea"
-                        {...register("Notes")}
-                    />
-                </div>
-
-                <div class="meetingForm-keyWords">
-                    <label>Key words:</label>
-                    <input
-                        type="text"
-                        id="form-noteArea"
-                        {...register("NotesKeyWords")}
-                    />
-                </div>
+                    </Grid>
+                    <Grid item xs="auto" marginRight="30px">
+                        <Button type="submit">create</Button>
+                    </Grid>
+                </Grid>
+                <Divider />
+                <Grid container direction="row">
+                    <Grid item xs={4}>
+                        <InputField
+                            name="Date"
+                            control={control}
+                            label="Date"
+                            type="date"
+                        />
+                        <InputField
+                            name="StartTime"
+                            control={control}
+                            label="Start Time"
+                            type="time"
+                        />
+                        <InputField
+                            name="EndTime"
+                            control={control}
+                            label="End Time"
+                            type="time"
+                        />
+                        <InputField
+                            name="URL"
+                            control={control}
+                            label="URL"
+                            type="url"
+                        />
+                        <InputField
+                            name="Attachment"
+                            control={control}
+                            label="Attachment"
+                            type="file"
+                        />
+                    </Grid>
+                    <Grid item xs={4} marginLeft="400px" marginTop="25px">
+                        <Box component={Paper} padding="10px">
+                            <Box>Notes</Box>
+                            <Controller
+                                name="NotesKeyWords"
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        placeholder="keywords"
+                                        fullWidth
+                                        {...field}
+                                    />
+                                )}
+                            />
+                            <Controller
+                                name="Notes"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        multiline
+                                        rows={5}
+                                        placeholder="Write something..."
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
+                        </Box>
+                    </Grid>
+                </Grid>
             </form>
         </Box>
     );
@@ -631,87 +693,3 @@ export const Meeting = () => {
 };
 
 export default Meeting;
-
-{
-    /* <Box
-sx={{
-    gridArea: "main",
-    bgcolor: "#EBF8F6",
-    padding: "10px 25px",
-}}
->
-<Grid container direction="row" marginBottom="25px">
-    <Grid item xs={4}>
-        <Stack spacing={2} maxWidth="300px">
-            <Input
-                placeholder="Title"
-                sx={{
-                    fontSize: "40px",
-                    width: "180px",
-                }}
-            />
-            <Select />
-            <FormField>
-                <Box>Location:</Box>
-                <Input />
-            </FormField>
-        </Stack>
-    </Grid>
-    <Grid item xs={4} marginRight="50px">
-        <Select />
-    </Grid>
-    <Grid item xs={1} marginRight="50px">
-        <Chip
-            label="delete"
-            variant="outlined"
-            clickable={true}
-        />
-        <Chip
-            label="edit"
-            variant="outlined"
-            clickable={true}
-        />
-    </Grid>
-</Grid>
-<Divider />
-<Grid container direction="row">
-    <Grid item xs={4}>
-        <FormField>
-            <Box>Date:</Box>
-            <Input type="date" />
-        </FormField>
-        <FormField>
-            <Box>Start Time:</Box>
-            <Input type="time" />
-        </FormField>
-        <FormField>
-            <Box>End Time:</Box>
-            <Input type="time" />
-        </FormField>
-        <FormField>
-            <Box>URL:</Box>
-            <Input type="url" />
-        </FormField>
-        <FormField>
-            <Box>Attachment:</Box>
-            <Input type="file" />
-        </FormField>
-    </Grid>
-
-    <Grid item xs={4} marginLeft="400px" marginTop="25px">
-        <Box component={Paper} padding="10px">
-            <Box>Notes</Box>
-            <Input placeholder="keywords" fullWidth />
-            <TextField
-                multiline
-                rows={5}
-                placeholder="Write something..."
-                fullWidth
-                margin="normal"
-                variant="outlined"
-            />
-        </Box>
-    </Grid>
-</Grid>
-</Box> */
-}

@@ -1,10 +1,8 @@
 import {Nav} from "./nav";
 import { Route, useRouteMatch, useParams } from "react-router-dom";
-// import { useState } from "react/cjs/react.development";
 import { useState} from "react";
 import { useForm } from "react-hook-form";
 import users from "../json/UserList.json";
-import { ChangeColor } from "../api";
 
 
 export const SettingP = () => {
@@ -21,7 +19,6 @@ export const SettingP = () => {
 
     const onSubmitHandler = (data) => {
         console.log(data);
-        ChangeColor(data);
     }
 
     return (

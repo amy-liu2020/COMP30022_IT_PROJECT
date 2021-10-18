@@ -23,7 +23,6 @@ import { Nav } from "../common/nav";
 import { Controller, useForm } from "react-hook-form";
 import SelectTags from "../common/tag";
 import Loading from "../common/loading";
-
 import {
     Table,
     TableBody,
@@ -32,15 +31,15 @@ import {
     TableRow,
     TablePagination,
     TableCell,
+    Button,
+    TextField,
+    Typography,
+    Divider,
+    Paper,
+    Avatar,
+    Grid
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import { Divider} from "@mui/material";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import { Box } from "@mui/system";
 import InputField from "../common/inputField"
 
@@ -512,7 +511,7 @@ const ContactDetail = () => {
                                                 style: {
                                                     fontSize: 30,
                                                     width: "180px",
-                                                },
+                                                }
                                             }}
                                         />
                                     )}

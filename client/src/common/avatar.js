@@ -1,7 +1,15 @@
-const Avatar = () => {
-    return <div className="nav-avatar">
-        <img src={localStorage.getItem("avatar")} alt="profile photo"/>
-    </div>;
+import { GetPhoto } from "../api";
+import { Avatar } from "@mui/material";
+
+const ProfilePhoto = ({ size }) => {
+    const { data: photo } = GetPhoto();
+    return (
+        <Avatar
+            alt="avatar"
+            src={photo && "data:;base64," + photo.photo}
+            sx={{ width: size, height: size, bgcolor: "#fff" }}
+        />
+    );
 };
 
-export default Avatar;
+export default ProfilePhoto;
