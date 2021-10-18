@@ -24,7 +24,6 @@ import SelectTags from "../common/tag";
 import { useState, useEffect } from "react";
 
 import { tableCellClasses } from "@mui/material/TableCell";
-import CircularProgress from "@mui/material/CircularProgress";
 import Loading from "../common/loading";
 
 import {
@@ -45,8 +44,9 @@ import {
     Input,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Box, height } from "@mui/system";
+import { Box } from "@mui/material";
 import InputField from "../common/inputField";
+import { InviteesTable } from "../common/inviteesTable";
 
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
@@ -373,6 +373,7 @@ const MeetingDetail = () => {
                     data.EndTime = new Date(data.Date).toISOString();
                 }
             }
+            
 
             // send data to server
             data.Attachment = []; // need to be update later
@@ -475,8 +476,9 @@ const MeetingDetail = () => {
                             />
                         </Stack>
                     </Grid>
-                    <Grid item xs marginLeft="200px">
-                        <Select />
+                    {/* invitee implement here */}
+                    <Grid item xs marginLeft="330px">
+                        <InviteesTable invitees={data.Invitees} isDisabled={isDisabled}/>
                     </Grid>
                     <Grid item xs="auto" marginRight="30px">
                         <Button type="button" onClick={onChangeMode}>
@@ -530,7 +532,7 @@ const MeetingDetail = () => {
                             type="file"
                         />
                     </Grid>
-                    <Grid item xs={4} marginLeft="400px" marginTop="25px">
+                    <Grid item xs={4} marginLeft="300px" marginTop="25px">
                         <Box component={Paper} padding="10px">
                             <Box>Notes</Box>
                             <Controller
@@ -767,6 +769,8 @@ const MeetingCreate = () => {
         },
     });
 
+    const [invitees, setInvitees] = useState([]);
+    
     // handle user input data
     const onSubmitHandler = (data) => {
         // re-group data
@@ -790,10 +794,13 @@ const MeetingCreate = () => {
                 data.EndTime = new Date(data.Date).toISOString();
             }
         }
+        if (invitees) {
+            data.InviteeIds = invitees;
+        } 
+        
 
         // send data to server
         data.Attachment = []; // need to be update later
-        data.InviteeIds = []; // need to be update later
 
         CreateMeeting(data).then((res) => alert(res.msg));
 
@@ -854,12 +861,13 @@ const MeetingCreate = () => {
                             />
                         </Stack>
                     </Grid>
-                    <Grid item xs marginLeft="400px">
-                        <Controller
-                            name="Invitees"
-                            control={control}
-                            render={({ field }) => <Select multiple />}
+                    <Grid item xs marginLeft="330px">
+                        <InviteesTable
+                            placeholder="Invitees"
+                            variant="standard"
+                            onChange={setInvitees}
                         />
+                        {/* <InviteesTable disabled={false}/> */}
                     </Grid>
                     <Grid item xs="auto" marginRight="30px">
                         <Button type="submit">create</Button>
@@ -884,7 +892,7 @@ const MeetingCreate = () => {
                                     error={error}
                                     inputProps={{
                                         style: {
-                                            fontSize: 40,
+                                            fontSize: 25,
                                             width: 415,
                                         },
                                     }}
