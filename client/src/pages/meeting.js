@@ -23,6 +23,7 @@ import { useState, useEffect } from "react";
 
 import { tableCellClasses } from "@mui/material/TableCell";
 import CircularProgress from "@mui/material/CircularProgress";
+import Loading from "../common/loading";
 
 import {
     Table,
@@ -272,13 +273,12 @@ function BinTable({ meetings }) {
     );
 }
 
-
 // show all active meetings
 const MeetingAll = () => {
     const { meetings, loading, error } = GetMeetings();
 
     if (loading) {
-        return <CircularProgress size={100} />;
+        return <Loading/>;
     }
 
     if (error) {
@@ -294,7 +294,7 @@ const MeetingWithTag = () => {
     const { meetings, loading, error } = GetMeetingsWithTag(tagName);
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading/>;
     }
 
     if (error) {
@@ -325,7 +325,7 @@ const MeetingSearch = () => {
     const { meetings, loading, error } = GetMeetingsBySearch(keyword);
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading/>;
     }
 
     if (error) {
@@ -617,8 +617,8 @@ const MeetingCreate = () => {
         // send data to server
         data.Attachment = []; // need to be update later
         data.InviteeIds = []; // need to be update later
-        console.log(data);
-        CreateMeeting(data).then((res) => alert(res));
+
+        CreateMeeting(data).then((res) => alert(res.msg));
 
         // redirect to list page
         history.push("/meeting");
