@@ -23,6 +23,7 @@ import { useState, useEffect } from "react";
 
 import { tableCellClasses } from "@mui/material/TableCell";
 import CircularProgress from "@mui/material/CircularProgress";
+import Loading from "../common/loading";
 
 import {
     Table,
@@ -173,12 +174,112 @@ function BasicTable({ meetings }) {
     );
 }
 
+function BinTable({ meetings }) {
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 10;
+    let history = useHistory();
+
+    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - meetings.length);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    return (
+        <>
+            {meetings.length ? (
+                <Box
+                    sx={{
+                        gridArea: "main",
+                    }}
+                >
+                    <TableContainer>
+                        <Table sx={{ minWidth: 400 }}>
+                            <colgroup>
+                                <col width="50%" />
+                                <col width="50%" />
+                            </colgroup>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Name
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Delete Date
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {meetings
+                                    .slice(
+                                        page * rowsPerPage,
+                                        page * rowsPerPage + rowsPerPage
+                                    )
+                                    .map((row) => (
+                                        <TableRow
+                                            key={row.name}
+                                            sx={{
+                                                "&:hover": {
+                                                    background: "#ddd",
+                                                    cursor: "pointer",
+                                                },
+                                            }}
+                                            onClick={() =>
+                                                history.push(
+                                                    `/contact/bin/${row._id}`
+                                                )
+                                            }
+                                        >
+                                            <TableCell>{row.Name}</TableCell>
+                                            <TableCell>
+                                                {row.DeleteDate.slice(0, 10)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: 53 * emptyRows,
+                                        }}
+                                    >
+                                        <TableCell colSpan={3} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[]}
+                        component="div"
+                        count={meetings.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                    />
+                </Box>
+            ) : (
+                <Div>no record found.</Div>
+            )}
+        </>
+    );
+}
+
 // show all active meetings
 const MeetingAll = () => {
     const { meetings, loading, error } = GetMeetings();
 
     if (loading) {
-        return <CircularProgress size={100} />;
+        return <Loading/>;
     }
 
     if (error) {
@@ -194,7 +295,7 @@ const MeetingWithTag = () => {
     const { meetings, loading, error } = GetMeetingsWithTag(tagName);
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading/>;
     }
 
     if (error) {
@@ -209,7 +310,7 @@ const MeetingBin = () => {
     const { data, loading, error } = GetBinList("M");
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading/>;
     }
 
     if (error) {
@@ -217,13 +318,7 @@ const MeetingBin = () => {
     }
 
     return (
-        <>
-            {data.length ? (
-                <p>{data.length} record(s) found.</p>
-            ) : (
-                <p>no record found.</p>
-            )}
-        </>
+        <BinTable meetings={data}/>
     );
 };
 
@@ -233,7 +328,7 @@ const MeetingSearch = () => {
     const { meetings, loading, error } = GetMeetingsBySearch(keyword);
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading/>;
     }
 
     if (error) {
@@ -333,7 +428,7 @@ const MeetingDetail = () => {
     }, [data]);
 
     if (loading || isSubmitting) {
-        return <p>loading</p>;
+        return <Loading/>;
     }
 
     if (error) {
@@ -525,8 +620,8 @@ const MeetingCreate = () => {
         // send data to server
         data.Attachment = []; // need to be update later
         data.InviteeIds = []; // need to be update later
-        console.log(data);
-        CreateMeeting(data).then((res) => alert(res));
+
+        CreateMeeting(data).then((res) => alert(res.msg));
 
         // redirect to list page
         history.push("/meeting");
