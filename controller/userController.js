@@ -33,13 +33,13 @@ const doLogin = (req, res) => {
         })
         return;
     }
-
-
+    
     try {
         let { userId, password } = req.body;
         let ePassword = encrypt(password)
         console.log({ userId, ePassword })
-        User.findOne({ UserID: userId, Password: ePassword }, (err, account) => {
+        let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
+        User.findOneAndUpdate({ UserID: userId, Password: ePassword },{Token:token}, (err, account) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -48,10 +48,8 @@ const doLogin = (req, res) => {
             } else {
                 if (account) {
                     res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
-                    let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
                     res.status(200).json({
                         msg: "Login successfully",
-                        account: account,
                         token: token
                     })
                     return;
@@ -252,7 +250,7 @@ const getPhoto = async (req, res) => {
         });
         res.status(200).json({
             msg: "Get user photo successfully",
-            photo: thisAccount.Photo.toString('base64')
+            photo: thisAccount.photo
         })
     } catch (err) {
         console.log(err)
@@ -376,7 +374,6 @@ const savePhoto = async (req, res) => {
         let photoFile = req.body.file;
         let photoData = fs.readFileSync(photoFile.path)
 
-
         let uid = req.token.userId;
         User.findOneAndUpdate({ UserID: uid }, { Photo: photoData }, (err) => {
             if (err) {
@@ -401,8 +398,8 @@ const savePhoto = async (req, res) => {
 
 const changeDetails = (req, res) => {
     let uid = req.token.userId
-    let { phoneNumber, Email } = req.body
-    User.findOneAndUpdate({ UserID: uid }, { PhoneNumber: phoneNumber, Email: Email }, (err) => {
+    let { UserName, PhoneNumber, Email } = req.body
+    User.findOneAndUpdate({ UserID: uid }, { UserName: UserName, PhoneNumber: PhoneNumber, Email: Email }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err

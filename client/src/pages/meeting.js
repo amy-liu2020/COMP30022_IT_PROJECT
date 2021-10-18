@@ -15,7 +15,7 @@ import {
     GetBinList,
     GetMeetingsBySearch,
     GetBinItem,
-    RestoreBinItem
+    RestoreBinItem,
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
@@ -24,7 +24,6 @@ import SelectTags from "../common/tag";
 import { useState, useEffect } from "react";
 
 import { tableCellClasses } from "@mui/material/TableCell";
-import CircularProgress from "@mui/material/CircularProgress";
 import Loading from "../common/loading";
 
 import {
@@ -83,7 +82,7 @@ function BasicTable({ meetings }) {
                     }}
                 >
                     <TableContainer>
-                        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                        <Table sx={{ minWidth: 400 }}>
                             <colgroup>
                                 <col width="40%" />
                                 <col width="30%" />
@@ -142,7 +141,9 @@ function BasicTable({ meetings }) {
                                             <TableCell>
                                                 {row.Location}
                                             </TableCell>
-                                            <TableCell>{JSON.stringify(row.StartTime).slice(1,11)}</TableCell>
+                                            <TableCell>
+                                                {row.StartTime && row.StartTime.slice(0,10)}
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 {emptyRows > 0 && (
@@ -178,8 +179,7 @@ function BinTable({ meetings }) {
     const rowsPerPage = 10;
     let history = useHistory();
 
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - meetings.length) : 0;
+    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - meetings.length);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -279,7 +279,7 @@ const MeetingAll = () => {
     const { meetings, loading, error } = GetMeetings();
 
     if (loading) {
-        return <Loading/>;
+        return <Loading />;
     }
 
     if (error) {
@@ -295,7 +295,7 @@ const MeetingWithTag = () => {
     const { meetings, loading, error } = GetMeetingsWithTag(tagName);
 
     if (loading) {
-        return <Loading/>;
+        return <Loading />;
     }
 
     if (error) {
@@ -317,7 +317,6 @@ const MeetingBin = () => {
         return <p>{error}</p>;
     }
     return <BinTable meetings={data} />;
-    
 };
 
 // show all from search keyword
@@ -326,7 +325,7 @@ const MeetingSearch = () => {
     const { meetings, loading, error } = GetMeetingsBySearch(keyword);
 
     if (loading) {
-        return <Loading/>;
+        return <Loading />;
     }
 
     if (error) {
@@ -574,15 +573,12 @@ const MeetingRestore = () => {
     let { BinId } = useParams();
     let history = useHistory();
     const { data, loading, error } = GetBinItem(BinId);
-    const {
-        reset,
-        control
-    } = useForm();
+    const { reset, control } = useForm();
     const inputDisable = true;
 
     const onRestoreHandler = () => {
-        RestoreBinItem(BinId).then(res => console.log(res));
-    }
+        RestoreBinItem(BinId).then((res) => console.log(res));
+    };
 
     const CustomReset = (data) => {
         let defaultValue = JSON.parse(JSON.stringify(data));
@@ -657,7 +653,7 @@ const MeetingRestore = () => {
                             />
                         </Stack>
                     </Grid>
-                    
+
                     <Grid item xs="auto">
                         <Button type="button" onClick={onRestoreHandler}>
                             restore
