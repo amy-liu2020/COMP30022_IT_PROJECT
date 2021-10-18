@@ -340,6 +340,7 @@ const MeetingDetail = () => {
     let { id } = useParams();
     const { data, loading, error } = GetOneMeeting(id);
     const [isDisabled, setIsDisable] = useState(true);
+    const [invitees, setInvitees] = useState();
     const {
         reset,
         handleSubmit,
@@ -402,6 +403,10 @@ const MeetingDetail = () => {
                 opt.value = opt.TagId;
                 opt.label = opt.TagName;
             });
+        }
+
+        if (defaultValue.Invitees) {
+            setInvitees(defaultValue.Invitees);
         }
         // reset defaultValue
         reset(defaultValue);
@@ -478,7 +483,7 @@ const MeetingDetail = () => {
                     </Grid>
                     {/* invitee implement here */}
                     <Grid item xs marginLeft="330px">
-                        <InviteesTable invitees={data.Invitees} isDisabled={isDisabled}/>
+                        <InviteesTable invitees={invitees} onChange={setInvitees} isDisabled={isDisabled}/>
                     </Grid>
                     <Grid item xs="auto" marginRight="30px">
                         <Button type="button" onClick={onChangeMode}>

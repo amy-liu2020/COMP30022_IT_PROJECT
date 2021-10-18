@@ -35,7 +35,7 @@ const me = [
 
 export const InviteesTable = ({ invitees, onChange, isDisabled=false }) => {
   const { contacts, loading, error } = GetContacts();
-  const [selectedValue, setSelectedValue] = useState(invitees);
+  const [selectedValue, setSelectedValue] = useState([]);
 
   // const invitees.map((each) => GetOneContact(each._id))
 
@@ -56,12 +56,14 @@ export const InviteesTable = ({ invitees, onChange, isDisabled=false }) => {
     );
   };
 
+
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
         <InputLabel>Invitees</InputLabel>
         <Select
           multiple
+          defaultValue={invitees}
           value={selectedValue}
           onChange={handleChange}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
