@@ -378,7 +378,7 @@ const MeetingDetail = () => {
 
             // send data to server
             data.Attachment = []; // need to be update later
-            data.InviteeIds = []; // need to be update later
+            // data.InviteeIds = []; // need to be update later
             EditMeeting(data, id).then((res) => alert(res.msg));
 
             // switch to view mode
@@ -800,7 +800,6 @@ const MeetingCreate = () => {
             data.InviteeIds = invitees;
         } 
         
-
         // send data to server
         data.Attachment = []; // need to be update later
 
@@ -866,10 +865,8 @@ const MeetingCreate = () => {
                     <Grid item xs marginLeft="330px">
                         <InviteesTable
                             placeholder="Invitees"
-                            variant="standard"
                             onChange={setInvitees}
                         />
-                        {/* <InviteesTable disabled={false}/> */}
                     </Grid>
                     <Grid item xs="auto" marginRight="30px">
                         <Button type="submit">create</Button>
