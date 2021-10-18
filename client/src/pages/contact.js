@@ -38,44 +38,11 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Divider, Input } from "@mui/material";
+import { Divider} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { Box } from "@mui/system";
-
-const InputField = ({
-    name,
-    control,
-    type = "text",
-    label,
-    disabled = false,
-}) => {
-    return (
-        <Controller
-            name={name}
-            control={control}
-            render={({ field }) => (
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginTop: "15px",
-                    }}
-                >
-                    <Box minWidth="130px">{label}:</Box>
-                    <Input
-                        fullWidth
-                        type={type}
-                        disabled={disabled}
-                        {...field}
-                    />
-                </Box>
-            )}
-        />
-    );
-};
+import InputField from "../common/inputField"
 
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
