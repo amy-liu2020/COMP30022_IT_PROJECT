@@ -45,7 +45,7 @@ import {
     Input,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Box } from "@mui/system";
+import { Box, height } from "@mui/system";
 import InputField from "../common/inputField";
 
 const StyledTableCell = styled(TableCell)(() => ({
@@ -648,7 +648,7 @@ const MeetingRestore = () => {
                                 )}
                             />
 
-                            <SelectTags tagOf="M" control={control} />
+                            <SelectTags tagOf="M" control={control} isDisabled="ture"/>
                             <InputField
                                 name="Location"
                                 control={control}
@@ -744,7 +744,7 @@ const MeetingRestore = () => {
 
 
 
-    //-------------------------------------------- 
+// create a new meeting 
 const MeetingCreate = () => {
     let history = useHistory();
     const {
@@ -816,11 +816,16 @@ const MeetingCreate = () => {
                             <Controller
                                 name="Title"
                                 control={control}
-                                render={({ field }) => (
+                                rules={{ required: true }}
+                                render={({
+                                    field,
+                                    fieldState: { error },
+                                }) => (
                                     <TextField
                                         placeholder="Title"
                                         variant="standard"
                                         {...field}
+                                        error={error}
                                         inputProps={{
                                             style: {
                                                 fontSize: 40,
@@ -831,14 +836,25 @@ const MeetingCreate = () => {
                             />
 
                             <SelectTags tagOf="M" control={control} />
-                            <InputField
+                            <Controller
                                 name="Location"
                                 control={control}
-                                label="Location"
+                                rules={{ required: true }}
+                                render={({
+                                    field,
+                                    fieldState: { error },
+                                }) => (
+                                    <TextField
+                                        placeholder="Location"
+                                        variant="standard"
+                                        {...field}
+                                        error={error}
+                                    />
+                                )}
                             />
                         </Stack>
                     </Grid>
-                    <Grid item xs marginLeft="200px">
+                    <Grid item xs marginLeft="400px">
                         <Controller
                             name="Invitees"
                             control={control}
@@ -850,13 +866,30 @@ const MeetingCreate = () => {
                     </Grid>
                 </Grid>
                 <Divider />
-                <Grid container direction="row">
+                <Grid container direction="row" marginTop="10px">
                     <Grid item xs={4}>
-                        <InputField
+                        <Controller
                             name="Date"
                             control={control}
-                            label="Date"
-                            type="date"
+                            rules={{ required: true }}
+                            render={({
+                                field,
+                                fieldState: { error },
+                            }) => (
+                                <TextField
+                                    placeholder="Date"
+                                    variant="standard"
+                                    type="date"
+                                    {...field}
+                                    error={error}
+                                    inputProps={{
+                                        style: {
+                                            fontSize: 40,
+                                            width: 415,
+                                        },
+                                    }}
+                                />
+                            )}
                         />
                         <InputField
                             name="StartTime"
@@ -883,7 +916,7 @@ const MeetingCreate = () => {
                             type="file"
                         />
                     </Grid>
-                    <Grid item xs={4} marginLeft="400px" marginTop="25px">
+                    <Grid item xs={4} marginLeft="300px" marginTop="25px">
                         <Box component={Paper} padding="10px">
                             <Box>Notes</Box>
                             <Controller
