@@ -12,9 +12,29 @@ import {
     changeDetails,
     changePassword,
 } from "../api";
-import { useState } from "react";
-import { Avatar } from "@mui/material";
+import { useState, useEffect } from "react";
 import ProfilePhoto from "../common/avatar";
+
+import {
+    Table,
+    TableBody,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TablePagination,
+    TableCell,
+    Button,
+    TextField,
+    Typography,
+    Divider,
+    Paper,
+    Avatar,
+    Grid,
+} from "@mui/material";
+import { Box, width } from "@mui/system";
+import InputField from "../common/inputField";
+import { Controller, useForm } from "react-hook-form";
+import Loading from "../common/loading";
 
 const Reset = () => {
     let history = useHistory();
@@ -77,134 +97,184 @@ const Reset = () => {
 
 const Edit = () => {
     let history = useHistory();
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const { data: photo } = GetPhoto();
-    const { data, loading } = Getprofile();
-    let info = {};
-    if (data && data.info) {
-        info = data.info;
+    const { data, loading, error } = Getprofile();
+    const { handleSubmit, control, reset } = useForm({
+        defaultValues: data
+    });
+
+    // const handleSubmit = () => {
+    //     const file = document.getElementById("photoupload").files[0];
+    //     if (file.size > 0) {
+    //         const formData = new FormData();
+    //         formData.append("file", file);
+    //         uploadPhoto(formData);
+    //     }
+    // };
+
+    const onSubmitHandler = (data) => {
+        // send data to server
+        changeDetails(data).then(res => alert(res.msg));
+        
+        // go back to profile
+        history.push("/user/profile")
+    };
+
+    useEffect(() => {
+        reset(data);
+    },[data])
+
+    if (loading) {
+        return <Loading />;
     }
 
-    const handleSave = async () => {
-        changeDetails({ phoneNumber: phone, Email: email });
-        history.push(`/user/profile`);
-    };
-
-    const handleSubmit = () => {
-        const file = document.getElementById("photoupload").files[0];
-        if (file.size > 0) {
-            const formData = new FormData();
-            formData.append("file", file);
-            uploadPhoto(formData);
-        }
-    };
+    if (error) {
+        return <p>{error}</p>;
+    }
 
     return (
-        <div className="container">
-            {loading ? (
-                <span>{loading}</span>
-            ) : (
-                <div className="profile">
-                    <div className="info">
-                        <div className="avatar">
-                            <img
-                                style={{ width: "100%", height: "100%" }}
-                                alt="avatar"
-                                src={photo && "data:;base64," + photo.photo}
-                            />
-                        </div>
-                        <label>
-                            photo:{" "}
-                            <input id="photoupload" type="file" name="photo" />
-                            <button onClick={handleSubmit}>submit</button>
-                        </label>
-                        <div className="avatar"></div>
-                        <span>{info.UserID}</span>
-                    </div>
-                    <div className="label">
-                        <label>USERNAME</label>
-                        <span>{info.UserName}</span>
-                    </div>
-                    <div className="label">
-                        <label>EMAIL</label>
-                        <input
-                            type="text"
-                            placeholder=""
-                            value={email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="label">
-                        <label>PHONE NO</label>
-                        <input
-                            type="text"
-                            placeholder=""
-                            value={phone}
-                            onChange={(e) => {
-                                setPhone(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="buttons">
-                        <button onClick={handleSave}>Save</button>
-                    </div>
-                </div>
-            )}
-        </div>
+        <Box
+            sx={{
+                gridArea: "main",
+                bgcolor: "#EBF8F6",
+                width: "100%"
+            }}
+        >
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        rowGap: "5px",
+                        alignItems: "center"
+
+                    }}
+                >
+                    <Box marginTop="80px">
+                        <ProfilePhoto size="150px" />
+                        <Typography variant="h4">{data.UserID}</Typography>
+                    </Box>
+                    <InputField
+                        name="UserName"
+                        control={control}
+                        label="Username"
+                    />
+                    <InputField name="Email" control={control} label="Email" type="email"/>
+                    <InputField
+                        name="PhoneNumber"
+                        control={control}
+                        label="Phone Number"
+                        type="tel"
+                    />
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "320px",
+                            marginTop: "20px"
+                        }}
+                    >
+                        <Button
+                            variant="contained"
+                            onClick={() => history.goBack()}
+                        >
+                            cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            type="submit"
+                        >
+                            save
+                        </Button>
+                    </Box>
+                </Box>
+            </form>
+        </Box>
     );
 };
 
 const Detail = () => {
     let history = useHistory();
-    const { data: photo } = GetPhoto();
-    const { data, loading } = Getprofile();
-    let info = {};
-    if (data && data.info) {
-        info = data.info;
+    const { data, loading, error } = Getprofile();
+
+    if (loading) {
+        return <Loading />;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
     }
 
     return (
-        <div className="container">
-            {loading ? (
-                <span>{loading}</span>
-            ) : (
-                <div className="profile">
-                    <div className="info">
-                        <div className="avatar">
-                            <ProfilePhoto size="150px" />
-                        </div>
-                        <span>{info.UserID}</span>
-                    </div>
-                    <div className="label">
-                        <label>USERNAME</label>
-                        <span>{info.UserName}</span>
-                    </div>
-                    <div className="label">
-                        <label>EMAIL</label>
-                        <span>{info.Email}</span>
-                    </div>
-                    <div className="label">
-                        <label>PHONE NO</label>
-                        <span>{info.PhoneNumber}</span>
-                    </div>
-                    <div className="buttons">
-                        <button
-                            onClick={() => history.push(`/user/profile/edit`)}
-                        >
-                            Edit my info
-                        </button>
-                        <button
-                            onClick={() => history.push(`/user/profile/reset`)}
-                        >
-                            Change Password
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
+        <Box
+            sx={{
+                gridArea: "main",
+                bgcolor: "#EBF8F6",
+            }}
+        >
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    rowGap: "15px",
+                    alignItems: "center",
+                }}
+            >
+                <Box marginTop="80px">
+                    <ProfilePhoto size="150px" />
+                    <Typography variant="h4">{data.UserID}</Typography>
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        width: "360px",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <Typography variant="h6">Username:</Typography>
+                    <Typography variant="h6">{data.UserName}</Typography>
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        width: "360px",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <Typography variant="h6">Email:</Typography>
+                    <Typography variant="h6">{data.Email}</Typography>
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        width: "360px",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <Typography variant="h6">Phone Number:</Typography>
+                    <Typography variant="h6">{data.PhoneNumber}</Typography>
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        width: "360px",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <Button
+                        variant="contained"
+                        onClick={() => history.push(`/user/profile/edit`)}
+                    >
+                        Edit Profile
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => history.push(`/user/profile/reset`)}
+                    >
+                        Change Password
+                    </Button>
+                </Box>
+            </Box>
+        </Box>
     );
 };
 
@@ -212,7 +282,16 @@ const Profile = () => {
     let { path } = useRouteMatch();
 
     return (
-        <div>
+        <Box
+            sx={{
+                height: "100vh",
+                display: "grid",
+                gridTemplateColumns: "auto",
+                gap: 0,
+                gridTemplateRows: "60px auto",
+                gridTemplateAreas: `"header header header header""main main main main "`,
+            }}
+        >
             <Nav />
             <Switch>
                 <Route path={[`${path}/reset`]}>
@@ -225,7 +304,7 @@ const Profile = () => {
                     <Detail />
                 </Route>
             </Switch>
-        </div>
+        </Box>
     );
 };
 
@@ -386,41 +465,65 @@ const Forget = () => {
     let { path } = useRouteMatch();
 
     return (
-        <div>
-            <Switch>
-                <Route path={[`${path}/checkId`]}>
-                    <CheckId />
-                </Route>
-                <Route path={`${path}/verify`}>
-                    <VerifyAns />
-                </Route>
-            </Switch>
-        </div>
+        <Switch>
+            <Route path={[`${path}/checkId`]}>
+                <CheckId />
+            </Route>
+            <Route path={`${path}/verify`}>
+                <VerifyAns />
+            </Route>
+        </Switch>
     );
 };
 
 const CheckId = () => {
     let history = useHistory();
+    const { handleSubmit, control } = useForm({
+        defaultValues: {
+            UserId: "",
+        },
+    });
+
+    const onSubmitHandler = (data) => {
+        // send data to server to verify userId
+
+        // if exist, go to next
+        history.push(`/user/forget/verify`);
+    };
+
     return (
-        <div>
-            <Nav />
-            <div class="container">
-                <div class="forget-form">
-                    <span>Reset Password</span>
-                    <div class="input">
-                        <label>username</label>
-                        <input type="text" placeholder="username" />
-                    </div>
-                    <div class="buttons">
-                        <button
-                            onClick={() => history.push(`/user/forget/verify`)}
-                        >
-                            next
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Box
+            bgcolor="primary.light"
+            sx={{
+                margin: 0,
+                height: "100vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+            }}
+        >
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Box>
+                    <Box>
+                        <Typography variant="h6">Reset Password</Typography>
+                        <Typography variant="caption">
+                            Please enter your userId
+                        </Typography>
+                    </Box>
+                    <InputField
+                        control={control}
+                        name="UserId"
+                        label="UserId"
+                    />
+                    <Button
+                        type="submit"
+                        sx={{ float: "right", marginTop: "20px" }}
+                    >
+                        next
+                    </Button>
+                </Box>
+            </form>
+        </Box>
     );
 };
 
@@ -428,7 +531,6 @@ const VerifyAns = () => {
     let history = useHistory();
     return (
         <div>
-            <Nav />
             <div class="container">
                 <div class="forget-form">
                     <span>Reset Password</span>

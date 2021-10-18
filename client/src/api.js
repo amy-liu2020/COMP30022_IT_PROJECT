@@ -239,7 +239,9 @@ export function GetOneContact(id) {
             })
             .then((res) => {
                 setLoading(false);
-                res.data && setContact(res.data.contact) && setMeetings(res.data.relatedMeeting);
+                res.data &&
+                    setContact(res.data.contact) &&
+                    setMeetings(res.data.relatedMeeting);
                 console.log(res.data);
                 setContact((values) => ({
                     ...values,
@@ -261,7 +263,7 @@ export function GetOneContact(id) {
 
 export function GetContacts() {
     const [contacts, setContacts] = useState([]);
-    
+
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -531,7 +533,7 @@ function errHandler(error) {
 
 //zhengtian lu
 
-export function Getprofile(profile) {
+export function Getprofile() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
@@ -542,7 +544,7 @@ export function Getprofile(profile) {
             .get(`/api/profile`, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
-                res.data && setData(res.data);
+                res.data && setData(res.data.info);
                 console.log(res);
             })
             .catch((err) => {
@@ -585,12 +587,10 @@ export function GetRegister(register) {
     return { data, loading, error };
 }
 
-
 export function uploadPhoto(formdata) {
-
     const source = axios.CancelToken.source();
     axios
-        .post(`/api/upload`, formdata, { cancelToken: source.token },)
+        .post(`/api/upload`, formdata, { cancelToken: source.token })
         .then((res) => {
             console.log(res);
         })
@@ -599,7 +599,7 @@ export function uploadPhoto(formdata) {
         });
 }
 
-export function GetPhoto(profile) {
+export function GetPhoto() {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
 
@@ -623,22 +623,18 @@ export function GetPhoto(profile) {
     return { data, error };
 }
 
-export function changeDetails(data) {
-    const source = axios.CancelToken.source();
-    axios
-        .post(`/api/changeDetails`, data, { cancelToken: source.token },)
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => {
-            errHandler(err);
-        });
+export async function changeDetails(details) {
+    let data = await axios
+        .post(`/api/changeDetails`, details)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
 }
 
 export function changePassword(data) {
     const source = axios.CancelToken.source();
     axios
-        .post(`/api/changePassword`, data, { cancelToken: source.token },)
+        .post(`/api/changePassword`, data, { cancelToken: source.token })
         .then((res) => {
             console.log(res);
         })
