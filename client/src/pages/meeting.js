@@ -14,6 +14,8 @@ import {
     DeleteMeeting,
     GetBinList,
     GetMeetingsBySearch,
+    GetBinItem,
+    RestoreBinItem
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
@@ -45,7 +47,6 @@ import {
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import InputField from "../common/inputField";
-import Loading from "../common/loading";
 
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
@@ -141,7 +142,7 @@ function BasicTable({ meetings }) {
                                             <TableCell>
                                                 {row.Location}
                                             </TableCell>
-                                            <TableCell>{row.Date}</TableCell>
+                                            <TableCell>{JSON.stringify(row.StartTime).slice(1,11)}</TableCell>
                                         </TableRow>
                                     ))}
                                 {emptyRows > 0 && (
@@ -568,6 +569,182 @@ const MeetingDetail = () => {
     );
 };
 
+// restore deleted meeting
+const MeetingRestore = () => {
+    let { BinId } = useParams();
+    let history = useHistory();
+    const { data, loading, error } = GetBinItem(BinId);
+    const {
+        reset,
+        control
+    } = useForm();
+    const inputDisable = true;
+
+    const onRestoreHandler = () => {
+        RestoreBinItem(BinId).then(res => console.log(res));
+    }
+
+    const CustomReset = (data) => {
+        let defaultValue = JSON.parse(JSON.stringify(data));
+        // re-format data
+        defaultValue.Attachment = undefined;
+        if (defaultValue.StartTime) {
+            defaultValue.Date = defaultValue.StartTime.slice(0, 10);
+            defaultValue.StartTime = defaultValue.StartTime.slice(11, 16);
+        }
+        if (defaultValue.EndTime) {
+            defaultValue.EndTime = defaultValue.EndTime.slice(11, 16);
+        }
+
+        if (defaultValue.Tags) {
+            defaultValue.Tags.map((opt) => {
+                opt.value = opt.TagId;
+                opt.label = opt.TagName;
+            });
+        }
+        // reset defaultValue
+        reset(defaultValue);
+    };
+
+    useEffect(() => {
+        CustomReset(data);
+    }, [data]);
+
+    if (loading) {
+        return <Loading />;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+
+    return (
+        <Box
+            sx={{
+                gridArea: "main",
+                bgcolor: "primary.light",
+                padding: "10px 25px",
+            }}
+        >
+            <form>
+                <Grid container direction="row" marginBottom="25px">
+                    <Grid item xs={4}>
+                        <Stack spacing={2}>
+                            <Controller
+                                name="Title"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        placeholder="Title"
+                                        variant="standard"
+                                        {...field}
+                                        disabled={inputDisable}
+                                        inputProps={{
+                                            style: {
+                                                fontSize: 40,
+                                            },
+                                        }}
+                                    />
+                                )}
+                            />
+
+                            <SelectTags tagOf="M" control={control} />
+                            <InputField
+                                name="Location"
+                                control={control}
+                                disabled={inputDisable}
+                                label="Location"
+                            />
+                        </Stack>
+                    </Grid>
+                    
+                    <Grid item xs="auto">
+                        <Button type="button" onClick={onRestoreHandler}>
+                            restore
+                        </Button>
+                    </Grid>
+                </Grid>
+                <Divider />
+                <Grid container direction="row">
+                    <Grid item xs={4}>
+                        <InputField
+                            name="Date"
+                            control={control}
+                            disabled={inputDisable}
+                            label="Date"
+                            type="date"
+                        />
+                        <InputField
+                            name="StartTime"
+                            control={control}
+                            disabled={inputDisable}
+                            label="Start Time"
+                            type="time"
+                        />
+                        <InputField
+                            name="EndTime"
+                            control={control}
+                            disabled={inputDisable}
+                            label="End Time"
+                            type="time"
+                        />
+                        <InputField
+                            name="URL"
+                            control={control}
+                            disabled={inputDisable}
+                            label="URL"
+                            type="url"
+                        />
+                        <InputField
+                            name="Attachment"
+                            control={control}
+                            disabled={inputDisable}
+                            label="Attachment"
+                            type="file"
+                        />
+                    </Grid>
+                    <Grid item xs={4} marginLeft="400px" marginTop="25px">
+                        <Box component={Paper} padding="10px">
+                            <Box>Notes</Box>
+                            <Controller
+                                name="NotesKeyWords"
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        placeholder="keywords"
+                                        disabled={inputDisable}
+                                        fullWidth
+                                        {...field}
+                                    />
+                                )}
+                            />
+                            <Controller
+                                name="Notes"
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        multiline
+                                        rows={5}
+                                        disabled={inputDisable}
+                                        placeholder="Write something..."
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
+                        </Box>
+                    </Grid>
+                </Grid>
+            </form>
+        </Box>
+    );
+};
+
+
+
+    //-------------------------------------------- 
 const MeetingCreate = () => {
     let history = useHistory();
     const {
@@ -763,6 +940,9 @@ export const Meeting = () => {
             <Switch>
                 <Route path={`${path}/create`}>
                     <MeetingCreate />
+                </Route>
+                <Route path={`${path}/bin/:BinId`}>
+                    <MeetingRestore />
                 </Route>
                 <Route path={`${path}/bin`}>
                     <MeetingBin />

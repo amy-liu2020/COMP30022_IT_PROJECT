@@ -505,7 +505,7 @@ export async function EditMeeting(meeting, id) {
 }
 
 export async function DeleteMeeting(id) {
-    let data = await axios
+    const data = await axios
         .delete(`/api/meeting/delete/${id}`)
         .then((res) => res.data)
         .catch((err) => errHandler(err));
