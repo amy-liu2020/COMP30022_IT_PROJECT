@@ -40,10 +40,6 @@ userRouter.get("/getPhoto", ensureAuthorized, (req, res) => {
     userController.getPhoto(req, res)
 });
 
-userRouter.get("/uploadPhoto", (req,res)=>{
-    res.render("userProfile",{})
-})
-
 userRouter.post("/upload", uploadFile, ensureAuthorized, (req, res) => {
     userController.savePhoto(req, res)
 });
@@ -59,7 +55,7 @@ userRouter.post("/changePassword", ensureAuthorized, (req, res) => {
 });
 
 // user forget the password and need to pass security questions
-userRouter.post("/forgetPassword", ensureAuthorized, (req, res) => {
+userRouter.get("/forgetPassword", ensureAuthorized, (req, res) => {
     userController.forgetPassword(req, res)
 });
 
