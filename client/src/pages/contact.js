@@ -21,10 +21,9 @@ import { useState, useMemo, useEffect } from "react";
 
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
-import Tag from "../common/tag";
-import { useForm } from "react-hook-form";
+import Tag, { SelectTags } from "../common/tag";
+import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import { MultipleSelectChip } from "../common/tag";
 
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -50,6 +49,7 @@ import Grid from "@mui/material/Grid";
 
 import Paper from "@mui/material/Paper";
 import { Stack } from "@mui/material";
+import { FaUserShield } from "react-icons/fa";
 
 function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
@@ -63,20 +63,52 @@ const rows = [
     createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
+const InputField = ({
+    name,
+    control,
+    type = "text",
+    label,
+    disabled = false,
+}) => {
+    return (
+        <Controller
+            name={name}
+            control={control}
+            render={({ field }) => (
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginTop: "15px",
+                    }}
+                >
+                    <Box minWidth="130px">{label}:</Box>
+                    <Input
+                        fullWidth
+                        type={type}
+                        disabled={disabled}
+                        {...field}
+                    />
+                </Box>
+            )}
+        />
+    );
+};
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.primary.light,
         fontSize: 18,
     },
     [`&.${tableCellClasses.body}`]: {
-        backgroundColor: "--content-bg-color",
         fontSize: 14,
     },
 }));
 
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
-    backgroundColor: "--content-bg-color",
     padding: theme.spacing(1),
     margin: "auto",
 }));
@@ -116,7 +148,7 @@ function BasicTable({ contacts }) {
                                 <col width="30%" />
                                 <col width="30%" />
                             </colgroup>
-                            <TableHead id="tableHead">
+                            <TableHead>
                                 <TableRow>
                                     <StyledTableCell>Name</StyledTableCell>
                                     <StyledTableCell>
@@ -125,7 +157,7 @@ function BasicTable({ contacts }) {
                                     <StyledTableCell>Email</StyledTableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody id="tableBody">
+                            <TableBody>
                                 {contacts
                                     .slice(
                                         page * rowsPerPage,
@@ -175,7 +207,6 @@ function BasicTable({ contacts }) {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        id="tableBody"
                         rowsPerPageOptions={[]}
                         component="div"
                         count={contacts.length}
@@ -289,105 +320,60 @@ function BinTable({ contacts }) {
 }
 
 function MeetingTable({ meetings }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
     let history = useHistory();
 
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - meetings.length) : 0;
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
     return (
-        <>
+        <Paper>
+            <Box padding="10px 15px 0px">
+                <Typography variant="h6" gutterBottom>
+                    Meetings
+                </Typography>
+            </Box>
             {meetings.length ? (
-                <div>
-                    <TableContainer>
-                        <Table sx={{ maxWidth: 200 }} aria-label="simple table">
-                            <colgroup>
-                                <col width="60%" />
-                                <col width="40%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell>Title</StyledTableCell>
-                                    <StyledTableCell>
-                                        Start Time
-                                    </StyledTableCell>
+                <TableContainer sx={{ height: "180px", width: "400px" }}>
+                    <Table size="small" stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ bgcolor: "#77CFC3" }}>
+                                    Title
+                                </TableCell>
+                                <TableCell sx={{ bgcolor: "#77CFC3" }}>
+                                    Start Time
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {meetings.map((meeting) => (
+                                <TableRow
+                                    key={meeting._id}
+                                    onClick={() =>
+                                        history.push(`/meeting/${meeting._id}`)
+                                    }
+                                    sx={{
+                                        "&:last-child td, &:last-child th": {
+                                            border: 0,
+                                        },
+                                    }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {meeting.Title}
+                                    </TableCell>
+                                    <TableCell>{meeting.StartTime}</TableCell>
                                 </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {meetings
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row.name}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/meeting/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <StyledTableCell
-                                                component="th"
-                                                scope="row"
-                                            >
-                                                {row.Title}
-                                            </StyledTableCell>
-                                            <StyledTableCell>
-                                                {row.StartTime}
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <StyledTableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    {/* <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={meetings.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    /> */}
-                </div>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             ) : (
-                <Div>no record found.</Div>
+                <Box padding="10px 15px 0px">
+                <Typography variant="overline" gutterBottom>
+                    No related meeting(s).
+                </Typography>
+            </Box>
             )}
-        </>
+        </Paper>
     );
 }
-
-// handle related meetings
-const RelatedMeeting = ({ meetings }) => {
-    const meetingsTest = [
-        { value: "hbibhbki", label: "hbibhbki" },
-        { value: "hbibhb", label: "hbibhb" },
-        { value: "cat", label: "cat" },
-    ];
-
-    return <p>meetings</p>;
-};
 
 // show all active contacts
 const ContactAll = () => {
@@ -455,13 +441,25 @@ const ContactDetail = () => {
     let history = useHistory();
     const { contact, meetings, loading, error } = GetOneContact(contactId);
     const {
-        register,
         reset,
         control,
         handleSubmit,
         formState: { isDirty, isSubmitting },
     } = useForm();
     const [inputDisable, setInputDisable] = useState(true);
+
+    const customReset = (contact) => {
+        let defa = JSON.parse(JSON.stringify(contact)); // clone tags
+
+        if (defa.Tags) {
+            defa.Tags.map((opt) => {
+                opt.value = opt.TagId;
+                opt.label = opt.TagName;
+            });
+        }
+
+        reset(defa);
+    };
 
     const onSubmitHandler = (data) => {
         // check if there is any change
@@ -487,7 +485,7 @@ const ContactDetail = () => {
     };
 
     const onCancelHandler = () => {
-        reset(contact);
+        customReset(contact);
         setInputDisable(true);
     };
 
@@ -501,17 +499,8 @@ const ContactDetail = () => {
         history.push("/contact");
     };
 
-    const customReset = (contact) => {
-        let defa = JSON.parse(JSON.stringify(contact)); // clone tags
-
-        if (defa.Tags) {
-            defa.Tags.map((opt) => {
-                opt.value = opt.TagId;
-                opt.label = opt.TagName;
-            });
-        }
-
-        reset(defa);
+    const onEditHandler = () => {
+        setInputDisable(false);
     };
 
     useEffect(() => {
@@ -528,152 +517,194 @@ const ContactDetail = () => {
     }
 
     return (
-        <div className="content">
-            <form
-                className="contact-form"
-                onSubmit={handleSubmit(onSubmitHandler)}
-            >
-                <button
-                    className="detail-edit"
-                    type="button"
-                    onClick={() => setInputDisable(false)}
-                    hidden={!inputDisable}
+        <Box
+            sx={{
+                gridArea: "main",
+                bgcolor: "#EBF8F6",
+                padding: "10px 25px",
+            }}
+        >
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Grid
+                    container
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="start"
+                    spacing={12}
+                    marginBottom="35px"
                 >
-                    edit
-                </button>
-                <button
-                    className="detail-edit"
-                    type="button"
-                    onClick={onCancelHandler}
-                    hidden={inputDisable}
-                >
-                    cancel
-                </button>
-                <button
-                    className="detail-edit"
-                    type="submit"
-                    hidden={inputDisable}
-                >
-                    save
-                </button>
-                <button
-                    className="detail-edit"
-                    type="button"
-                    onClick={onDeleteHandler}
-                    hidden={!inputDisable}
-                >
-                    delete
-                </button>
-                <div className="form-avatar">
-                    <MdAdd id="form-addPhoto" size={50} />
-                </div>
-                {/* <Avatar sx={{ width: 150, height: 150 }}/> */}
-                {/* <MeetingTable meetings={meetings}/> */}
-                <div className="form-keyInfo">
-                    <div className="form-name">
-                        <input
-                            type="text"
-                            placeholder="FirstName"
-                            {...register("FirstName")}
-                            disabled={inputDisable}
-                            required
+                    <Grid item xs={2}>
+                        <Avatar
+                            sx={{
+                                width: "200px",
+                                height: "200px",
+                                cursor: "pointer",
+                            }}
                         />
-                        <input
-                            type="text"
-                            placeholder="LastName"
-                            {...register("LastName")}
+                    </Grid>
+                    <Grid item xs>
+                        <Box
+                            height="170px"
+                            width="380px"
+                            sx={{
+                                paddingTop: "30px",
+                                display: "flex",
+                                justifyContent: "space-evenly",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Box marginBottom="20px">
+                                <Controller
+                                    name="FirstName"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({
+                                        field,
+                                        fieldState: { error },
+                                    }) => (
+                                        <TextField
+                                            placeholder="Firstname"
+                                            {...field}
+                                            error={error}
+                                            variant="standard"
+                                            disabled={inputDisable}
+                                            inputProps={{
+                                                style: {
+                                                    fontSize: 30,
+                                                    width: "180px",
+                                                },
+                                            }}
+                                        />
+                                    )}
+                                />
+                                <Controller
+                                    name="LastName"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({
+                                        field,
+                                        fieldState: { error },
+                                    }) => (
+                                        <TextField
+                                            placeholder="Lastname"
+                                            {...field}
+                                            error={error}
+                                            variant="standard"
+                                            disabled={inputDisable}
+                                            inputProps={{
+                                                style: {
+                                                    fontSize: 30,
+                                                    width: "180px",
+                                                },
+                                            }}
+                                            sx={{ float: "right" }}
+                                        />
+                                    )}
+                                />
+                            </Box>
+                            <SelectTags
+                                control={control}
+                                tagOf="C"
+                                isDisabled={inputDisable}
+                            />
+                            <InputField
+                                name="MobileNo"
+                                label="Mobile Number"
+                                control={control}
+                                disabled={inputDisable}
+                                type="tel"
+                            />
+                            <InputField
+                                name="HomeNo"
+                                label="Home Number"
+                                control={control}
+                                disabled={inputDisable}
+                                type="tel"
+                            />
+                        </Box>
+                    </Grid>
+                    <Grid item xs="auto">
+                        <Button type="button" onClick={onDeleteHandler}>
+                            delete
+                        </Button>
+                        <Button type="button" onClick={onEditHandler}>
+                            edit
+                        </Button>
+                        <Button type="button" onClick={onCancelHandler}>
+                            cancel
+                        </Button>
+                        <Button type="submit">save</Button>
+                    </Grid>
+                </Grid>
+                <Divider />
+                <Grid container direction="row">
+                    <Grid item xs={4}>
+                        <InputField
+                            name="Email"
+                            label="Email"
+                            control={control}
                             disabled={inputDisable}
-                            required
-                        />
-                    </div>
-                    <MultipleSelectChip
-                        tagOf="C"
-                        control={control}
-                        isDisabled={inputDisable}
-                    />
-                    <div className="form-record">
-                        <label>Home: </label>
-                        <input
-                            type="tel"
-                            {...register("HomeNo")}
-                            disabled={inputDisable}
-                        />
-                    </div>
-                    <div className="form-record">
-                        <label>Mobile: </label>
-                        <input
-                            type="tel"
-                            {...register("MobileNo")}
-                            disabled={inputDisable}
-                        />
-                    </div>
-                </div>
-                <div className="form-Info">
-                    <div className="form-record">
-                        <label>Email: </label>
-                        <input
                             type="email"
-                            {...register("Email")}
-                            disabled={inputDisable}
                         />
-                    </div>
-
-                    <div className="form-record">
-                        <label>Job tittle: </label>
-                        <input
-                            type="text"
-                            {...register("JobTitle")}
+                        <InputField
+                            name="JobTitle"
+                            label="Job title"
                             disabled={inputDisable}
+                            control={control}
                         />
-                    </div>
-
-                    <div className="form-record">
-                        <label>Company: </label>
-                        <input
-                            type="text"
-                            {...register("Company")}
+                        <InputField
+                            name="Company"
+                            label="Company"
                             disabled={inputDisable}
+                            control={control}
                         />
-                    </div>
-
-                    <div className="form-record">
-                        <label>DOB: </label>
-                        <input
+                        <InputField
+                            name="DOB"
+                            label="Date of birth"
+                            disabled={inputDisable}
+                            control={control}
                             type="date"
-                            {...register("DOB")}
-                            disabled={inputDisable}
                         />
-                    </div>
-
-                    <div className="form-record">
-                        <label>Relationship: </label>
-                        <input
-                            type="text"
-                            {...register("Relationship")}
+                        <InputField
+                            name="Relationship"
+                            label="Relationship"
                             disabled={inputDisable}
+                            control={control}
                         />
-                    </div>
-
-                    <div className="form-record">
-                        <label>Address: </label>
-                        <input
-                            type="text"
-                            {...register("Address")}
-                            disabled={inputDisable}
+                        <Controller
+                            name="Notes"
+                            control={control}
+                            render={({ field }) => (
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        marginTop: "15px",
+                                    }}
+                                >
+                                    <TextField
+                                        {...field}
+                                        label="Notes"
+                                        multiline
+                                        maxRows={3}
+                                        placeholder="Write something..."
+                                        fullWidth
+                                        margin="normal"
+                                        variant="filled"
+                                        disabled={inputDisable}
+                                    />
+                                </Box>
+                            )}
                         />
-                    </div>
-                </div>
-                <div className="form-note">
-                    <label>Notes: </label>
-                    <textarea
-                        id="form-noteArea"
-                        placeholder="write something..."
-                        {...register("Notes")}
-                        disabled={inputDisable}
-                    ></textarea>
-                </div>
+                    </Grid>
+                    <Grid item xs="auto" marginLeft="300px" marginTop="20px">
+                        <MeetingTable meetings={meetings} />
+                    </Grid>
+                </Grid>
             </form>
-        </div>
+        </Box>
     );
 };
 
@@ -686,7 +717,22 @@ const ContactCreate = () => {
         handleSubmit,
         control,
         formState: { isDirty },
-    } = useForm();
+    } = useForm({
+        defaultValues: {
+            FirstName: "",
+            LastName: "",
+            MobileNo: "",
+            HomeNo: "",
+            Email: "",
+            Company: "",
+            JobTitle: "",
+            DOB: "",
+            Relationship: "",
+            Address: "",
+            Notes: "",
+            Tags: [],
+        },
+    });
 
     const onSubmitHandler = (data) => {
         // check if there any input
@@ -695,7 +741,6 @@ const ContactCreate = () => {
             if (data.Tags) {
                 data.TagIds = data.Tags.map((opt) => opt.TagId);
             }
-            data.Invitees = [];
 
             // send data to server
             console.log(data);
@@ -744,130 +789,130 @@ const ContactCreate = () => {
                             }}
                         >
                             <Box marginBottom="20px">
-                                <Input
-                                    placeholder="Firstname"
-                                    sx={{
-                                        fontSize: "30px",
-                                        width: "180px",
-                                    }}
+                                <Controller
+                                    name="FirstName"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({
+                                        field,
+                                        fieldState: { error },
+                                    }) => (
+                                        <TextField
+                                            placeholder="Firstname"
+                                            {...field}
+                                            error={error}
+                                            variant="standard"
+                                            inputProps={{
+                                                style: {
+                                                    fontSize: 30,
+                                                    width: "180px",
+                                                },
+                                            }}
+                                        />
+                                    )}
                                 />
-                                <Input
-                                    placeholder="Lastname"
-                                    sx={{
-                                        fontSize: "30px",
-                                        float: "right",
-                                        width: "180px",
-                                    }}
+                                <Controller
+                                    name="LastName"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({
+                                        field,
+                                        fieldState: { error },
+                                    }) => (
+                                        <TextField
+                                            placeholder="Lastname"
+                                            {...field}
+                                            error={error}
+                                            variant="standard"
+                                            inputProps={{
+                                                style: {
+                                                    fontSize: 30,
+                                                    width: "180px",
+                                                },
+                                            }}
+                                            sx={{ float: "right" }}
+                                        />
+                                    )}
                                 />
                             </Box>
-                            <Select autoWidth multiple />
-                            <FormField>
-                                <Box minWidth="130px">Mobile Number:</Box>
-                                <Input fullWidth />
-                            </FormField>
-                            <FormField>
-                                <Box minWidth="130px">Home Number:</Box>
-                                <Input fullWidth />
-                            </FormField>
+                            <SelectTags control={control} tagOf="C" />
+                            <InputField
+                                name="MobileNo"
+                                label="Mobile Number"
+                                control={control}
+                                type="tel"
+                            />
+                            <InputField
+                                name="HomeNo"
+                                label="Home Number"
+                                control={control}
+                                type="tel"
+                            />
                         </Box>
                     </Grid>
                     <Grid item xs="auto">
-                        <Chip
-                            label="delete"
-                            variant="outlined"
-                            clickable={true}
-                        />
-                        <Chip
-                            label="edit"
-                            variant="outlined"
-                            clickable={true}
-                        />
+                        <Button type="button" onClick={() => history.goBack()}>
+                            cancel
+                        </Button>
+                        <Button type="submit">create</Button>
                     </Grid>
                 </Grid>
                 <Divider />
                 <Grid container direction="row">
                     <Grid item xs={4}>
-                        <FormField>
-                            <Box minWidth="130px">Email:</Box>
-                            <Input fullWidth type="email" />
-                        </FormField>
-                        <FormField>
-                            <Box minWidth="130px">Job title:</Box>
-                            <Input fullWidth />
-                        </FormField>
-                        <FormField>
-                            <Box minWidth="130px">Company:</Box>
-                            <Input fullWidth />
-                        </FormField>
-                        <FormField>
-                            <Box minWidth="130px">DOB:</Box>
-                            <Input fullWidth type="date" />
-                        </FormField>
-                        <FormField>
-                            <Box minWidth="130px">Relationship:</Box>
-                            <Input fullWidth />
-                        </FormField>
-                        <FormField>
-                            <TextField
-                                label="Notes"
-                                multiline
-                                maxRows={3}
-                                placeholder="Write something..."
-                                fullWidth
-                                margin="normal"
-                                variant="filled"
-                            />
-                        </FormField>
-                    </Grid>
-                    <Grid item xs="auto" marginLeft="300px" marginTop="20px">
-                        <Paper>
-                            <Box padding="10px 15px 0px">
-                                <Typography variant="h6" gutterBottom>
-                                    Meetings
-                                </Typography>
-                            </Box>
-                            <TableContainer
-                                sx={{ height: "180px", width: "400px" }}
-                            >
-                                <Table size="small" stickyHeader>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell
-                                                sx={{ bgcolor: "#77CFC3" }}
-                                            >
-                                                Title
-                                            </TableCell>
-                                            <TableCell
-                                                sx={{ bgcolor: "#77CFC3" }}
-                                            >
-                                                Time
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.map((row) => (
-                                            <TableRow
-                                                key={row.name}
-                                                sx={{
-                                                    "&:last-child td, &:last-child th":
-                                                        { border: 0 },
-                                                }}
-                                            >
-                                                <TableCell
-                                                    component="th"
-                                                    scope="row"
-                                                >
-                                                    {row.name}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {row.calories}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Paper>
+                        <InputField
+                            name="Email"
+                            label="Email"
+                            control={control}
+                            type="email"
+                        />
+                        <InputField
+                            name="JobTitle"
+                            label="Job title"
+                            control={control}
+                        />
+                        <InputField
+                            name="Company"
+                            label="Company"
+                            control={control}
+                        />
+                        <InputField
+                            name="DOB"
+                            label="Date of birth"
+                            control={control}
+                            type="date"
+                        />
+                        <InputField
+                            name="Relationship"
+                            label="Relationship"
+                            control={control}
+                        />
+                        <Controller
+                            name="Notes"
+                            control={control}
+                            render={({ field }) => (
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        marginTop: "15px",
+                                    }}
+                                >
+                                    <TextField
+                                        {...field}
+                                        label="Notes"
+                                        multiline
+                                        maxRows={3}
+                                        placeholder="Write something..."
+                                        fullWidth
+                                        margin="normal"
+                                        variant="filled"
+                                    />
+                                </Box>
+                            )}
+                        />
                     </Grid>
                 </Grid>
             </form>
@@ -1157,174 +1202,3 @@ export const Contact = () => {
 };
 
 export default Contact;
-
-{
-    /* <Box
-sx={{
-    gridArea: "main",
-    bgcolor: "#EBF8F6",
-    padding: "10px 25px",
-}}
->
-<Grid
-    container
-    direction="row"
-    justifyContent="space-between"
-    alignItems="start"
-    spacing={12}
-    marginBottom="35px"
->
-    <Grid item xs={2}>
-        <Avatar
-            sx={{
-                width: "200px",
-                height: "200px",
-                cursor: "pointer",
-            }}
-        />
-    </Grid>
-    <Grid item xs>
-        <Box
-            height="170px"
-            width="380px"
-            sx={{
-                paddingTop: "30px",
-                display: "flex",
-                justifyContent: "space-evenly",
-                flexDirection: "column",
-            }}
-        >
-            <Box marginBottom="20px">
-                <Input
-                    placeholder="Firstname"
-                    sx={{
-                        fontSize: "30px",
-                        width: "180px",
-                    }}
-                />
-                <Input
-                    placeholder="Lastname"
-                    sx={{
-                        fontSize: "30px",
-                        float: "right",
-                        width: "180px",
-                    }}
-                />
-            </Box>
-            <Select autoWidth multiple value={names}/>
-            <FormField>
-                <Box minWidth="130px">Mobile Number:</Box>
-                <Input fullWidth />
-            </FormField>
-            <FormField>
-                <Box minWidth="130px">Home Number:</Box>
-                <Input fullWidth />
-            </FormField>
-        </Box>
-    </Grid>
-    <Grid item xs="auto">
-        <Chip
-            label="delete"
-            variant="outlined"
-            clickable={true}
-        />
-        <Chip
-            label="edit"
-            variant="outlined"
-            clickable={true}
-        />
-    </Grid>
-</Grid>
-<Divider />
-<Grid container direction="row">
-    <Grid item xs={4}>
-        <FormField>
-            <Box minWidth="130px">Email:</Box>
-            <Input fullWidth type="email" />
-        </FormField>
-        <FormField>
-            <Box minWidth="130px">Job title:</Box>
-            <Input fullWidth />
-        </FormField>
-        <FormField>
-            <Box minWidth="130px">Company:</Box>
-            <Input fullWidth />
-        </FormField>
-        <FormField>
-            <Box minWidth="130px">DOB:</Box>
-            <Input fullWidth type="date" />
-        </FormField>
-        <FormField>
-            <Box minWidth="130px">Relationship:</Box>
-            <Input fullWidth />
-        </FormField>
-        <FormField>
-            <TextField
-                label="Notes"
-                multiline
-                maxRows={3}
-                placeholder="Write something..."
-                fullWidth
-                margin="normal"
-                variant="filled"
-            />
-        </FormField>
-    </Grid>
-    <Grid
-        item
-        xs="auto"
-        marginLeft="300px"
-        marginTop="20px"
-    >
-        <Paper>
-            <Box padding="10px 15px 0px">
-                <Typography variant="h6" gutterBottom>
-                    Meetings
-                </Typography>
-            </Box>
-            <TableContainer
-                sx={{ height: "180px", width: "400px" }}
-            >
-                <Table size="small" stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell
-                                sx={{ bgcolor: "#77CFC3" }}
-                            >
-                                Title
-                            </TableCell>
-                            <TableCell
-                                sx={{ bgcolor: "#77CFC3" }}
-                            >
-                                Time
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow
-                                key={row.name}
-                                sx={{
-                                    "&:last-child td, &:last-child th":
-                                        { border: 0 },
-                                }}
-                            >
-                                <TableCell
-                                    component="th"
-                                    scope="row"
-                                >
-                                    {row.name}
-                                </TableCell>
-                                <TableCell>
-                                    {row.calories}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Paper>
-    </Grid>
-</Grid>
-</Box> */
-}

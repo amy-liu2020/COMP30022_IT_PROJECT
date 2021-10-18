@@ -19,7 +19,7 @@ import SideMenu from "../common/sideMenu";
 import NavigationBar, { Nav } from "../common/nav";
 import { useForm } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
-import { MultipleSelectChip } from "../common/tag";
+import { SelectTags } from "../common/tag";
 import { useState, useEffect, useMemo} from "react";
 import { Box } from "@mui/system";
 import { styled } from "@mui/material/styles";
@@ -377,7 +377,7 @@ const MeetingDetail = () => {
                             disabled={isDisabled}
                         />
                     </div>
-                    <MultipleSelectChip control={control} tagOf="M" isDisabled={isDisabled}/>
+                    <SelectTags control={control} tagOf="M" isDisabled={isDisabled}/>
                     <div class="meetingForm-record">
                         <label>Location: </label>
                         <input
@@ -523,7 +523,7 @@ const MeetingCreate = () => {
                             required
                         />
                     </div>
-                    <MultipleSelectChip id="meetingTag" control={control} tagOf="M"/>
+                    <SelectTags id="meetingTag" control={control} tagOf="M"/>
                     <div class="meetingForm-record">
                         <label>Location: </label>
                         <input type="text" {...register("Location")} />

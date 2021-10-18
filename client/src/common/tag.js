@@ -66,7 +66,7 @@ const names = [
     "Kelly Snyder",
 ];
 
-export const MultipleSelectChip = ({control, tagOf,isDisabled=false}) => {
+export const SelectTags = ({control, tagOf, isDisabled=false}) => {
     const { tags, loading, error } = GetTags(tagOf);
 
     const formatTag = (tags) => {
