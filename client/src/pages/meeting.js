@@ -16,11 +16,10 @@ import {
     GetMeetingsBySearch,
 } from "../api";
 import SideMenu from "../common/sideMenu";
-import NavigationBar, { Nav } from "../common/nav";
+import { Nav } from "../common/nav";
 import { useForm } from "react-hook-form";
-import { MdAdd } from "react-icons/md";
-import { SelectTags } from "../common/tag";
-import { useState, useEffect, useMemo} from "react";
+import SelectTags from "../common/tag";
+import { useState, useEffect } from "react";
 import { Box } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -38,9 +37,8 @@ const StyledTableCell = styled(TableCell)(() => ({
         fontSize: 18,
     },
     [`&.${tableCellClasses.body}`]: {
-        backgroundColor: "--content-bg-color",
         fontSize: 14,
-    }
+    },
 }));
 
 const Div = styled("div")(({ theme }) => ({
@@ -50,13 +48,12 @@ const Div = styled("div")(({ theme }) => ({
     margin: "auto",
 }));
 
-export function BasicTable({ meetings }) {
+function BasicTable({ meetings }) {
     const [page, setPage] = useState(0);
     const rowsPerPage = 10;
     let history = useHistory();
 
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - meetings.length) : 0;
+    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - meetings.length);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -65,7 +62,11 @@ export function BasicTable({ meetings }) {
     return (
         <>
             {meetings.length ? (
-                <div>
+                <Box
+                    sx={{
+                        gridArea: "main",
+                    }}
+                >
                     <TableContainer>
                         <Table sx={{ minWidth: 400 }} aria-label="simple table">
                             <colgroup>
@@ -73,14 +74,35 @@ export function BasicTable({ meetings }) {
                                 <col width="30%" />
                                 <col width="30%" />
                             </colgroup>
-                            <TableHead id="tableHead">
+                            <TableHead>
                                 <TableRow>
-                                    <StyledTableCell>Meeting Name</StyledTableCell>
-                                    <StyledTableCell>Location</StyledTableCell>
-                                    <StyledTableCell>Date</StyledTableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Title
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Location
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Date
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody id="tableBody">
+                            <TableBody>
                                 {meetings
                                     .slice(
                                         page * rowsPerPage,
@@ -101,18 +123,11 @@ export function BasicTable({ meetings }) {
                                                 )
                                             }
                                         >
-                                            <StyledTableCell
-                                                component="th"
-                                                scope="row"
-                                            >
-                                                {row.Title}
-                                            </StyledTableCell>
-                                            <StyledTableCell>
+                                            <TableCell>{row.Title}</TableCell>
+                                            <TableCell>
                                                 {row.Location}
-                                            </StyledTableCell>
-                                            <StyledTableCell>
-                                                {row.Date}
-                                            </StyledTableCell>
+                                            </TableCell>
+                                            <TableCell>{row.Date}</TableCell>
                                         </TableRow>
                                     ))}
                                 {emptyRows > 0 && (
@@ -128,7 +143,6 @@ export function BasicTable({ meetings }) {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        id="tableBody"
                         rowsPerPageOptions={[]}
                         component="div"
                         count={meetings.length}
@@ -136,14 +150,13 @@ export function BasicTable({ meetings }) {
                         page={page}
                         onPageChange={handleChangePage}
                     />
-                </div>
+                </Box>
             ) : (
                 <Div>no record found.</Div>
             )}
         </>
     );
 }
-
 
 // show all active meetings
 const MeetingAll = () => {
@@ -214,7 +227,6 @@ const MeetingSearch = () => {
     return <BasicTable meetings={meetings} />;
 };
 
-
 const MeetingDetail = () => {
     let history = useHistory();
     let { id } = useParams();
@@ -231,13 +243,11 @@ const MeetingDetail = () => {
     });
 
     const onSubmitHandler = (data) => {
-
         // check if there is any change
         if (isDirty) {
-
             // re-format data
             if (data.Tags) {
-                data.TagIds = data.Tags.map(opt => opt.TagId);
+                data.TagIds = data.Tags.map((opt) => opt.TagId);
             }
             if (data.Date) {
                 if (data.StartTime) {
@@ -247,7 +257,7 @@ const MeetingDetail = () => {
                 } else {
                     data.StartTime = new Date(data.Date).toISOString();
                 }
-    
+
                 if (data.EndTime) {
                     data.EndTime = new Date(
                         data.Date + "T" + data.EndTime + ":00Z"
@@ -266,7 +276,6 @@ const MeetingDetail = () => {
             // history.push("/meeting");
             console.log(data); // test only
         }
-
     };
 
     const CustomReset = (data) => {
@@ -289,19 +298,17 @@ const MeetingDetail = () => {
         }
         // reset defaultValue
         reset(defaultValue);
-    }
+    };
 
     const onCancelHandler = () => {
-
         // disable input
         setIsDisable(true);
 
         // reset value to defaultValue
         CustomReset(data);
-    }
+    };
 
     const onDeleteHandler = () => {
-        
         // send request to server
         DeleteMeeting(id).then((res) => {
             console.log(res);
@@ -309,8 +316,7 @@ const MeetingDetail = () => {
 
         // redirect to list page
         history.push("/meeting");
-
-    }
+    };
 
     useEffect(() => {
         CustomReset(data);
@@ -326,10 +332,10 @@ const MeetingDetail = () => {
 
     return (
         <Box
-        sx={{
-            gridArea: "main",
-        }}
-    >
+            sx={{
+                gridArea: "main",
+            }}
+        >
             <form
                 className="meeting-form"
                 onSubmit={handleSubmit(onSubmitHandler)}
@@ -377,7 +383,11 @@ const MeetingDetail = () => {
                             disabled={isDisabled}
                         />
                     </div>
-                    <SelectTags control={control} tagOf="M" isDisabled={isDisabled}/>
+                    <SelectTags
+                        control={control}
+                        tagOf="M"
+                        isDisabled={isDisabled}
+                    />
                     <div class="meetingForm-record">
                         <label>Location: </label>
                         <input
@@ -439,7 +449,7 @@ const MeetingDetail = () => {
                     <label>Notes: </label>
                     <input
                         type="textarea"
-                        id = "form-noteArea"
+                        id="form-noteArea"
                         {...register("Notes")}
                         disabled={isDisabled}
                     />
@@ -449,7 +459,7 @@ const MeetingDetail = () => {
                     <label>Key words:</label>
                     <input
                         type="text"
-                        id = "form-noteArea"
+                        id="form-noteArea"
                         {...register("NotesKeyWords")}
                         disabled={isDisabled}
                     />
@@ -472,7 +482,7 @@ const MeetingCreate = () => {
     const onSubmitHandler = (data) => {
         // re-group data
         if (data.Tags) {
-            data.TagIds = data.Tags.map(opt => opt.TagId);
+            data.TagIds = data.Tags.map((opt) => opt.TagId);
         }
         if (dirtyFields.Date) {
             if (dirtyFields.StartTime) {
@@ -504,10 +514,10 @@ const MeetingCreate = () => {
 
     return (
         <Box
-        sx={{
-            gridArea: "main",
-        }}
-    >
+            sx={{
+                gridArea: "main",
+            }}
+        >
             <form
                 className="meeting-form"
                 onSubmit={handleSubmit(onSubmitHandler)}
@@ -523,7 +533,7 @@ const MeetingCreate = () => {
                             required
                         />
                     </div>
-                    <SelectTags id="meetingTag" control={control} tagOf="M"/>
+                    <SelectTags id="meetingTag" control={control} tagOf="M" />
                     <div class="meetingForm-record">
                         <label>Location: </label>
                         <input type="text" {...register("Location")} />
@@ -559,18 +569,25 @@ const MeetingCreate = () => {
 
                 <div class="meetingForm-notes">
                     <label>Notes: </label>
-                    <input type="text" id = "form-noteArea" {...register("Notes")} />
+                    <input
+                        type="text"
+                        id="form-noteArea"
+                        {...register("Notes")}
+                    />
                 </div>
 
                 <div class="meetingForm-keyWords">
                     <label>Key words:</label>
-                    <input type="text" id = "form-noteArea" {...register("NotesKeyWords")} />
+                    <input
+                        type="text"
+                        id="form-noteArea"
+                        {...register("NotesKeyWords")}
+                    />
                 </div>
             </form>
         </Box>
     );
 };
-
 
 // decide which subPage will be render based on path
 export const Meeting = () => {
@@ -578,16 +595,16 @@ export const Meeting = () => {
 
     return (
         <Box
-        sx={{
-            height: "100vh",
-            display: "grid",
-            gridTemplateColumns: "240px auto",
-            gap: 0,
-            gridTemplateRows: "60px auto",
-            gridTemplateAreas: `"header header header header""sidebar main main main "`,
-        }}
-    >
-            <Nav tab="meeting"/>
+            sx={{
+                height: "100vh",
+                display: "grid",
+                gridTemplateColumns: "240px auto",
+                gap: 0,
+                gridTemplateRows: "60px auto",
+                gridTemplateAreas: `"header header header header""sidebar main main main "`,
+            }}
+        >
+            <Nav tab="meeting" />
             <SideMenu tagOf="M" />
             <Switch>
                 <Route path={`${path}/create`}>
@@ -615,7 +632,8 @@ export const Meeting = () => {
 
 export default Meeting;
 
-{/* <Box
+{
+    /* <Box
 sx={{
     gridArea: "main",
     bgcolor: "#EBF8F6",
@@ -695,4 +713,5 @@ sx={{
         </Box>
     </Grid>
 </Grid>
-</Box> */}
+</Box> */
+}

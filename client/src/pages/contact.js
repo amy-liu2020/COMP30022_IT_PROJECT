@@ -7,8 +7,9 @@ import {
     GetContactsByTag,
     GetBinList,
     GetContactsBySearch,
+    GetBinItem,
+    RestoreBinItem
 } from "../api";
-import { MdAdd } from "react-icons/md";
 import {
     Switch,
     Route,
@@ -16,52 +17,31 @@ import {
     useHistory,
     useParams,
 } from "react-router-dom";
-// import { useState, useMemo, useEffect } from "react/cjs/react.development";
-import { useState, useMemo, useEffect } from "react";
-
+import { useState, useEffect } from "react";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
-import Tag, { SelectTags } from "../common/tag";
 import { Controller, useForm } from "react-hook-form";
-import Select from "react-select";
+import SelectTags from "../common/tag";
+import Loading from "../common/loading";
 
+import {
+    Table,
+    TableBody,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TablePagination,
+    TableCell,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TablePagination from "@mui/material/TablePagination";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import CircularProgress from "@mui/material/CircularProgress";
-import { Box } from "@mui/system";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import SettingsIcon from "@mui/icons-material/Settings";
-import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
-import { alpha } from "@mui/material/styles";
 import { Divider, Input } from "@mui/material";
-import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
-
 import Paper from "@mui/material/Paper";
-import { Stack } from "@mui/material";
-import { FaUserShield } from "react-icons/fa";
-
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+import { Box } from "@mui/system";
 
 const InputField = ({
     name,
@@ -97,28 +77,11 @@ const InputField = ({
     );
 };
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.primary.light,
-        fontSize: 18,
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
-}));
-
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
+    gridArea: "main",
     padding: theme.spacing(1),
     margin: "auto",
-}));
-
-const FormField = styled(Box)(({ theme }) => ({
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: "15px",
 }));
 
 function BasicTable({ contacts }) {
@@ -126,8 +89,7 @@ function BasicTable({ contacts }) {
     const rowsPerPage = 10;
     let history = useHistory();
 
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
+    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - contacts.length);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -150,11 +112,30 @@ function BasicTable({ contacts }) {
                             </colgroup>
                             <TableHead>
                                 <TableRow>
-                                    <StyledTableCell>Name</StyledTableCell>
-                                    <StyledTableCell>
-                                        Phone number
-                                    </StyledTableCell>
-                                    <StyledTableCell>Email</StyledTableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Name
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Phone Number
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Email
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -178,20 +159,15 @@ function BasicTable({ contacts }) {
                                                 )
                                             }
                                         >
-                                            <StyledTableCell
-                                                component="th"
-                                                scope="row"
-                                            >
+                                            <TableCell>
                                                 {row.FirstName +
                                                     " " +
                                                     row.LastName}
-                                            </StyledTableCell>
-                                            <StyledTableCell>
+                                            </TableCell>
+                                            <TableCell>
                                                 {row.MobileNo}
-                                            </StyledTableCell>
-                                            <StyledTableCell>
-                                                {row.Email}
-                                            </StyledTableCell>
+                                            </TableCell>
+                                            <TableCell>{row.Email}</TableCell>
                                         </TableRow>
                                     ))}
                                 {emptyRows > 0 && (
@@ -200,7 +176,7 @@ function BasicTable({ contacts }) {
                                             height: 53 * emptyRows,
                                         }}
                                     >
-                                        <StyledTableCell colSpan={3} />
+                                        <TableCell colSpan={3} />
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -250,10 +226,22 @@ function BinTable({ contacts }) {
                             </colgroup>
                             <TableHead>
                                 <TableRow>
-                                    <StyledTableCell>Name</StyledTableCell>
-                                    <StyledTableCell>
-                                        Delete Time
-                                    </StyledTableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Name
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Delete Date
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -273,22 +261,14 @@ function BinTable({ contacts }) {
                                             }}
                                             onClick={() =>
                                                 history.push(
-                                                    `/contact/${row._id}`
+                                                    `/contact/bin/${row._id}`
                                                 )
                                             }
                                         >
-                                            <StyledTableCell
-                                                component="th"
-                                                scope="row"
-                                            >
-                                                {row.Name}
-                                            </StyledTableCell>
-                                            <StyledTableCell
-                                                component="th"
-                                                scope="row"
-                                            >
+                                            <TableCell>{row.Name}</TableCell>
+                                            <TableCell>
                                                 {row.DeleteDate.slice(0, 10)}
-                                            </StyledTableCell>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 {emptyRows > 0 && (
@@ -297,7 +277,7 @@ function BinTable({ contacts }) {
                                             height: 53 * emptyRows,
                                         }}
                                     >
-                                        <StyledTableCell colSpan={3} />
+                                        <TableCell colSpan={3} />
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -319,7 +299,7 @@ function BinTable({ contacts }) {
     );
 }
 
-function MeetingTable({ meetings }) {
+function RelatedMeetings({ meetings }) {
     let history = useHistory();
 
     return (
@@ -366,10 +346,10 @@ function MeetingTable({ meetings }) {
                 </TableContainer>
             ) : (
                 <Box padding="10px 15px 0px">
-                <Typography variant="overline" gutterBottom>
-                    No related meeting(s).
-                </Typography>
-            </Box>
+                    <Typography variant="overline" gutterBottom>
+                        No related meeting(s).
+                    </Typography>
+                </Box>
             )}
         </Paper>
     );
@@ -380,7 +360,7 @@ const ContactAll = () => {
     const { contacts, loading, error } = GetContacts();
 
     if (loading) {
-        return <CircularProgress size={100} />;
+        return <Loading />;
     }
 
     if (error) {
@@ -396,9 +376,8 @@ const ContactWithTag = () => {
     const { contacts, loading, error } = GetContactsByTag(tagName);
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading />;
     }
-
     if (error) {
         return <p>{error}</p>;
     }
@@ -411,7 +390,7 @@ const ContactBin = () => {
     const { data, loading, error } = GetBinList("C");
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading />;
     }
 
     if (error) {
@@ -426,7 +405,7 @@ const ContactSearch = () => {
     const { contacts, loading, error } = GetContactsBySearch(keyword);
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading />;
     }
 
     if (error) {
@@ -467,7 +446,6 @@ const ContactDetail = () => {
             if (data.Tags) {
                 data.TagIds = data.Tags.map((opt) => opt.TagId);
             }
-            console.log(data);
 
             // send data to server
             EditContact(data, contactId).then((data) => {
@@ -484,11 +462,6 @@ const ContactDetail = () => {
         setInputDisable(true);
     };
 
-    const onCancelHandler = () => {
-        customReset(contact);
-        setInputDisable(true);
-    };
-
     const onDeleteHandler = () => {
         // send request to server
         DeleteContact(contactId).then((res) => {
@@ -499,17 +472,17 @@ const ContactDetail = () => {
         history.push("/contact");
     };
 
-    const onEditHandler = () => {
-        setInputDisable(false);
+    const onChangeMode = () => {
+        customReset(contact);
+        setInputDisable(!inputDisable);
     };
 
     useEffect(() => {
         customReset(contact);
-        console.log(meetings);
     }, [contact]);
 
     if (loading || isSubmitting) {
-        return <p>loading...</p>;
+        return <Loading />;
     }
 
     if (error) {
@@ -624,16 +597,16 @@ const ContactDetail = () => {
                         </Box>
                     </Grid>
                     <Grid item xs="auto">
-                        <Button type="button" onClick={onDeleteHandler}>
-                            delete
+                        <Button type="button" onClick={onChangeMode}>
+                            {inputDisable ? "edit" : "cancel"}
                         </Button>
-                        <Button type="button" onClick={onEditHandler}>
-                            edit
-                        </Button>
-                        <Button type="button" onClick={onCancelHandler}>
-                            cancel
-                        </Button>
-                        <Button type="submit">save</Button>
+                        {inputDisable ? (
+                            <Button type="button" onClick={onDeleteHandler}>
+                                delete
+                            </Button>
+                        ) : (
+                            <Button type="submit">save</Button>
+                        )}
                     </Grid>
                 </Grid>
                 <Divider />
@@ -700,7 +673,7 @@ const ContactDetail = () => {
                         />
                     </Grid>
                     <Grid item xs="auto" marginLeft="300px" marginTop="20px">
-                        <MeetingTable meetings={meetings} />
+                        <RelatedMeetings meetings={meetings} />
                     </Grid>
                 </Grid>
             </form>
@@ -713,7 +686,6 @@ const ContactCreate = () => {
     let history = useHistory();
 
     const {
-        register,
         handleSubmit,
         control,
         formState: { isDirty },
@@ -743,7 +715,6 @@ const ContactCreate = () => {
             }
 
             // send data to server
-            console.log(data);
             CreateContact(data).then((res) => console.log(res));
         }
 
@@ -917,110 +888,58 @@ const ContactCreate = () => {
                 </Grid>
             </form>
         </Box>
-
-        // <div className="content">
-        //     <form
-        //         className="contact-form"
-        //         onSubmit={handleSubmit(onSubmitHandler)}
-        //     >
-        //         <button type="submit">save</button>
-        //         <div className="form-avatar">
-        //             <MdAdd id="form-addPhoto" size={50} />
-        //         </div>
-        //         <div className="form-keyInfo">
-        //             <div className="form-name">
-        //                 <input
-        //                     type="text"
-        //                     placeholder="FirstName"
-        //                     {...register("FirstName")}
-        //                     required
-        //                 />
-        //                 <input
-        //                     type="text"
-        //                     placeholder="LastName"
-        //                     {...register("LastName")}
-        //                     required
-        //                 />
-        //             </div>
-        //             {/* <Tag tagOf="C" setSelectedTags={selectedTagsHandler} /> */}
-        //             <MultipleSelectChip control={control} tagOf="C" />
-        //             <div className="form-record">
-        //                 <label>Home: </label>
-        //                 <input type="tel" {...register("HomeNo")} />
-        //             </div>
-        //             <div className="form-record">
-        //                 <label>Mobile: </label>
-        //                 <input type="tel" {...register("MobileNo")} />
-        //             </div>
-        //         </div>
-        //         <div className="form-Info">
-        //             <div className="form-record">
-        //                 <label>Email: </label>
-        //                 <input type="email" {...register("Email")} />
-        //             </div>
-
-        //             <div className="form-record">
-        //                 <label>Job tittle: </label>
-        //                 <input type="text" {...register("JobTitle")} />
-        //             </div>
-
-        //             <div className="form-record">
-        //                 <label>Company: </label>
-        //                 <input type="text" {...register("Company")} />
-        //             </div>
-
-        //             <div className="form-record">
-        //                 <label>DOB: </label>
-        //                 <input type="date" {...register("DOB")} />
-        //             </div>
-
-        //             <div className="form-record">
-        //                 <label>Relationship: </label>
-        //                 <input type="text" {...register("Relationship")} />
-        //             </div>
-
-        //             <div className="form-record">
-        //                 <label>Address: </label>
-        //                 <input type="text" {...register("Address")} />
-        //             </div>
-        //         </div>
-        //         <div className="form-note">
-        //             <label>Notes: </label>
-        //             <textarea
-        //                 id="form-noteArea"
-        //                 placeholder="write something..."
-        //                 {...register("Notes")}
-        //             ></textarea>
-        //         </div>
-        //     </form>
-        // </div>
     );
 };
 
-// decide which subPage will be render based on path
-export const Contact = () => {
-    let { path } = useRouteMatch();
+// restore deleted Contact
+const ContactRestore = () => {
+    let { BinId } = useParams();
+    let history = useHistory();
+    const { data, loading, error } = GetBinItem(BinId);
+    const {
+        reset,
+        control
+    } = useForm();
+    const inputDisable = true;
+
+    const onRestoreHandler = () => {
+        RestoreBinItem(BinId).then(res => console.log(res));
+    }
+
+    const customReset = (data) => {
+        let defa = JSON.parse(JSON.stringify(data)); // clone tags
+
+        if (defa.Tags) {
+            defa.Tags.map((opt) => {
+                opt.value = opt.TagId;
+                opt.label = opt.TagName;
+            });
+        }
+
+        reset(defa);
+    };
+
+    useEffect(() => {
+        customReset(data);
+    }, [data]);
+
+    if (loading) {
+        return <Loading />;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
 
     return (
         <Box
             sx={{
-                height: "100vh",
-                display: "grid",
-                gridTemplateColumns: "240px auto",
-                gap: 0,
-                gridTemplateRows: "60px auto",
-                gridTemplateAreas: `"header header header header""sidebar main main main "`,
+                gridArea: "main",
+                bgcolor: "#EBF8F6",
+                padding: "10px 25px",
             }}
         >
-            <Nav tab="contact" />
-            <SideMenu tagOf="C" />
-            {/* <Box
-                sx={{
-                    gridArea: "main",
-                    bgcolor: "#EBF8F6",
-                    padding: "10px 25px",
-                }}
-            >
+            <form>
                 <Grid
                     container
                     direction="row"
@@ -1050,136 +969,173 @@ export const Contact = () => {
                             }}
                         >
                             <Box marginBottom="20px">
-                                <Input
-                                    placeholder="Firstname"
-                                    sx={{
-                                        fontSize: "30px",
-                                        width: "180px",
-                                    }}
+                                <Controller
+                                    name="FirstName"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({
+                                        field,
+                                        fieldState: { error },
+                                    }) => (
+                                        <TextField
+                                            placeholder="Firstname"
+                                            {...field}
+                                            error={error}
+                                            variant="standard"
+                                            disabled={inputDisable}
+                                            inputProps={{
+                                                style: {
+                                                    fontSize: 30,
+                                                    width: "180px",
+                                                },
+                                            }}
+                                        />
+                                    )}
                                 />
-                                <Input
-                                    placeholder="Lastname"
-                                    sx={{
-                                        fontSize: "30px",
-                                        float: "right",
-                                        width: "180px",
-                                    }}
+                                <Controller
+                                    name="LastName"
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({
+                                        field,
+                                        fieldState: { error },
+                                    }) => (
+                                        <TextField
+                                            placeholder="Lastname"
+                                            {...field}
+                                            error={error}
+                                            variant="standard"
+                                            disabled={inputDisable}
+                                            inputProps={{
+                                                style: {
+                                                    fontSize: 30,
+                                                    width: "180px",
+                                                },
+                                            }}
+                                            sx={{ float: "right" }}
+                                        />
+                                    )}
                                 />
                             </Box>
-                            <Select autoWidth multiple />
-                            <FormField>
-                                <Box minWidth="130px">Mobile Number:</Box>
-                                <Input fullWidth />
-                            </FormField>
-                            <FormField>
-                                <Box minWidth="130px">Home Number:</Box>
-                                <Input fullWidth />
-                            </FormField>
+                            <SelectTags
+                                control={control}
+                                tagOf="C"
+                                isDisabled={inputDisable}
+                            />
+                            <InputField
+                                name="MobileNo"
+                                label="Mobile Number"
+                                control={control}
+                                disabled={inputDisable}
+                                type="tel"
+                            />
+                            <InputField
+                                name="HomeNo"
+                                label="Home Number"
+                                control={control}
+                                disabled={inputDisable}
+                                type="tel"
+                            />
                         </Box>
                     </Grid>
                     <Grid item xs="auto">
-                        <Chip
-                            label="delete"
-                            variant="outlined"
-                            clickable={true}
-                        />
-                        <Chip
-                            label="edit"
-                            variant="outlined"
-                            clickable={true}
-                        />
+                        <Button type="button" onClick={onRestoreHandler}>
+                            restore
+                        </Button>
                     </Grid>
                 </Grid>
                 <Divider />
                 <Grid container direction="row">
                     <Grid item xs={4}>
-                        <FormField>
-                            <Box minWidth="130px">Email:</Box>
-                            <Input fullWidth type="email" />
-                        </FormField>
-                        <FormField>
-                            <Box minWidth="130px">Job title:</Box>
-                            <Input fullWidth />
-                        </FormField>
-                        <FormField>
-                            <Box minWidth="130px">Company:</Box>
-                            <Input fullWidth />
-                        </FormField>
-                        <FormField>
-                            <Box minWidth="130px">DOB:</Box>
-                            <Input fullWidth type="date" />
-                        </FormField>
-                        <FormField>
-                            <Box minWidth="130px">Relationship:</Box>
-                            <Input fullWidth />
-                        </FormField>
-                        <FormField>
-                            <TextField
-                                label="Notes"
-                                multiline
-                                maxRows={3}
-                                placeholder="Write something..."
-                                fullWidth
-                                margin="normal"
-                                variant="filled"
-                            />
-                        </FormField>
-                    </Grid>
-                    <Grid item xs="auto" marginLeft="300px" marginTop="20px">
-                        <Paper>
-                            <Box padding="10px 15px 0px">
-                                <Typography variant="h6" gutterBottom>
-                                    Meetings
-                                </Typography>
-                            </Box>
-                            <TableContainer
-                                sx={{ height: "180px", width: "400px" }}
-                            >
-                                <Table size="small" stickyHeader>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell
-                                                sx={{ bgcolor: "#77CFC3" }}
-                                            >
-                                                Title
-                                            </TableCell>
-                                            <TableCell
-                                                sx={{ bgcolor: "#77CFC3" }}
-                                            >
-                                                Time
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.map((row) => (
-                                            <TableRow
-                                                key={row.name}
-                                                sx={{
-                                                    "&:last-child td, &:last-child th":
-                                                        { border: 0 },
-                                                }}
-                                            >
-                                                <TableCell
-                                                    component="th"
-                                                    scope="row"
-                                                >
-                                                    {row.name}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {row.calories}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Paper>
+                        <InputField
+                            name="Email"
+                            label="Email"
+                            control={control}
+                            disabled={inputDisable}
+                            type="email"
+                        />
+                        <InputField
+                            name="JobTitle"
+                            label="Job title"
+                            disabled={inputDisable}
+                            control={control}
+                        />
+                        <InputField
+                            name="Company"
+                            label="Company"
+                            disabled={inputDisable}
+                            control={control}
+                        />
+                        <InputField
+                            name="DOB"
+                            label="Date of birth"
+                            disabled={inputDisable}
+                            control={control}
+                            type="date"
+                        />
+                        <InputField
+                            name="Relationship"
+                            label="Relationship"
+                            disabled={inputDisable}
+                            control={control}
+                        />
+                        <Controller
+                            name="Notes"
+                            control={control}
+                            render={({ field }) => (
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        marginTop: "15px",
+                                    }}
+                                >
+                                    <TextField
+                                        {...field}
+                                        label="Notes"
+                                        multiline
+                                        maxRows={3}
+                                        placeholder="Write something..."
+                                        fullWidth
+                                        margin="normal"
+                                        variant="filled"
+                                        disabled={inputDisable}
+                                    />
+                                </Box>
+                            )}
+                        />
                     </Grid>
                 </Grid>
-            </Box> */}
+            </form>
+        </Box>
+    );
+};
+
+// decide which subPage will be render based on path
+export const Contact = () => {
+    let { path } = useRouteMatch();
+
+    return (
+        <Box
+            sx={{
+                height: "100vh",
+                display: "grid",
+                gridTemplateColumns: "240px auto",
+                gap: 0,
+                gridTemplateRows: "60px auto",
+                gridTemplateAreas: `"header header header header""sidebar main main main "`,
+            }}
+        >
+            <Nav tab="contact" />
+            <SideMenu tagOf="C" />
             <Switch>
                 <Route path={`${path}/create`}>
                     <ContactCreate />
+                </Route>
+                <Route path={`${path}/bin/:BinId`}>
+                    <ContactRestore />
                 </Route>
                 <Route path={`${path}/bin`}>
                     <ContactBin />

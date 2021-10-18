@@ -1,5 +1,5 @@
 import { Switch, Route, useRouteMatch, useHistory } from "react-router-dom";
-import NavigationBar from "../common/nav";
+import Nav from "../common/nav";
 import Logo from "../common/logo";
 import Setting from "../common/setting";
 import { loginUser, GetRegister, registerUser, Getprofile } from "../api";
@@ -113,7 +113,7 @@ const Profile = () => {
 
     return (
         <div>
-            <NavigationBar />
+            <Nav />
             <Switch>
                 <Route path={[`${path}/reset`]}>
                     <Reset />
@@ -257,7 +257,7 @@ const CheckId = () => {
     let history = useHistory();
     return (
         <div>
-            <NavigationBar />
+            <Nav />
             <div class="container">
                 <div class="forget-form">
                     <span>Reset Password</span>
@@ -282,7 +282,7 @@ const VerifyAns = () => {
     let history = useHistory();
     return (
         <div>
-            <NavigationBar />
+            <Nav />
             <div class="container">
                 <div class="forget-form">
                     <span>Reset Password</span>

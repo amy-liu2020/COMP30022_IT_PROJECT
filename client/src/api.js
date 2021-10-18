@@ -166,6 +166,36 @@ export function GetBinList(type) {
     return { data, loading, error };
 }
 
+export function GetBinItem(id) {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/bin/get/${id}`, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                console.log(res.data);
+                res.data.deletedContact && setData(res.data.deletedContact);
+                res.data.deletedMeeting && setData(res.data.deletedMeeting);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [id]);
+
+    return { data, loading, error };
+}
+
 export async function DeleteBinItem(id) {
     let data = await axios
         .post(`/api/bin/delete/:id`, [])

@@ -1,4 +1,4 @@
-import NavigationBar from "./nav";
+import {Nav} from "./nav";
 import { Route, useRouteMatch, useParams } from "react-router-dom";
 // import { useState } from "react/cjs/react.development";
 import { useState} from "react";
@@ -70,7 +70,7 @@ const Setting = () => {
 
     return (
         <div className="two-part-layout">
-            <NavigationBar />
+            <Nav tab="contact"/>
             <Route exact path={path}>
                 <SettingP />
             </Route>

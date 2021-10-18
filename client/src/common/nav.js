@@ -2,12 +2,10 @@
 import { MdSettings } from "react-icons/md";
 import Logo from "./logo";
 import Avatar from "@mui/material/Avatar";
-import SearchBar from "./searchBar";
 import { Link, useHistory } from "react-router-dom";
 // import { useState } from "react/cjs/react.development";
 import { useState } from "react";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
@@ -19,52 +17,6 @@ import MenuList from "@mui/material/MenuList";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { Paper } from "@mui/material";
 import { useForm } from "react-hook-form";
-
-// navigate user to selected tab
-const NavigationBar = ({tagOf}) => {
-    const [show, setShow] = useState(false);
-    let history = useHistory();
-    const tab = tagOf === "C" ? "C" : "M";
-
-    return (
-        <div className="nav">
-            <Logo width={70} />
-            <Link className="nav-tab" to="/contact">
-                contact
-            </Link>
-            <Link className="nav-tab" to="/meeting">
-                meeting
-            </Link>
-            <SearchBar tagOf={tab} className="nav-search" />
-            <div className="nav-setting">
-                <MdSettings
-                    size={40}
-                    onClick={() => history.push("/user/setting")}
-                />
-            </div>
-            <div className="avatar-buttons" onClick={() => setShow(!show)}>
-                <Avatar>H</Avatar>
-                {show && (
-                    <ul>
-                        <li>
-                            <Link to="/user/profile">profile</Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/"
-                                onClick={() =>
-                                    localStorage.setItem("token", "")
-                                }
-                            >
-                                log out
-                            </Link>
-                        </li>
-                    </ul>
-                )}
-            </div>
-        </div>
-    );
-};
 
 const Search = ({tab}) => {
     const { register, handleSubmit } = useForm();
@@ -186,4 +138,4 @@ export const Nav = ({tab}) => {
     );
 };
 
-export default NavigationBar;
+export default Nav;
