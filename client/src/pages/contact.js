@@ -280,10 +280,10 @@ function RelatedMeetings({ meetings }) {
                     <Table size="small" stickyHeader>
                         <TableHead>
                             <TableRow>
-                                <TableCell sx={{ bgcolor: "#77CFC3" }}>
+                                <TableCell sx={{ bgcolor: "primary.light" }}>
                                     Title
                                 </TableCell>
-                                <TableCell sx={{ bgcolor: "#77CFC3" }}>
+                                <TableCell sx={{ bgcolor: "primary.light" }}>
                                     Start Time
                                 </TableCell>
                             </TableRow>
@@ -459,7 +459,7 @@ const ContactDetail = () => {
         <Box
             sx={{
                 gridArea: "main",
-                bgcolor: "#EBF8F6",
+                bgcolor: "primary.light",
                 padding: "10px 25px",
             }}
         >
@@ -692,7 +692,7 @@ const ContactCreate = () => {
         <Box
             sx={{
                 gridArea: "main",
-                bgcolor: "#EBF8F6",
+                bgcolor: "primary.light",
                 padding: "10px 25px",
             }}
         >
@@ -901,7 +901,7 @@ const ContactRestore = () => {
         <Box
             sx={{
                 gridArea: "main",
-                bgcolor: "#EBF8F6",
+                bgcolor: "primary.light",
                 padding: "10px 25px",
             }}
         >

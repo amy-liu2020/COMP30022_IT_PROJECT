@@ -602,17 +602,20 @@ input:valid {
 }
 
 .setting-form {
-    margin: 30px;
-    font-size: 30px;
+    margin: 90px;
+    margin-top: 80px;
+    margin-left: 150px;
+    font-size: 40px;
 }
 
 .box {
     position: relative;
-    left: 195px;
-    padding: 135px 80px;
+    left: 140px;
+    top: 50px;
+    padding: 150px 90px;
     float: left;
     text-align: center;
-    margin: 20px;
+    margin: 30px;
     border: none;
 }
 
@@ -644,4 +647,9 @@ input:valid {
     background-color: white;
     padding: 2px 10px;
     cursor: pointer;
+}
+
+.smallerFont {
+    margin-top: 10px;
+    font-size: 30px;
 }

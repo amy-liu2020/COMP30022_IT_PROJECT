@@ -34,7 +34,6 @@ import {
     TableCell,
     Button,
     TextField,
-    Typography,
     Select,
     Divider,
     Paper,
@@ -45,10 +44,10 @@ import {
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import InputField from "../common/inputField";
+import Loading from "../common/loading";
 
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: "--sideM-bg-color",
         fontSize: 18,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -58,7 +57,6 @@ const StyledTableCell = styled(TableCell)(() => ({
 
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
-    backgroundColor: "--content-bg-color",
     padding: theme.spacing(1),
     margin: "auto",
 }));
@@ -173,6 +171,108 @@ function BasicTable({ meetings }) {
     );
 }
 
+function BinTable({ meetings }) {
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 10;
+    let history = useHistory();
+
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - meetings.length) : 0;
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    return (
+        <>
+            {meetings.length ? (
+                <Box
+                    sx={{
+                        gridArea: "main",
+                    }}
+                >
+                    <TableContainer>
+                        <Table sx={{ minWidth: 400 }}>
+                            <colgroup>
+                                <col width="50%" />
+                                <col width="50%" />
+                            </colgroup>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Name
+                                    </TableCell>
+                                    <TableCell
+                                        sx={{
+                                            backgroundColor: "primary.light",
+                                            fontSize: 18,
+                                        }}
+                                    >
+                                        Delete Date
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {meetings
+                                    .slice(
+                                        page * rowsPerPage,
+                                        page * rowsPerPage + rowsPerPage
+                                    )
+                                    .map((row) => (
+                                        <TableRow
+                                            key={row.name}
+                                            sx={{
+                                                "&:hover": {
+                                                    background: "#ddd",
+                                                    cursor: "pointer",
+                                                },
+                                            }}
+                                            onClick={() =>
+                                                history.push(
+                                                    `/meeting/bin/${row._id}`
+                                                )
+                                            }
+                                        >
+                                            <TableCell>{row.Name}</TableCell>
+                                            <TableCell>
+                                                {row.DeleteDate.slice(0, 10)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: 53 * emptyRows,
+                                        }}
+                                    >
+                                        <TableCell colSpan={3} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[]}
+                        component="div"
+                        count={meetings.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                    />
+                </Box>
+            ) : (
+                <Div>no record found.</Div>
+            )}
+        </>
+    );
+}
+
+
 // show all active meetings
 const MeetingAll = () => {
     const { meetings, loading, error } = GetMeetings();
@@ -209,22 +309,14 @@ const MeetingBin = () => {
     const { data, loading, error } = GetBinList("M");
 
     if (loading) {
-        return <p>{loading}</p>;
+        return <Loading />;
     }
 
     if (error) {
         return <p>{error}</p>;
     }
-
-    return (
-        <>
-            {data.length ? (
-                <p>{data.length} record(s) found.</p>
-            ) : (
-                <p>no record found.</p>
-            )}
-        </>
-    );
+    return <BinTable meetings={data} />;
+    
 };
 
 // show all from search keyword
@@ -333,7 +425,7 @@ const MeetingDetail = () => {
     }, [data]);
 
     if (loading || isSubmitting) {
-        return <p>loading</p>;
+        return <Loading />;
     }
 
     if (error) {
@@ -344,7 +436,7 @@ const MeetingDetail = () => {
         <Box
             sx={{
                 gridArea: "main",
-                bgcolor: "#EBF8F6",
+                bgcolor: "primary.light",
                 padding: "10px 25px",
             }}
         >
@@ -536,7 +628,7 @@ const MeetingCreate = () => {
         <Box
             sx={{
                 gridArea: "main",
-                bgcolor: "#EBF8F6",
+                bgcolor: "primary.light",
                 padding: "10px 25px",
             }}
         >

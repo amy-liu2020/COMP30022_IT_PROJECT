@@ -3,6 +3,7 @@ import { Route, useRouteMatch, useParams } from "react-router-dom";
 import { useState} from "react";
 import { useForm } from "react-hook-form";
 import users from "../json/UserList.json";
+import { Box } from "@mui/system";
 
 
 export const SettingP = () => {
@@ -22,10 +23,12 @@ export const SettingP = () => {
     }
 
     return (
-        <div className="setting">
-            <div className="setting-form" onSubmit={handleSubmit(onSubmitHandler)}>
-                SETTING
-                <div className="setting-form">change colour theme</div>
+        
+        <div className="setting" onSubmit={handleSubmit(onSubmitHandler)}>
+            <Nav tab="contact"/>
+            <div className="setting-form">
+                <div>SETTING</div>
+                <div className="smallerFont">change colour theme</div>
                 <button
                     className="setting-button"
                     type="button"
@@ -66,8 +69,8 @@ const Setting = () => {
     let { path } = useRouteMatch();
 
     return (
+        
         <div className="two-part-layout">
-            <Nav tab="contact"/>
             <Route exact path={path}>
                 <SettingP />
             </Route>
