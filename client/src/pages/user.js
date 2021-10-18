@@ -2,11 +2,20 @@ import { Switch, Route, useRouteMatch, useHistory } from "react-router-dom";
 import NavigationBar from "../common/nav";
 import Logo from "../common/logo";
 import Setting from "../common/setting";
-import { loginUser, GetRegister, registerUser, Getprofile } from "../api";
+import { loginUser, GetRegister, registerUser, Getprofile, uploadPhoto, GetPhoto, changeDetails, changePassword } from "../api";
 import { useState } from "react";
 
 const Reset = () => {
     let history = useHistory();
+
+    const [oldpassword, setOldpassword] = useState('');
+    const [newpassword, setNewpassword] = useState('');
+    const [confirmpassword, setConfirmpassword] = useState('');
+
+    const handleSave = async () => {
+        changePassword({ oldpassword, newpassword, });
+        history.push(`/user/profile`)
+    }
 
     return (
         <div class="container">
@@ -15,18 +24,18 @@ const Reset = () => {
                     <span>PASSWORD AUTHENTICATION</span>
                     <div class="input">
                         <label>Old Password</label>
-                        <input type="password" placeholder="" />
+                        <input type="password" placeholder="" value={oldpassword} onChange={(e) => { setOldpassword(e.target.value) }} />
                     </div>
                     <div class="input">
                         <label>New Password</label>
-                        <input type="password" placeholder="" />
+                        <input type="password" placeholder="" value={newpassword} onChange={(e) => { setNewpassword(e.target.value) }} />
                     </div>
                     <div class="input">
                         <label>Verify</label>
-                        <input type="password" placeholder="" />
+                        <input type="password" placeholder="" value={confirmpassword} onChange={(e) => { setConfirmpassword(e.target.value) }} />
                     </div>
                     <div class="buttons">
-                        <button onClick={() => history.push(`/user/profile`)}>
+                        <button onClick={handleSave}>
                             save
                         </button>
                     </div>
@@ -38,38 +47,66 @@ const Reset = () => {
 
 const Edit = () => {
     let history = useHistory();
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('')
+    const { data: photo } = GetPhoto();
+    const { data, loading } = Getprofile();
+    let info = {};
+    if (data && data.info) {
+        info = data.info
+    }
+
+    const handleSave = async () => {
+        changeDetails({ phoneNumber: phone, Email: email });
+        history.push(`/user/profile`)
+    }
+
+    const handleSubmit = () => {
+        const file = document.getElementById('photoupload').files[0];
+        if (file.size > 0) {
+            const formData = new FormData();
+            formData.append('file', file);
+            uploadPhoto(formData);
+        }
+    }
+
 
     return (
         <div className="container">
-            <div className="profile">
+            {loading ? <span>{loading}</span> : <div className="profile">
                 <div className="info">
+                    <div className="avatar"><img style={{ width: '100%', height: '100%' }} alt="avatar" src={photo && "data:;base64," + photo.photo} /></div>
+                    <label>photo: <input id="photoupload" type="file" name="photo" />
+                        <button onClick={handleSubmit}>submit</button>
+                    </label>
                     <div className="avatar"></div>
-                    <span>Amy Liu</span>
+                    <span>{info.UserID}</span>
                 </div>
                 <div className="label">
                     <label>USERNAME</label>
-                    <span>AMYLI201</span>
+                    <span>{info.UserName}</span>
                 </div>
                 <div className="label">
                     <label>EMAIL</label>
-                    <input type="text" placeholder="" />
+                    <input type="text" placeholder="" value={email} onChange={(e) => { setEmail(e.target.value) }} />
                 </div>
                 <div className="label">
                     <label>PHONE NO</label>
-                    <input type="text" placeholder="" />
+                    <input type="text" placeholder="" value={phone} onChange={(e) => { setPhone(e.target.value) }} />
                 </div>
                 <div className="buttons">
-                    <button onClick={() => history.push(`/user/profile`)}>
+                    <button onClick={handleSave}>
                         Save
                     </button>
                 </div>
-            </div>
+            </div>}
         </div>
     );
 };
 
 const Detail = () => {
     let history = useHistory();
+    const { data: photo } = GetPhoto();
     const { data, loading } = Getprofile();
     let info = {};
     if (data && data.info) {
@@ -80,8 +117,8 @@ const Detail = () => {
         <div className="container">
             {loading ? <span>{loading}</span> : <div className="profile">
                 <div className="info">
-                    <div className="avatar"></div>
-                    <span></span>
+                    <div className="avatar"><img style={{ width: '100%', height: '100%' }} alt="avatar" src={photo && "data:;base64," + photo.photo} /></div>
+                    <span>{info.UserID}</span>
                 </div>
                 <div className="label">
                     <label>USERNAME</label>

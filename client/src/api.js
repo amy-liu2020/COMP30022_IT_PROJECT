@@ -469,3 +469,65 @@ export function GetRegister(register) {
 
     return { data, loading, error };
 }
+
+
+export function uploadPhoto(formdata) {
+
+    const source = axios.CancelToken.source();
+    axios
+        .post(`/api/upload`, formdata, { cancelToken: source.token },)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            errHandler(err);
+        });
+}
+
+export function GetPhoto(profile) {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/getPhoto`, { cancelToken: source.token })
+            .then((res) => {
+                res.data && setData(res.data);
+                console.log(res);
+            })
+            .catch((err) => {
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, []);
+
+    return { data, error };
+}
+
+export function changeDetails(data) {
+    const source = axios.CancelToken.source();
+    axios
+        .post(`/api/changeDetails`, data, { cancelToken: source.token },)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            errHandler(err);
+        });
+}
+
+export function changePassword(data) {
+    const source = axios.CancelToken.source();
+    axios
+        .post(`/api/changePassword`, data, { cancelToken: source.token },)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            errHandler(err);
+        });
+}
