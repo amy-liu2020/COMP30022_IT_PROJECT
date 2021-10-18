@@ -103,7 +103,6 @@ export function GetTags(tagOf) {
             })
             .then((res) => {
                 setLoading(false);
-                console.log(res);
                 res.data && setTags(res.data.tags);
             })
             .catch((err) => {
@@ -456,7 +455,7 @@ export function GetMeetingsWithTag(tagName) {
         return () => {
             source.cancel();
         };
-    }, []);
+    }, [tagName]);
 
     return { meetings, loading, error };
 }
