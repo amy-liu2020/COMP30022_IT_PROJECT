@@ -7,91 +7,94 @@ import {
     GetRegister,
     registerUser,
     Getprofile,
-    uploadPhoto,
-    GetPhoto,
     changeDetails,
     changePassword,
 } from "../api";
 import { useState, useEffect } from "react";
 import ProfilePhoto from "../common/avatar";
 
-import {
-    Table,
-    TableBody,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
-    TableCell,
-    Button,
-    TextField,
-    Typography,
-    Divider,
-    Paper,
-    Avatar,
-    Grid,
-} from "@mui/material";
-import { Box, width } from "@mui/system";
+import { Button, TextField, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 import InputField from "../common/inputField";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Loading from "../common/loading";
 
 const Reset = () => {
     let history = useHistory();
+    const { handleSubmit, control } = useForm({
+        defaultValues: {
+            OldPassword: "",
+            NewPassword: "",
+            ConfirmPassword: "",
+        },
+    });
 
-    const [oldpassword, setOldpassword] = useState("");
-    const [newpassword, setNewpassword] = useState("");
-    const [confirmpassword, setConfirmpassword] = useState("");
+    const onSubmitHandler = (data) => {
+        // send data to server
+        // changePassword({ oldpassword, newpassword });
 
-    const handleSave = async () => {
-        changePassword({ oldpassword, newpassword });
+        // go back to profile
         history.push(`/user/profile`);
     };
 
     return (
-        <div class="container">
-            <div class="container">
-                <div class="forget-form">
-                    <span>PASSWORD AUTHENTICATION</span>
-                    <div class="input">
-                        <label>Old Password</label>
-                        <input
-                            type="password"
-                            placeholder=""
-                            value={oldpassword}
-                            onChange={(e) => {
-                                setOldpassword(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div class="input">
-                        <label>New Password</label>
-                        <input
-                            type="password"
-                            placeholder=""
-                            value={newpassword}
-                            onChange={(e) => {
-                                setNewpassword(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div class="input">
-                        <label>Verify</label>
-                        <input
-                            type="password"
-                            placeholder=""
-                            value={confirmpassword}
-                            onChange={(e) => {
-                                setConfirmpassword(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div class="buttons">
-                        <button onClick={handleSave}>save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Box
+            sx={{
+                gridArea: "main",
+                bgcolor: "#EBF8F6",
+                width: "100%",
+            }}
+        >
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        rowGap: "5px",
+                        alignItems: "center",
+                        marginTop: "130px",
+                    }}
+                >
+                    <Typography variant="h4">Change Password</Typography>
+                    <InputField
+                        control={control}
+                        name="OldPassword"
+                        label="Old Password"
+                        type="password"
+                    />
+                    <InputField
+                        control={control}
+                        name="NewPassword"
+                        label="New Password"
+                        type="password"
+                    />
+                    <InputField
+                        control={control}
+                        name="ConfirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                    />
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "320px",
+                            marginTop: "20px",
+                        }}
+                    >
+                        <Button
+                            variant="contained"
+                            onClick={() => history.goBack()}
+                        >
+                            cancel
+                        </Button>
+                        <Button variant="contained" type="submit">
+                            save
+                        </Button>
+                    </Box>
+                </Box>
+            </form>
+        </Box>
     );
 };
 
@@ -99,29 +102,20 @@ const Edit = () => {
     let history = useHistory();
     const { data, loading, error } = Getprofile();
     const { handleSubmit, control, reset } = useForm({
-        defaultValues: data
+        defaultValues: data,
     });
-
-    // const handleSubmit = () => {
-    //     const file = document.getElementById("photoupload").files[0];
-    //     if (file.size > 0) {
-    //         const formData = new FormData();
-    //         formData.append("file", file);
-    //         uploadPhoto(formData);
-    //     }
-    // };
 
     const onSubmitHandler = (data) => {
         // send data to server
-        changeDetails(data).then(res => alert(res.msg));
-        
+        changeDetails(data).then((res) => alert(res.msg));
+
         // go back to profile
-        history.push("/user/profile")
+        history.push("/user/profile");
     };
 
     useEffect(() => {
         reset(data);
-    },[data])
+    }, [data]);
 
     if (loading) {
         return <Loading />;
@@ -136,7 +130,7 @@ const Edit = () => {
             sx={{
                 gridArea: "main",
                 bgcolor: "#EBF8F6",
-                width: "100%"
+                width: "100%",
             }}
         >
             <form onSubmit={handleSubmit(onSubmitHandler)}>
@@ -145,8 +139,7 @@ const Edit = () => {
                         display: "flex",
                         flexDirection: "column",
                         rowGap: "5px",
-                        alignItems: "center"
-
+                        alignItems: "center",
                     }}
                 >
                     <Box marginTop="80px">
@@ -158,7 +151,12 @@ const Edit = () => {
                         control={control}
                         label="Username"
                     />
-                    <InputField name="Email" control={control} label="Email" type="email"/>
+                    <InputField
+                        name="Email"
+                        control={control}
+                        label="Email"
+                        type="email"
+                    />
                     <InputField
                         name="PhoneNumber"
                         control={control}
@@ -170,7 +168,7 @@ const Edit = () => {
                             display: "flex",
                             justifyContent: "space-between",
                             width: "320px",
-                            marginTop: "20px"
+                            marginTop: "20px",
                         }}
                     >
                         <Button
@@ -179,10 +177,7 @@ const Edit = () => {
                         >
                             cancel
                         </Button>
-                        <Button
-                            variant="contained"
-                            type="submit"
-                        >
+                        <Button variant="contained" type="submit">
                             save
                         </Button>
                     </Box>
@@ -478,6 +473,8 @@ const Forget = () => {
 
 const CheckId = () => {
     let history = useHistory();
+    const [securityQuestion, setSecurityQuestion] = useState(null);
+    const [step, setStep] = useState(0);
     const { handleSubmit, control } = useForm({
         defaultValues: {
             UserId: "",
@@ -516,6 +513,13 @@ const CheckId = () => {
                         label="UserId"
                     />
                     <Button
+                        type="button"
+                        sx={{ float: "right", marginTop: "20px" }}
+                        onClick={() => history.goBack()}
+                    >
+                        cancel
+                    </Button>
+                    <Button
                         type="submit"
                         sx={{ float: "right", marginTop: "20px" }}
                     >
@@ -529,37 +533,67 @@ const CheckId = () => {
 
 const VerifyAns = () => {
     let history = useHistory();
+    const [securityQuestion, setSecurityQuestion] = useState(null);
+    const [step, setStep] = useState(0);
+    const { handleSubmit, control } = useForm({
+        defaultValues: {
+            UserId: "",
+        },
+    });
+
+    const onSubmitHandler = (data) => {
+        // send data to server to verify userId
+
+        // if exist, go to next
+        history.push(`/user/forget/verify`);
+    };
+
     return (
-        <div>
-            <div class="container">
-                <div class="forget-form">
-                    <span>Reset Password</span>
-                    <div class="input">
-                        <label>security question</label>
-                        <select placeholder="security question">
-                            <option>How old are you?</option>
-                        </select>
-                    </div>
-                    <div class="input">
-                        <label>answer</label>
-                        <input type="text" placeholder="password" />
-                    </div>
-                    <div class="input">
-                        <label>new password</label>
-                        <input type="password" placeholder="password" />
-                    </div>
-                    <div class="input">
-                        <label>password</label>
-                        <input type="password" placeholder="password" />
-                    </div>
-                    <div class="buttons">
-                        <button onClick={() => history.push(`/user/profile`)}>
-                            save
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Box
+            bgcolor="primary.light"
+            sx={{
+                margin: 0,
+                height: "100vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+            }}
+        >
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Box>
+                    <Typography variant="h6">Reset Password</Typography>
+                    <Typography variant="body1">
+                        Security Question: {securityQuestion}
+                    </Typography>
+                    <InputField control={control} name="sa" label="Answer" />
+                    <InputField
+                        control={control}
+                        name="np"
+                        label="New Password"
+                        type="password"
+                    />
+                    <InputField
+                        control={control}
+                        name="cp"
+                        label="Confirm Password"
+                        type="password"
+                    />
+                    <Box
+                        sx={{
+                            display: "flex",
+                            width: "360px",
+                            justifyContent: "space-between",
+                            marginTop: "20px",
+                        }}
+                    >
+                        <Button type="button" onClick={() => history.goBack()}>
+                            cancel
+                        </Button>
+                        <Button type="submit">confirm</Button>
+                    </Box>
+                </Box>
+            </form>
+        </Box>
     );
 };
 

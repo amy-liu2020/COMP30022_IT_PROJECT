@@ -112,7 +112,7 @@ function BasicTable({ contacts }) {
                                     )
                                     .map((row) => (
                                         <TableRow
-                                            key={row.name}
+                                            key={row._id}
                                             sx={{
                                                 "&:hover": {
                                                     background: "#ddd",

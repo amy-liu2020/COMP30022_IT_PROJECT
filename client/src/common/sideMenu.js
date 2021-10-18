@@ -18,7 +18,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 const AddTagDialog = ({ open, setOpen, tagOf }) => {
-    const [tagName, setTagName] = useState(null);
+    const [tagName, setTagName] = useState('');
     const [isPending, setPending] = useState(false);
 
     const handleCreate = () => {
@@ -54,8 +54,6 @@ const AddTagDialog = ({ open, setOpen, tagOf }) => {
                 </DialogContentText>
                 <TextField
                     autoFocus
-                    margin="loose"
-                    id="tagName"
                     label="Tag name"
                     type="text"
                     fullWidth
@@ -153,6 +151,7 @@ const SideMenu = ({ tagOf }) => {
                         tags.map((tag, index) => (
                             <Chip
                                 label={tag.TagName}
+                                key={index}
                                 onClick={() =>
                                     history.push(`/${tab}/tag/${tag.TagName}`)
                                 }

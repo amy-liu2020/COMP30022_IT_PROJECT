@@ -23,7 +23,7 @@ const InputField = ({
                         marginTop: "15px",
                     }}
                 >
-                    <Box minWidth="130px">{label}:</Box>
+                    <Box minWidth="150px">{label}:</Box>
                     <Input
                         fullWidth
                         type={type}

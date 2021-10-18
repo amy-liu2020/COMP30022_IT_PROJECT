@@ -61,6 +61,7 @@ const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
     padding: theme.spacing(1),
     margin: "auto",
+    gridArea: "main"
 }));
 
 function BasicTable({ meetings }) {
@@ -125,7 +126,7 @@ function BasicTable({ meetings }) {
                                     )
                                     .map((row) => (
                                         <TableRow
-                                            key={row.name}
+                                            key={row._id}
                                             sx={{
                                                 "&:hover": {
                                                     background: "#ddd",
@@ -143,7 +144,8 @@ function BasicTable({ meetings }) {
                                                 {row.Location}
                                             </TableCell>
                                             <TableCell>
-                                                {row.StartTime && row.StartTime.slice(0,10)}
+                                                {row.StartTime &&
+                                                    row.StartTime.slice(0, 10)}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -292,7 +294,7 @@ const MeetingAll = () => {
 
 // show meeting with specific tag
 const MeetingWithTag = () => {
-    let { tagName } = useParams();
+    let {tagName} = useParams();
     const { meetings, loading, error } = GetMeetingsWithTag(tagName);
 
     if (loading) {
@@ -340,7 +342,7 @@ const MeetingDetail = () => {
     let { id } = useParams();
     const { data, loading, error } = GetOneMeeting(id);
     const [isDisabled, setIsDisable] = useState(true);
-    const [invitees, setInvitees] = useState();
+    const [invitees, setInvitees] = useState([]);
     const {
         reset,
         handleSubmit,
@@ -352,38 +354,37 @@ const MeetingDetail = () => {
 
     const onSubmitHandler = (data) => {
         // check if there is any change
-        if (isDirty) {
-            // re-format data
-            if (data.Tags) {
-                data.TagIds = data.Tags.map((opt) => opt.TagId);
-            }
-            if (data.Date) {
-                if (data.StartTime) {
-                    data.StartTime = new Date(
-                        data.Date + "T" + data.StartTime + ":00Z"
-                    ).toISOString();
-                } else {
-                    data.StartTime = new Date(data.Date).toISOString();
-                }
-
-                if (data.EndTime) {
-                    data.EndTime = new Date(
-                        data.Date + "T" + data.EndTime + ":00Z"
-                    ).toISOString();
-                } else {
-                    data.EndTime = new Date(data.Date).toISOString();
-                }
-            }
-            
-
-            // send data to server
-            data.Attachment = []; // need to be update later
-            // data.InviteeIds = []; // need to be update later
-            EditMeeting(data, id).then((res) => alert(res.msg));
-
-            // switch to view mode
-            setIsDisable(true);
+        // re-format data
+        if (data.Tags) {
+            data.TagIds = data.Tags.map((opt) => opt.TagId);
         }
+        if (data.Date) {
+            if (data.StartTime) {
+                data.StartTime = new Date(
+                    data.Date + "T" + data.StartTime + ":00Z"
+                ).toISOString();
+            } else {
+                data.StartTime = new Date(data.Date).toISOString();
+            }
+
+            if (data.EndTime) {
+                data.EndTime = new Date(
+                    data.Date + "T" + data.EndTime + ":00Z"
+                ).toISOString();
+            } else {
+                data.EndTime = new Date(data.Date).toISOString();
+            }
+        }
+        if (invitees) {
+            data.InviteeIds = invitees;
+        }
+
+        // send data to server
+        data.Attachment = []; // need to be update later
+        EditMeeting(data, id).then((res) => alert(res.msg));
+
+        // switch to view mode
+        setIsDisable(true);
     };
 
     const CustomReset = (data) => {
@@ -406,7 +407,11 @@ const MeetingDetail = () => {
         }
 
         if (defaultValue.Invitees) {
-            setInvitees(defaultValue.Invitees);
+            setInvitees(
+                defaultValue.Invitees.map(
+                    (invitee) => (invitee._id = invitee.InviteeId)
+                )
+            );
         }
         // reset defaultValue
         reset(defaultValue);
@@ -415,7 +420,7 @@ const MeetingDetail = () => {
     const onDeleteHandler = () => {
         // send request to server
         DeleteMeeting(id).then((res) => {
-            console.log(res);
+            alert(res.msg);
         });
 
         // redirect to list page
@@ -481,9 +486,12 @@ const MeetingDetail = () => {
                             />
                         </Stack>
                     </Grid>
-                    {/* invitee implement here */}
                     <Grid item xs marginLeft="330px">
-                        <InviteesTable invitees={invitees} onChange={setInvitees} isDisabled={isDisabled}/>
+                        <InviteesTable
+                            invitees={invitees}
+                            onChange={setInvitees}
+                            isDisabled={isDisabled}
+                        />
                     </Grid>
                     <Grid item xs="auto" marginRight="30px">
                         <Button type="button" onClick={onChangeMode}>
@@ -652,7 +660,11 @@ const MeetingRestore = () => {
                                 )}
                             />
 
-                            <SelectTags tagOf="M" control={control} isDisabled="ture"/>
+                            <SelectTags
+                                tagOf="M"
+                                control={control}
+                                isDisabled="ture"
+                            />
                             <InputField
                                 name="Location"
                                 control={control}
@@ -746,9 +758,7 @@ const MeetingRestore = () => {
     );
 };
 
-
-
-// create a new meeting 
+// create a new meeting
 const MeetingCreate = () => {
     let history = useHistory();
     const {
@@ -772,7 +782,7 @@ const MeetingCreate = () => {
     });
 
     const [invitees, setInvitees] = useState([]);
-    
+
     // handle user input data
     const onSubmitHandler = (data) => {
         // re-group data
@@ -798,15 +808,15 @@ const MeetingCreate = () => {
         }
         if (invitees) {
             data.InviteeIds = invitees;
-        } 
-        
+        }
+
         // send data to server
         data.Attachment = []; // need to be update later
 
-        CreateMeeting(data).then((res) => alert(res.msg));
-
-        // redirect to list page
-        history.push("/meeting");
+        CreateMeeting(data).then((res) => {
+            alert(res.msg);
+            history.push("/meeting"); // redirect to list page
+        });
     };
 
     return (
@@ -825,10 +835,7 @@ const MeetingCreate = () => {
                                 name="Title"
                                 control={control}
                                 rules={{ required: true }}
-                                render={({
-                                    field,
-                                    fieldState: { error },
-                                }) => (
+                                render={({ field, fieldState: { error } }) => (
                                     <TextField
                                         placeholder="Title"
                                         variant="standard"
@@ -848,10 +855,7 @@ const MeetingCreate = () => {
                                 name="Location"
                                 control={control}
                                 rules={{ required: true }}
-                                render={({
-                                    field,
-                                    fieldState: { error },
-                                }) => (
+                                render={({ field, fieldState: { error } }) => (
                                     <TextField
                                         placeholder="Location"
                                         variant="standard"
@@ -879,10 +883,7 @@ const MeetingCreate = () => {
                             name="Date"
                             control={control}
                             rules={{ required: true }}
-                            render={({
-                                field,
-                                fieldState: { error },
-                            }) => (
+                            render={({ field, fieldState: { error } }) => (
                                 <TextField
                                     placeholder="Date"
                                     variant="standard"

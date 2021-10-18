@@ -8,6 +8,7 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { GetContacts } from '../api';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -56,6 +57,9 @@ export const InviteesTable = ({ invitees, onChange, isDisabled=false }) => {
     );
   };
 
+  useEffect(() => {
+    setSelectedValue(invitees ? invitees : []);
+  }, [invitees])
 
   return (
     <div>
@@ -63,15 +67,14 @@ export const InviteesTable = ({ invitees, onChange, isDisabled=false }) => {
         <InputLabel>Invitees</InputLabel>
         <Select
           multiple
-          defaultValue={invitees}
           value={selectedValue}
           onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+          input={<OutlinedInput label="Chip" />}
           disabled={isDisabled}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={contacts.filter(contact => contact._id === value)[0].FirstName} />
+              {selected.length && selected.map((value) => (
+                <Chip key={value} label={contacts.filter(contact => contact._id === value).length && (contacts.filter(contact => contact._id === value)[0].FirstName + " " + contacts.filter(contact => contact._id === value)[0].LastName)} />
               ))}
             </Box>
           )}
@@ -82,7 +85,7 @@ export const InviteesTable = ({ invitees, onChange, isDisabled=false }) => {
               key={contact._id}
               value={contact._id}
             >
-              {contact.FirstName}
+              {contact.FirstName + " " + contact.LastName}
             </MenuItem>
           ))}
         </Select>
