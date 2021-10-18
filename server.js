@@ -22,12 +22,15 @@ app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
-// Interceptor
+//Interceptor
+const jwt = require('jsonwebtoken')
+const User = require("./models/user")
 app.use(function (req, res, next) {
     let arr = req.url.split("/")
     console.log(arr)
-    if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === "forget" || arr[1] === "static" || arr[2] === undefined) {
+    if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
         console.log("white list")
+        next()
     } else {
 
         var bearerHeader = req.headers.authorization
@@ -37,10 +40,30 @@ app.use(function (req, res, next) {
             res.status(403).json({
                 msg:"token expired"
             })
+            return;
         }
+
+        let token = bearerHeader.split(" ")[1]
+        let decoded = jwt.decode(token, { complete: true })
+        User.findOne({UserID:decoded.payload.userId},(err,data) => {
+            if(err){
+                res.status(400).json({
+                    msg:"Error occur: " + err
+                })
+                return;
+            }
+            if(data.Token !== token) {
+                console.log("You account have been login by others somewhere else")
+                res.status(403).json({
+                    msg:"You account have been login by others somewhere else"
+                })
+                return;
+            }else{
+                next()
+            }
+        })
         
     }
-    next()
 })
 
 

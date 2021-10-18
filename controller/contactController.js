@@ -342,6 +342,57 @@ const addToMeeting = async (req, res) => {
 
 }
 
+
+const getPhoto = async (req, res) => {
+    try {
+        let cid = req.params.id
+        const contact = await Contact.findById(cid, (err) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        });
+        res.status(200).json({
+            msg: "Get contact photo successfully",
+            photo: contact.photo
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
+    }
+}
+
+const savePhoto = async (req, res) => {
+    try {
+        let photoFile = req.body.file;
+        let photoData = fs.readFileSync(photoFile.path)
+
+
+        let cid = req.params.id;
+        Contact.findByIdAndUpdate(cid, { Photo: photoData }, (err) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        })
+
+        res.status(200).json({
+            msg: "Upload successfully"
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
+    }
+
+};
 const assignTag = async (req, res) => {
     let { tagName } = req.body
     let uid = req.token.userId
@@ -381,5 +432,7 @@ module.exports = {
     contactDelete,
     fuzzySearch,
     addToMeeting,
+    getPhoto,
+    savePhoto,
     assignTag
 }

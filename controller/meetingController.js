@@ -319,7 +319,7 @@ const fuzzySearch = async (req, res) => {
 
 const uploadAttachment = async (req, res) => {
     try {
-        let attachment = req.body.attachment;
+        let attachment = req.body.file;
         let attachmentData = fs.readFileSync(attachment.path)
 
 

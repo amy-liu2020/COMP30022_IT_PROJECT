@@ -48,6 +48,11 @@ userRouter.post("/upload", uploadFile, ensureAuthorized, (req, res) => {
     userController.savePhoto(req, res)
 });
 
+userRouter.post("/changeColor", ensureAuthorized, (req, res) => {
+    userController.userChangePreferredColor(req, res)
+});
+
+
 // user change password
 userRouter.post("/changePassword", ensureAuthorized, (req, res) => {
     userController.changePassword(req, res)

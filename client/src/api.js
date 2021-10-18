@@ -585,23 +585,33 @@ export function GetRegister(register) {
     return { data, loading, error };
 }
 
-// setting
-export function ChangeColor(color) {
+
+export function uploadPhoto(formdata) {
+
+    const source = axios.CancelToken.source();
+    axios
+        .post(`/api/upload`, formdata, { cancelToken: source.token },)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            errHandler(err);
+        });
+}
+
+export function GetPhoto(profile) {
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .patch(`/api/setting`, color, { cancelToken: source.token })
+            .get(`/api/getPhoto`, { cancelToken: source.token })
             .then((res) => {
-                setLoading(false);
                 res.data && setData(res.data);
                 console.log(res);
             })
             .catch((err) => {
-                setLoading(false);
                 errHandler(err);
                 setError("An error occured.");
             });
@@ -610,34 +620,29 @@ export function ChangeColor(color) {
         };
     }, []);
 
-    return { data, loading, error };
+    return { data, error };
 }
 
-export function GetColor() {
-    const [color, setColor] = useState([]);
-    
-    const [loading, setLoading] = useState("loading...");
-    const [error, setError] = useState(null);
+export function changeDetails(data) {
+    const source = axios.CancelToken.source();
+    axios
+        .post(`/api/changeDetails`, data, { cancelToken: source.token },)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            errHandler(err);
+        });
+}
 
-    useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios
-            .get("/api/user", {
-                cancelToken: source.token,
-            })
-            .then((res) => {
-                setLoading(false);
-                res.data && setColor(res.data.color);
-            })
-            .catch((err) => {
-                setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            });
-        return () => {
-            source.cancel();
-        };
-    }, []);
-
-    return { color, loading, error };
+export function changePassword(data) {
+    const source = axios.CancelToken.source();
+    axios
+        .post(`/api/changePassword`, data, { cancelToken: source.token },)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            errHandler(err);
+        });
 }
