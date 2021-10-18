@@ -56,10 +56,13 @@ const getBinItem = async (req,res) => {
     let bid = req.params.id;
 
     const item = await Bin.findById(bid, (err) => {
-        res.status(400).json({
-            msg: "Error occurred: " + err
-        })
-        return;
+        if(err){
+            res.status(400).json({
+                msg: "Error occurred: " + err
+            })
+            return;
+        }
+        
     }).lean()
 
     if(!item){
