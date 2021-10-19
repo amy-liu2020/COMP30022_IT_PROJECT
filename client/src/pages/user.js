@@ -318,6 +318,8 @@ const Login = () => {
         loginUser(user).then((data) => {
             if (data !== undefined) {
                 history.push("/contact");
+            }else {
+                alert(data);
             }
         });
     };

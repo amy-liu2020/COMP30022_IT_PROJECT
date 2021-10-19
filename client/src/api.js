@@ -238,10 +238,8 @@ export function GetOneContact(id) {
             })
             .then((res) => {
                 setLoading(false);
-                res.data &&
-                    setContact(res.data.contact) &&
-                    setMeetings(res.data.relatedMeeting);
                 console.log(res.data);
+                res.data && setContact(res.data.contact);
                 setContact((values) => ({
                     ...values,
                     DOB: values.DOB && values.DOB.slice(0, 10),

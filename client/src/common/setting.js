@@ -1,10 +1,10 @@
-import {Nav} from "./nav";
+import { Nav } from "./nav";
 import { Route, useRouteMatch, useParams } from "react-router-dom";
-import { useState} from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import users from "../json/UserList.json";
 import { Box } from "@mui/system";
-
+import { Typography, Stack,Button } from "@mui/material";
 
 export const SettingP = () => {
     let { userID } = useParams();
@@ -20,47 +20,114 @@ export const SettingP = () => {
 
     const onSubmitHandler = (data) => {
         console.log(data);
-    }
+    };
 
     return (
-        
-        <div className="setting" onSubmit={handleSubmit(onSubmitHandler)}>
-            <Nav tab="contact"/>
-            <div className="setting-form">
-                <div>SETTING</div>
-                <div className="smallerFont">change colour theme</div>
-                <button
-                    className="setting-button"
-                    type="button"
-                    onClick={() => SetTheme(user.Color)}
-                >
-                    cancel
-                </button>
-                <button className="setting-button" type="submit">
-                    save
-                </button>
-                <div
-                    class="box blue"
-                    onClick={() => SetTheme("blue")}
-                    {...register("Color")}
-                ></div>
-                <div
-                    class="box red"
-                    onClick={() => SetTheme("red")}
-                    {...register("Color")}
-                ></div>
-                <div
-                    class="box green"
-                    onClick={() => SetTheme("green")}
-                    {...register("Color")}
-                ></div>
-                <div
-                    class="box dark"
-                    onClick={() => SetTheme("dark")}
-                    {...register("Color")}
-                ></div>
-            </div>
-        </div>
+        <Box
+            sx={{
+                height: "100vh",
+                display: "grid",
+                gridTemplateColumns: "auto",
+                gap: 0,
+                gridTemplateRows: "60px auto",
+                gridTemplateAreas: `"header header header header""main main main main "`,
+                bgcolor: "primary.light",
+            }}
+        >
+            <Nav tab="contact" />
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Box sx={{ gridArea: "main" }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            rowGap: "15px",
+                            alignItems: "center"
+                        }}
+                    >
+                        <Box>
+                            <Typography variant="h3">Setting</Typography>
+                            <Typography variant="h5">
+                                change colour theme
+                            </Typography>
+                        </Box>
+
+                        <Stack direction="row" spacing={6}>
+                            <Box
+                                bgcolor="#6E7F8A"
+                                width="150px"
+                                height="300px"
+                            ></Box>
+                            <Box
+                                bgcolor="#EDCACA"
+                                width="150px"
+                                height="300px"
+                            ></Box>
+                            <Box
+                                bgcolor="#D0EBEE"
+                                width="150px"
+                                height="300px"
+                            ></Box>
+                            <Box
+                                bgcolor="#77CFC3"
+                                width="150px"
+                                height="300px"
+                            ></Box>
+                        </Stack>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                width: "740px",
+                                justifyContent: "right",
+                                columnGap: "20px"
+                            }}
+                        >
+                            <Button
+                                variant="contained"
+
+                            >
+                                cancel
+                            </Button>
+                            <Button
+                                variant="contained"
+                            >
+                                save
+                            </Button>
+                        </Box>
+                    </Box>
+                    {/* <button
+                        className="setting-button"
+                        type="button"
+                        onClick={() => SetTheme(user.Color)}
+                    >
+                        cancel
+                    </button>
+                    <button className="setting-button" type="submit">
+                        save
+                    </button>
+                    <div
+                        class="box blue"
+                        onClick={() => SetTheme("blue")}
+                        {...register("Color")}
+                    ></div>
+                    <div
+                        class="box red"
+                        onClick={() => SetTheme("red")}
+                        {...register("Color")}
+                    ></div>
+                    <div
+                        class="box green"
+                        onClick={() => SetTheme("green")}
+                        {...register("Color")}
+                    ></div>
+                    <div
+                        class="box dark"
+                        onClick={() => SetTheme("dark")}
+                        {...register("Color")}
+                    ></div> */}
+                </Box>
+            </form>
+        </Box>
     );
 };
 
@@ -69,7 +136,6 @@ const Setting = () => {
     let { path } = useRouteMatch();
 
     return (
-        
         <div className="two-part-layout">
             <Route exact path={path}>
                 <SettingP />
@@ -82,20 +148,44 @@ const Setting = () => {
 export const SetTheme = (color) => {
     if (color === "dark") {
         document.documentElement.style.setProperty("--nav-bg-color", "#6E7F8A");
-        document.documentElement.style.setProperty("--sideM-bg-color", "#2F4656");
-        document.documentElement.style.setProperty("--content-bg-color", "#d3e5fa");
+        document.documentElement.style.setProperty(
+            "--sideM-bg-color",
+            "#2F4656"
+        );
+        document.documentElement.style.setProperty(
+            "--content-bg-color",
+            "#d3e5fa"
+        );
     } else if (color === "red") {
         document.documentElement.style.setProperty("--nav-bg-color", "#EDCACA");
-        document.documentElement.style.setProperty("--sideM-bg-color", "#C97070");
-        document.documentElement.style.setProperty("--content-bg-color", "#FFF8F9");
+        document.documentElement.style.setProperty(
+            "--sideM-bg-color",
+            "#C97070"
+        );
+        document.documentElement.style.setProperty(
+            "--content-bg-color",
+            "#FFF8F9"
+        );
     } else if (color === "blue") {
         document.documentElement.style.setProperty("--nav-bg-color", "#63D5DA");
-        document.documentElement.style.setProperty("--sideM-bg-color", "#63ADB8");
-        document.documentElement.style.setProperty("--content-bg-color", "#d4f4f8");
+        document.documentElement.style.setProperty(
+            "--sideM-bg-color",
+            "#63ADB8"
+        );
+        document.documentElement.style.setProperty(
+            "--content-bg-color",
+            "#d4f4f8"
+        );
     } else {
         document.documentElement.style.setProperty("--nav-bg-color", "#8BE8DA");
-        document.documentElement.style.setProperty("--sideM-bg-color", "#77CFC3");
-        document.documentElement.style.setProperty("--content-bg-color", "#EBF8F6");
+        document.documentElement.style.setProperty(
+            "--sideM-bg-color",
+            "#77CFC3"
+        );
+        document.documentElement.style.setProperty(
+            "--content-bg-color",
+            "#EBF8F6"
+        );
     }
 };
 

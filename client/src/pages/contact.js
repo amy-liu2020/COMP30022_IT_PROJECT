@@ -8,7 +8,7 @@ import {
     GetBinList,
     GetContactsBySearch,
     GetBinItem,
-    RestoreBinItem
+    RestoreBinItem,
 } from "../api";
 import {
     Switch,
@@ -37,11 +37,11 @@ import {
     Divider,
     Paper,
     Avatar,
-    Grid
+    Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import InputField from "../common/inputField"
+import InputField from "../common/inputField";
 
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
@@ -469,10 +469,10 @@ const ContactDetail = () => {
                     direction="row"
                     justifyContent="space-between"
                     alignItems="start"
-                    spacing={12}
+                    spacing={4}
                     marginBottom="35px"
                 >
-                    <Grid item xs={2}>
+                    <Grid item xs="auto">
                         <Avatar
                             sx={{
                                 width: "200px",
@@ -484,7 +484,7 @@ const ContactDetail = () => {
                     <Grid item xs>
                         <Box
                             height="170px"
-                            width="380px"
+                            width="360px"
                             sx={{
                                 paddingTop: "30px",
                                 display: "flex",
@@ -510,8 +510,8 @@ const ContactDetail = () => {
                                             inputProps={{
                                                 style: {
                                                     fontSize: 30,
-                                                    width: "180px",
-                                                }
+                                                    width: "170px",
+                                                },
                                             }}
                                         />
                                     )}
@@ -533,7 +533,7 @@ const ContactDetail = () => {
                                             inputProps={{
                                                 style: {
                                                     fontSize: 30,
-                                                    width: "180px",
+                                                    width: "170px",
                                                 },
                                             }}
                                             sx={{ float: "right" }}
@@ -576,8 +576,8 @@ const ContactDetail = () => {
                     </Grid>
                 </Grid>
                 <Divider />
-                <Grid container direction="row">
-                    <Grid item xs={4}>
+                <Grid container direction="row" spacing={12}>
+                    <Grid item xs={8} maxWidth="500px">
                         <InputField
                             name="Email"
                             label="Email"
@@ -638,7 +638,7 @@ const ContactDetail = () => {
                             )}
                         />
                     </Grid>
-                    <Grid item xs="auto" marginLeft="300px" marginTop="20px">
+                    <Grid item xs={4} marginTop="20px">
                         <RelatedMeetings meetings={meetings} />
                     </Grid>
                 </Grid>
@@ -702,10 +702,10 @@ const ContactCreate = () => {
                     direction="row"
                     justifyContent="space-between"
                     alignItems="start"
-                    spacing={12}
+                    spacing={4}
                     marginBottom="35px"
                 >
-                    <Grid item xs={2}>
+                    <Grid item xs="auto">
                         <Avatar
                             sx={{
                                 width: "200px",
@@ -717,7 +717,7 @@ const ContactCreate = () => {
                     <Grid item xs>
                         <Box
                             height="170px"
-                            width="380px"
+                            width="360px"
                             sx={{
                                 paddingTop: "30px",
                                 display: "flex",
@@ -742,7 +742,7 @@ const ContactCreate = () => {
                                             inputProps={{
                                                 style: {
                                                     fontSize: 30,
-                                                    width: "180px",
+                                                    width: "170px",
                                                 },
                                             }}
                                         />
@@ -764,7 +764,7 @@ const ContactCreate = () => {
                                             inputProps={{
                                                 style: {
                                                     fontSize: 30,
-                                                    width: "180px",
+                                                    width: "170px",
                                                 },
                                             }}
                                             sx={{ float: "right" }}
@@ -796,7 +796,7 @@ const ContactCreate = () => {
                 </Grid>
                 <Divider />
                 <Grid container direction="row">
-                    <Grid item xs={4}>
+                    <Grid item xs maxWidth="400px">
                         <InputField
                             name="Email"
                             label="Email"
@@ -862,15 +862,12 @@ const ContactRestore = () => {
     let { BinId } = useParams();
     let history = useHistory();
     const { data, loading, error } = GetBinItem(BinId);
-    const {
-        reset,
-        control
-    } = useForm();
+    const { reset, control } = useForm();
     const inputDisable = true;
 
     const onRestoreHandler = () => {
-        RestoreBinItem(BinId).then(res => console.log(res));
-    }
+        RestoreBinItem(BinId).then((res) => console.log(res));
+    };
 
     const customReset = (data) => {
         let defa = JSON.parse(JSON.stringify(data)); // clone tags
@@ -911,10 +908,10 @@ const ContactRestore = () => {
                     direction="row"
                     justifyContent="space-between"
                     alignItems="start"
-                    spacing={12}
+                    spacing={4}
                     marginBottom="35px"
                 >
-                    <Grid item xs={2}>
+                    <Grid item xs="auto">
                         <Avatar
                             sx={{
                                 width: "200px",
@@ -1011,8 +1008,8 @@ const ContactRestore = () => {
                     </Grid>
                 </Grid>
                 <Divider />
-                <Grid container direction="row">
-                    <Grid item xs={4}>
+                <Grid container direction="row" spacing={12}>
+                    <Grid item xs={8} maxWidth="500px">
                         <InputField
                             name="Email"
                             label="Email"

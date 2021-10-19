@@ -36,7 +36,6 @@ import {
     TableCell,
     Button,
     TextField,
-    Select,
     Divider,
     Paper,
     Stack,
@@ -61,7 +60,7 @@ const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
     padding: theme.spacing(1),
     margin: "auto",
-    gridArea: "main"
+    gridArea: "main",
 }));
 
 function BasicTable({ meetings }) {
@@ -294,7 +293,7 @@ const MeetingAll = () => {
 
 // show meeting with specific tag
 const MeetingWithTag = () => {
-    let {tagName} = useParams();
+    let { tagName } = useParams();
     const { meetings, loading, error } = GetMeetingsWithTag(tagName);
 
     if (loading) {
@@ -456,9 +455,9 @@ const MeetingDetail = () => {
                 className="meeting-form"
                 onSubmit={handleSubmit(onSubmitHandler)}
             >
-                <Grid container direction="row" marginBottom="25px">
-                    <Grid item xs={4}>
-                        <Stack spacing={2}>
+                <Grid container direction="row" marginBottom="25px" spacing={4}>
+                    <Grid item xs>
+                        <Stack spacing={2} maxWidth="360px" minWidth="300px">
                             <Controller
                                 name="Title"
                                 control={control}
@@ -486,14 +485,14 @@ const MeetingDetail = () => {
                             />
                         </Stack>
                     </Grid>
-                    <Grid item xs marginLeft="330px">
+                    <Grid item xs>
                         <InviteesTable
                             invitees={invitees}
                             onChange={setInvitees}
                             isDisabled={isDisabled}
                         />
                     </Grid>
-                    <Grid item xs="auto" marginRight="30px">
+                    <Grid item xs="auto">
                         <Button type="button" onClick={onChangeMode}>
                             {isDisabled ? "edit" : "cancel"}
                         </Button>
@@ -507,8 +506,8 @@ const MeetingDetail = () => {
                     </Grid>
                 </Grid>
                 <Divider />
-                <Grid container direction="row">
-                    <Grid item xs={4}>
+                <Grid container direction="row" spacing={6}>
+                    <Grid item xs maxWidth="480px">
                         <InputField
                             name="Date"
                             control={control}
@@ -545,7 +544,7 @@ const MeetingDetail = () => {
                             type="file"
                         />
                     </Grid>
-                    <Grid item xs={4} marginLeft="300px" marginTop="25px">
+                    <Grid item xs="auto" marginTop="25px" maxWidth="300px">
                         <Box component={Paper} padding="10px">
                             <Box>Notes</Box>
                             <Controller
@@ -591,6 +590,7 @@ const MeetingRestore = () => {
     const { data, loading, error } = GetBinItem(BinId);
     const { reset, control } = useForm();
     const inputDisable = true;
+    const [invitees, setInvitees] = useState([]);
 
     const onRestoreHandler = () => {
         RestoreBinItem(BinId).then((res) => console.log(res));
@@ -613,6 +613,14 @@ const MeetingRestore = () => {
                 opt.value = opt.TagId;
                 opt.label = opt.TagName;
             });
+        }
+
+        if (defaultValue.Invitees) {
+            setInvitees(
+                defaultValue.Invitees.map(
+                    (invitee) => (invitee._id = invitee.InviteeId)
+                )
+            );
         }
         // reset defaultValue
         reset(defaultValue);
@@ -639,9 +647,9 @@ const MeetingRestore = () => {
             }}
         >
             <form>
-                <Grid container direction="row" marginBottom="25px">
-                    <Grid item xs={4}>
-                        <Stack spacing={2}>
+                <Grid container direction="row" marginBottom="25px" spacing={4}>
+                    <Grid item xs>
+                        <Stack spacing={2} maxWidth="360px" minWidth="300px">
                             <Controller
                                 name="Title"
                                 control={control}
@@ -659,7 +667,6 @@ const MeetingRestore = () => {
                                     />
                                 )}
                             />
-
                             <SelectTags
                                 tagOf="M"
                                 control={control}
@@ -673,7 +680,13 @@ const MeetingRestore = () => {
                             />
                         </Stack>
                     </Grid>
-
+                    <Grid item xs>
+                        <InviteesTable
+                            invitees={invitees}
+                            onChange={setInvitees}
+                            isDisabled={true}
+                        />
+                    </Grid>
                     <Grid item xs="auto">
                         <Button type="button" onClick={onRestoreHandler}>
                             restore
@@ -681,8 +694,8 @@ const MeetingRestore = () => {
                     </Grid>
                 </Grid>
                 <Divider />
-                <Grid container direction="row">
-                    <Grid item xs={4}>
+                <Grid container direction="row" spacing={6}>
+                    <Grid item xs maxWidth="480px">
                         <InputField
                             name="Date"
                             control={control}
@@ -719,7 +732,7 @@ const MeetingRestore = () => {
                             type="file"
                         />
                     </Grid>
-                    <Grid item xs={4} marginLeft="400px" marginTop="25px">
+                    <Grid item xs="auto" marginTop="25px" maxWidth="300px">
                         <Box component={Paper} padding="10px">
                             <Box>Notes</Box>
                             <Controller
@@ -828,9 +841,9 @@ const MeetingCreate = () => {
             }}
         >
             <form onSubmit={handleSubmit(onSubmitHandler)}>
-                <Grid container direction="row" marginBottom="25px">
-                    <Grid item xs={4}>
-                        <Stack spacing={2}>
+                <Grid container direction="row" marginBottom="25px" spacing={4}>
+                    <Grid item xs>
+                        <Stack spacing={2} maxWidth="360px" minWidth="300px">
                             <Controller
                                 name="Title"
                                 control={control}
@@ -866,19 +879,19 @@ const MeetingCreate = () => {
                             />
                         </Stack>
                     </Grid>
-                    <Grid item xs marginLeft="330px">
+                    <Grid item xs>
                         <InviteesTable
                             placeholder="Invitees"
                             onChange={setInvitees}
                         />
                     </Grid>
-                    <Grid item xs="auto" marginRight="30px">
+                    <Grid item xs="auto">
                         <Button type="submit">create</Button>
                     </Grid>
                 </Grid>
                 <Divider />
-                <Grid container direction="row" marginTop="10px">
-                    <Grid item xs={4}>
+                <Grid container direction="row" marginTop="10px" spacing={6}>
+                    <Grid item xs maxWidth="460px">
                         <Controller
                             name="Date"
                             control={control}
@@ -924,7 +937,7 @@ const MeetingCreate = () => {
                             type="file"
                         />
                     </Grid>
-                    <Grid item xs={4} marginLeft="300px" marginTop="25px">
+                    <Grid item xs="auto" marginTop="25px" maxWidth="300px">
                         <Box component={Paper} padding="10px">
                             <Box>Notes</Box>
                             <Controller
