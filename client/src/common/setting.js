@@ -34,52 +34,33 @@ export const SettingP = () => {
                 bgcolor: "primary.light",
             }}
         >
-            <Nav tab="contact" />
+            <Nav tab="disabled" />
             <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <Box sx={{ gridArea: "main" }}>
                     <Box
                         sx={{
                             display: "flex",
+                            margin: "50px",
                             flexDirection: "column",
                             rowGap: "15px",
-                            alignItems: "center"
                         }}
                     >
-                        <Box>
+                        
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
                             <Typography variant="h3">Setting</Typography>
-                            <Typography variant="h5">
-                                change colour theme
-                            </Typography>
+                            <Typography variant="h5">change colour theme</Typography>
                         </Box>
-
-                        <Stack direction="row" spacing={6}>
-                            <Box
-                                bgcolor="#6E7F8A"
-                                width="150px"
-                                height="300px"
-                            ></Box>
-                            <Box
-                                bgcolor="#EDCACA"
-                                width="150px"
-                                height="300px"
-                            ></Box>
-                            <Box
-                                bgcolor="#D0EBEE"
-                                width="150px"
-                                height="300px"
-                            ></Box>
-                            <Box
-                                bgcolor="#77CFC3"
-                                width="150px"
-                                height="300px"
-                            ></Box>
-                        </Stack>
+                        
                         <Box
                             sx={{
                                 display: "flex",
                                 width: "740px",
-                                justifyContent: "right",
-                                columnGap: "20px"
+                                columnGap: "20px",
                             }}
                         >
                             <Button
@@ -94,6 +75,34 @@ export const SettingP = () => {
                                 save
                             </Button>
                         </Box>
+
+                        <Stack direction="row" spacing={6}
+                            sx={{
+                                marginLeft: "325px"
+                            }}
+                        >
+                            <Box
+                                bgcolor="#6E7F8A"
+                                width="170px"
+                                height="325px"
+                            ></Box>
+                            <Box
+                                bgcolor="#EDCACA"
+                                width="170px"
+                                height="325px"
+                            ></Box>
+                            <Box
+                                bgcolor="#D0EBEE"
+                                width="170px"
+                                height="325px"
+                            ></Box>
+                            <Box
+                                bgcolor="#77CFC3"
+                                width="170px"
+                                height="325px"
+                            ></Box>
+                        </Stack>
+                        
                     </Box>
                     {/* <button
                         className="setting-button"

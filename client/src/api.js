@@ -477,7 +477,7 @@ export function GetMeetingsBySearch(keyword) {
             .catch((err) => {
                 setLoading(false);
                 errHandler(err);
-                setError("An error occured.");
+                setError("An error occured.wkoks");
             });
         return () => {
             source.cancel();

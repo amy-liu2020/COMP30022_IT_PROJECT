@@ -1004,15 +1004,16 @@ export const Meeting = () => {
                 <Route path={`${path}/tag/:tagName`}>
                     <MeetingWithTag />
                 </Route>
+                <Route path={`${path}/search/:keyword`}>
+                    <MeetingSearch />
+                </Route>
                 <Route path={`${path}/:id`}>
                     <MeetingDetail />
                 </Route>
                 <Route exact path={path}>
                     <MeetingAll />
                 </Route>
-                <Route path={`${path}/search/:keyword`}>
-                    <MeetingSearch />
-                </Route>
+                
             </Switch>
         </Box>
     );

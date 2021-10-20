@@ -24,7 +24,11 @@ const Search = ({tab}) => {
     let history = useHistory();
 
     const onSubmitHandler = (data) => {
-        history.push(`/${tab}/search/${data.keyword}`);
+        if (tab === "disabled") {
+            return;
+        } else {
+            history.push(`/${tab}/search/${data.keyword}`);
+        }
     };
 
     return (
