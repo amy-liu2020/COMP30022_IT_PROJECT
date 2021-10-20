@@ -28,7 +28,9 @@ const User = require("./models/user")
 app.use(function (req, res, next) {
     let arr = req.url.split("/")
     console.log(arr)
-    if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
+    if(arr[1] !== "api"){
+        next()
+    } else if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
         console.log("white list")
         next()
     } else {

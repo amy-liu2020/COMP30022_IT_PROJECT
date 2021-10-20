@@ -106,19 +106,19 @@ const contactEdit = async (req, res) => {
         return Promise.all(TagIds.map(async tid => {
             let aTag = await Tag.findById(tid).lean()
             var TagName = aTag.TagName
-    
+
             let result = {}
             result["TagName"] = TagName
             result["TagId"] = tid
-    
+
             return Promise.resolve(result)
-    
+
         }))
     }
 
     getData().then(async Tags => {
         console.log(Tags)
-        Contact.findByIdAndUpdate(ContactId,{
+        Contact.findByIdAndUpdate(ContactId, {
             IsActive: true,
             FirstName: FirstName,
             LastName: LastName,
@@ -169,19 +169,19 @@ const contactCreate = async (req, res) => {
 
     let uid = req.token.userId
 
-    
+
 
     const getData = async () => {
         return Promise.all(TagIds.map(async tid => {
             let aTag = await Tag.findById(tid).lean()
             var TagName = aTag.TagName
-    
+
             let result = {}
             result["TagName"] = TagName
             result["TagId"] = tid
-    
+
             return Promise.resolve(result)
-    
+
         }))
     }
 
@@ -297,46 +297,61 @@ const addToMeeting = async (req, res) => {
     let mids = req.body.mids
     let cid = req.params.id
 
-    mids.forEach(async (mid) => {
-        let meeting = await Meeting.findOne({ _id: mid, Invitees: { $elemMatch: { $InviteeId: cid } }, IsAlive: true }, "Invitees", (err) => {
-            if (err) {
-                res.status(400).json({
-                    msg: "Error occurred: " + err
+
+    const getData = async () => {
+        return Promise.all(mids.map(async mid => {
+            let meeting = await Meeting.findOne({ _id: mid, Invitees: { $elemMatch: { InviteeId: cid } }, IsAlive: true }, "Invitees", (err) => {
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+            }).lean()
+
+            console.log(meeting)
+            if (!meeting) {
+                let thisMeeting = await Meeting.findById(mid, (err) => {
+                    if (err) {
+                        res.status(400).json({
+                            msg: "Error occurred: " + err
+                        })
+                        return;
+                    }
                 })
-                return;
+
+                let contact = await Contact.findById(cid, (err) => {
+                    if (err) {
+                        res.status(400).json({
+                            msg: "Error occurred: " + err
+                        })
+                        return;
+                    }
+                })
+
+                thisMeeting.Invitees.splice(0, 0, { InviteeName: contact.FirstName, InviteeId: cid })
+                thisMeeting.save((err) => {
+                    if (err) {
+                        res.status(400).json({
+                            msg: "Error occurred: " + err
+                        })
+                        return;
+                    }
+                })
+                
+                return Promise.resolve("ok")
+            }else{
+                return Promise.resolve("exist")
             }
-        }).lean()
+            
 
-        if (!meeting) {
-            let thisMeeting = await Meeting.findById(mid, (err) => {
-                if (err) {
-                    res.status(400).json({
-                        msg: "Error occurred: " + err
-                    })
-                    return;
-                }
-            })
+        }))
+    }
 
-            let contact = await Contact.findById(cid, (err) => {
-                if (err) {
-                    res.status(400).json({
-                        msg: "Error occurred: " + err
-                    })
-                    return;
-                }
-            })
-
-            thisMeeting.Invitees.splice(0, 0, { InviteeName: contact.FirstName, InviteeId: cid })
-            thisMeeting.save((err) => {
-                if (err) {
-                    res.status(400).json({
-                        msg: "Error occurred: " + err
-                    })
-                    return;
-                }
-            })
-        }
+    getData().then(res => {
+        console.log(res)
     })
+
     res.status(200).json({
         msg: "Add this contact to meetings successfully"
     })
