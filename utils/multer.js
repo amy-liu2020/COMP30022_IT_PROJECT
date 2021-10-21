@@ -1,5 +1,5 @@
 const multer = require('multer');
-
+const path=require('path')
 function uploadFile (req, res, next) {
     let fullPath = path.resolve("attachment");
     let filename = "";

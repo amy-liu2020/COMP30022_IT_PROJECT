@@ -51,6 +51,7 @@ const Edit = () => {
     const [phone, setPhone] = useState('')
     const { data: photo } = GetPhoto();
     const { data, loading } = Getprofile();
+    console.log(photo)
     let info = {};
     if (data && data.info) {
         info = data.info
@@ -75,7 +76,7 @@ const Edit = () => {
         <div className="container">
             {loading ? <span>{loading}</span> : <div className="profile">
                 <div className="info">
-                    <div className="avatar"><img style={{ width: '100%', height: '100%' }} alt="avatar" src={photo && "data:;base64," + photo.photo} /></div>
+                    <div className="avatar"><img style={{ width: '100%', height: '100%' }} alt="avatar" src={photo && photo.photo && "data:;base64," + photo.photo} /></div>
                     <label>photo: <input id="photoupload" type="file" name="photo" />
                         <button onClick={handleSubmit}>submit</button>
                     </label>
@@ -117,7 +118,8 @@ const Detail = () => {
         <div className="container">
             {loading ? <span>{loading}</span> : <div className="profile">
                 <div className="info">
-                    <div className="avatar"><img style={{ width: '100%', height: '100%' }} alt="avatar" src={photo && "data:;base64," + photo.photo} /></div>
+                    
+                    <div className="avatar"><img style={{ width: '100%', height: '100%' }} alt="avatar" src={photo && photo.photo && "data:;base64," + photo.photo} /></div>
                     <span>{info.UserID}</span>
                 </div>
                 <div className="label">

@@ -241,6 +241,7 @@ const getProfile = async (req, res) => {
 
 const getPhoto = async (req, res) => {
     try {
+        console.log(req.token)
         let uid = req.token.userId
         var thisAccount = await User.findOne({ UserID: uid }, (err) => {
             if (err) {
