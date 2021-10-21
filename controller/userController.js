@@ -250,10 +250,12 @@ const getPhoto = async (req, res) => {
                 return;
             }
         });
+
         res.status(200).json({
             msg: "Get user photo successfully",
             photo: thisAccount.Photo.toString('base64')
         })
+
     } catch (err) {
         console.log(err)
         res.status(400).json({
@@ -304,7 +306,6 @@ const changeForgottenPassword = async (req, res) => {
                 })
             }
         })
-        console.log(thisAccount.SecurityAnswer)
         if (sa !== thisAccount.SecurityAnswer) {
             res.status(403).json({
                 msg: "Fail to pass security question"
@@ -334,17 +335,17 @@ const changeForgottenPassword = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try {
-        let { sa, np } = req.body
+        let { op, sa, np } = req.body
         let uid = req.token.userId
 
-        let thisAccount = await User.findOne({ UserID: uid }, (err) => {
+        let thisAccount = await User.findOne({ UserID: uid, Password: encrypt(op)}, (err) => {
             if (err) {
                 res.status(400).json({
-                    msg: "Error occurred: " + err
+                    msg: "Password incorrect"
                 })
             }
         })
-        console.log(thisAccount.SecurityAnswer)
+
         if (sa !== thisAccount.SecurityAnswer) {
             res.status(403).json({
                 msg: "Fail to pass security question"
