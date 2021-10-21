@@ -34,12 +34,14 @@ const doLogin = (req, res) => {
         return;
     }
 
+
     try {
         let { userId, password } = req.body;
         let ePassword = encrypt(password)
         console.log({ userId, ePassword })
         let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
         User.findOneAndUpdate({ UserID: userId, Password: ePassword }, { Token: token }, (err, account) => {
+
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -48,8 +50,10 @@ const doLogin = (req, res) => {
             } else {
                 if (account) {
                     res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
+                    let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
                     res.status(200).json({
                         msg: "Login successfully",
+                        account: account,
                         token: token
                     })
                     return;
@@ -239,6 +243,7 @@ const getProfile = async (req, res) => {
 
 const getPhoto = async (req, res) => {
     try {
+        console.log(req.token)
         let uid = req.token.userId
         var thisAccount = await User.findOne({ UserID: uid }, (err) => {
             if (err) {
@@ -251,7 +256,7 @@ const getPhoto = async (req, res) => {
 
         res.status(200).json({
             msg: "Get user photo successfully",
-            photo: thisAccount.photo
+            photo: thisAccount.Photo.toString('base64')
         })
 
     } catch (err) {
@@ -412,8 +417,8 @@ const savePhoto = async (req, res) => {
 
 const changeDetails = (req, res) => {
     let uid = req.token.userId
-    let { userName, phoneNumber, Email } = req.body
-    User.findOneAndUpdate({ UserID: uid }, { UserName: userName, PhoneNumber: phoneNumber, Email: Email }, (err) => {
+    let { phoneNumber, Email } = req.body
+    User.findOneAndUpdate({ UserID: uid }, { PhoneNumber: phoneNumber, Email: Email }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
