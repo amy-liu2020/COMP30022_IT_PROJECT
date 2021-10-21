@@ -1,11 +1,12 @@
-import NavigationBar from "./nav";
+import { Nav } from "./nav";
 import { Route, useRouteMatch, useParams } from "react-router-dom";
-// import { useState } from "react/cjs/react.development";
-import { useState} from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import users from "../json/UserList.json";
+import { Box } from "@mui/system";
+import { Typography, Stack,Button } from "@mui/material";
 
-const SettingP = () => {
+export const SettingP = () => {
     let { userID } = useParams();
     const [user, setUser] = useState([]);
     const {
@@ -17,41 +18,124 @@ const SettingP = () => {
         defaultValues: users[userID],
     });
 
+    const onSubmitHandler = (data) => {
+        console.log(data);
+    };
+
     return (
-        <div className="setting">
-            <div className="setting-form">SETTING</div>
-            <div className="setting-form">change colour theme</div>
-            <button
-                className="detail-edit"
-                type="button"
-                onClick={() => setTheme(user.Color)}
-            >
-                cancel
-            </button>
-            <button className="detail-edit" type="submit">
-                save
-            </button>
-            <div
-                class="box blue"
-                onClick={() => setTheme("blue")}
-                {...register("Color")}
-            ></div>
-            <div
-                class="box red"
-                onClick={() => setTheme("red")}
-                {...register("Color")}
-            ></div>
-            <div
-                class="box green"
-                onClick={() => setTheme("green")}
-                {...register("Color")}
-            ></div>
-            <div
-                class="box dark"
-                onClick={() => setTheme("dark")}
-                {...register("Color")}
-            ></div>
-        </div>
+        <Box
+            sx={{
+                height: "100vh",
+                display: "grid",
+                gridTemplateColumns: "auto",
+                gridTemplateRows: "60px auto",
+                gridTemplateAreas: `"header header header header""main main main main "`,
+                bgcolor: "primary.light",
+            }}
+        >
+            <Nav tab="contact" />
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <Box sx={{ gridArea: "main" }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            rowGap: "15px"
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                position: 'absolute', left: '15%', top: '23%',
+                                transform: 'translate(-50%, -50%)'
+                            }}
+                        >
+                            <Typography variant="h3">Setting</Typography>
+                            <Typography variant="h5">change colour theme</Typography>
+                        </Box>
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                columnGap: "20px",
+                                position: 'absolute', left: '83%', top: '26%',
+                                transform: 'translate(-50%, -50%)'
+                            }}
+                        >
+                            <Button
+                                variant="contained"
+
+                            >
+                                cancel
+                            </Button>
+                            <Button
+                                variant="contained"
+                            >
+                                save
+                            </Button>
+                        </Box>
+
+                        <Stack direction="row" spacing={7}
+                            sx={{
+                                position: 'absolute', left: '50%', top: '60%',
+                                transform: 'translate(-50%, -50%)'
+                            }}
+                        >
+                            <Box
+                                bgcolor="#2F4656"
+                                width="170px"
+                                height="325px"
+                            ></Box>
+                            <Box
+                                bgcolor="#C97070"
+                                width="170px"
+                                height="325px"
+                            ></Box>
+                            <Box
+                                bgcolor="#63ADB8"
+                                width="170px"
+                                height="325px"
+                            ></Box>
+                            <Box
+                                bgcolor="#77CFC3"
+                                width="170px"
+                                height="325px"
+                            ></Box>
+                        </Stack>
+                        
+                    </Box>
+                    {/* <button
+                        className="setting-button"
+                        type="button"
+                        onClick={() => SetTheme(user.Color)}
+                    >
+                        cancel
+                    </button>
+                    <button className="setting-button" type="submit">
+                        save
+                    </button>
+                    <div
+                        class="box blue"
+                        onClick={() => SetTheme("blue")}
+                        {...register("Color")}
+                    ></div>
+                    <div
+                        class="box red"
+                        onClick={() => SetTheme("red")}
+                        {...register("Color")}
+                    ></div>
+                    <div
+                        class="box green"
+                        onClick={() => SetTheme("green")}
+                        {...register("Color")}
+                    ></div>
+                    <div
+                        class="box dark"
+                        onClick={() => SetTheme("dark")}
+                        {...register("Color")}
+                    ></div> */}
+                </Box>
+            </form>
+        </Box>
     );
 };
 
@@ -61,7 +145,6 @@ const Setting = () => {
 
     return (
         <div className="two-part-layout">
-            <NavigationBar />
             <Route exact path={path}>
                 <SettingP />
             </Route>
@@ -70,7 +153,7 @@ const Setting = () => {
 };
 
 // set theme
-const setTheme = (color) => {
+export const SetTheme = (color) => {
     if (color === "dark") {
         document.documentElement.style.setProperty("--nav-bg-color", "#6E7F8A");
         document.documentElement.style.setProperty(
@@ -92,7 +175,7 @@ const setTheme = (color) => {
             "#FFF8F9"
         );
     } else if (color === "blue") {
-        document.documentElement.style.setProperty("--nav-bg-color", "#D0EBEE");
+        document.documentElement.style.setProperty("--nav-bg-color", "#63D5DA");
         document.documentElement.style.setProperty(
             "--sideM-bg-color",
             "#63ADB8"

@@ -64,7 +64,7 @@ const getSingleContact = async (req, res) => {
                     return;
                 }
             }).lean();
-        const relatedMeeting = await Meeting.find({ Invitees: { $elemMatch: { InviteeId: cid } } }, "Title StartTime", (err) => {
+        const relatedMeeting = await Meeting.find({ Invitees: { elemMatch: { InviteeId: cid } } }, "Title StartTime", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -72,6 +72,7 @@ const getSingleContact = async (req, res) => {
                 return;
             }
         })
+        console.log(relatedMeeting);
         res.status(200).json({
             msg: "Get single contact successfully",
             contact: contact,
@@ -291,7 +292,6 @@ const fuzzySearch = async (req, res) => {
         searchResult: searchResult
     });
 };
-
 
 const addToMeeting = async (req, res) => {
     let mids = req.body.mids

@@ -1,4 +1,5 @@
 import { useTable, useRowSelect } from "react-table";
+
 import { useEffect, useState } from "react";
 import React from "react";
 import { useHistory } from "react-router-dom";
@@ -58,7 +59,7 @@ const Table = ({ tab, data, option }) => {
                   },
                   {
                       Header: "Date",
-                      accessor: (row) => row.StartTime.$date.slice(0, 10),
+                      accessor: (row) => row.StartTime && row.StartTime.slice(0, 10),
                   },
               ]
     );
@@ -76,6 +77,7 @@ const Table = ({ tab, data, option }) => {
             data,
             initialState: {
                 hiddenColumns: ["selection"],
+                pageSize: 20,
             },
         },
         useRowSelect,
@@ -108,7 +110,7 @@ const Table = ({ tab, data, option }) => {
         }
     );
 
-    const [selectedContacts, setSelectedContacts] = useState([]);
+    const [selected, setSelected] = useState([]);
     const [showSelect, setShowSelect] = useState(false);
     let history = useHistory();
 
@@ -123,11 +125,11 @@ const Table = ({ tab, data, option }) => {
         } else {
             console.log("export");
         }
-        console.log(selectedContacts);
+        console.log(selected);
     };
 
     useEffect(() => {
-        setSelectedContacts(selectedFlatRows.map((d) => data[d.index]._id));
+        setSelected(selectedFlatRows.map((d) => data[d.index]._id));
     }, [data, selectedFlatRows]);
 
     // Render the UI for your table

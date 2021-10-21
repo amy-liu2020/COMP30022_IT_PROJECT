@@ -14,11 +14,16 @@ body {
     display: grid;
     width: 100vw;
     height: 100vh;
-    grid-template-columns: 200px auto;
+    grid-template-columns: 230px auto;
     grid-template-rows: 50px auto;
     grid-template-areas:
         "nav nav"
         "sideM content";
+}
+
+#addTagButton {
+    background-color: var(--sideM-bg-color);
+    color: black;
 }
 
 .two-part-layout {
@@ -328,28 +333,11 @@ body {
     padding: 20px;
 }
 
-.sideM > * {
-    border: none;
-    padding: 10px 16px;
-    text-align: left;
-    border-radius: 20px;
-    background-color: inherit;
-}
-
-.sideM > *:hover {
-    cursor: pointer;
-}
-
 .sideM-group {
     text-decoration: none;
     color: black;
 }
 
-.sideM > *:hover,
-.sideM-create,
-.sideM-addGroup {
-    background-color: #ebf8f6;
-}
 
 .sideM-create:hover,
 .sideM-addGroup:hover {
@@ -368,6 +356,13 @@ body {
 }
 
 /* contact section */
+#tableHead {
+    background-color: var(--sideM-bg-color);
+}
+
+#tableBody {
+    background-color: var(--content-bg-color);
+}
 
 .pop-up {
     position: fixed; /* Stay in place */
@@ -387,24 +382,6 @@ body {
     background-color: white;
     display: flex;
     flex-direction: column;
-}
-
-.contact-list {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-    border: none;
-    overflow-y: auto;
-}
-
-.contact-list-head {
-    background-color: white;
-    border: 2px solid grey;
-}
-
-.contact-list-record:hover {
-    background-color: var(--button-hover-lightGrey);
-    cursor: pointer;
 }
 
 .contact-form {
@@ -469,6 +446,7 @@ body {
     width: 200px;
     height: 100px;
     resize: none;
+    border: 3px solid var(--nav-bg-color);
 }
 
 .form-note {
@@ -494,24 +472,6 @@ input:valid {
 
 /* meeting section */
 
-.meeting-list {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-    border: none;
-    overflow-y: auto;
-}
-
-.meeting-list-head {
-    background-color: white;
-    border: 2px solid grey;
-}
-
-.meeting-list-record:hover {
-    background-color: var(--button-hover-lightGrey);
-    cursor: pointer;
-}
-
 .meeting {
     background-color: var(--content-bg-color);
 }
@@ -526,9 +486,15 @@ input:valid {
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
-    row-gap: 5px;
+    row-gap: 3px;
     margin-left: 45px;
-    font-size: 22px;
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+.meetingForm-keyInfo input {
+    margin-bottom: 7px;
+    padding: 6px 17px;
 }
 
 .meetingForm-name > * {
@@ -536,13 +502,12 @@ input:valid {
     border: none;
     outline: none;
     font-size: 35px;
-    width: 180px;
+    width: 500px;
 }
 
 .meetingForm-record {
     position: flex;
     width: 400px;
-    justify-content: space-between;
     margin: 15px;
 }
 
@@ -550,18 +515,12 @@ input:valid {
     border: none;
 }
 
-.meetingForm-record select {
-    height: 20px;
-    width: 200px;
-    border: none;
-    cursor: pointer;
-}
-
 .meetingForm-record input[type="text"],
 [type="url"] {
     height: 20px;
     width: 200px;
     border: none;
+    float: right;
 }
 
 .meetingForm-record input[type="time"],
@@ -570,6 +529,7 @@ input:valid {
     width: 200px;
     border: none;
     cursor: text;
+    float: right;
 }
 
 .meetingForm-record input:focus {
@@ -577,8 +537,8 @@ input:valid {
 }
 
 .meetingForm-Info {
-    position: block;
     margin: 30px;
+    margin-bottom: 20px;
 }
 
 #meetingForm-noteArea {
@@ -613,6 +573,7 @@ input:valid {
 
 .meeting-form > button[type="submit"],
 .detail-edit {
+    margin-right: 20px;
     float: right;
     border-radius: 20px;
     border: 2px solid gray;
@@ -623,6 +584,15 @@ input:valid {
 
 .meetingForm-attachment {
     margin-left: 45px;
+    position: flex;
+    width: 450px;
+}
+.meetingForm-attachment input {
+    float: right;
+}
+
+#meetingTag {
+    color: #000;
 }
 
 /*  setting section */
@@ -632,17 +602,20 @@ input:valid {
 }
 
 .setting-form {
-    margin: 30px;
-    font-size: 30px;
+    margin: 90px;
+    margin-top: 80px;
+    margin-left: 150px;
+    font-size: 40px;
 }
 
 .box {
     position: relative;
-    left: 195px;
-    padding: 135px 80px;
+    left: 140px;
+    top: 50px;
+    padding: 150px 90px;
     float: left;
     text-align: center;
-    margin: 20px;
+    margin: 30px;
     border: none;
 }
 
@@ -664,4 +637,19 @@ input:valid {
 
 .dark {
     background: #2f4656;
+}
+
+.setting-button {
+    margin-right: 15px;
+    float: right;
+    border-radius: 20px;
+    border: 2px solid gray;
+    background-color: white;
+    padding: 2px 10px;
+    cursor: pointer;
+}
+
+.smallerFont {
+    margin-top: 10px;
+    font-size: 30px;
 }
