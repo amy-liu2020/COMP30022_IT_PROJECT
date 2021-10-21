@@ -33,13 +33,13 @@ const doLogin = (req, res) => {
         })
         return;
     }
-    
+
     try {
         let { userId, password } = req.body;
         let ePassword = encrypt(password)
         console.log({ userId, ePassword })
         let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
-        User.findOneAndUpdate({ UserID: userId, Password: ePassword },{Token:token}, (err, account) => {
+        User.findOneAndUpdate({ UserID: userId, Password: ePassword }, { Token: token }, (err, account) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -217,7 +217,7 @@ const userChangePreferredColor = async (req, res) => {
 const getProfile = async (req, res) => {
     try {
         let uid = req.token.userId
-        var thisAccount = await User.findOne({ UserID: uid },"Email PhoneNumber UserName UserID", (err) => {
+        var thisAccount = await User.findOne({ UserID: uid }, "Email PhoneNumber UserName UserID", (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
@@ -333,10 +333,10 @@ const changeForgottenPassword = async (req, res) => {
 
 const changePassword = async (req, res) => {
     try {
-        let { op, sa, np } = req.body
+        let { op, np } = req.body
         let uid = req.token.userId
 
-        let thisAccount = await User.findOne({ UserID: uid, Password: encrypt(op)}, (err) => {
+        let thisAccount = await User.findOne({ UserID: uid, Password: encrypt(op) }, (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Password incorrect"
@@ -344,24 +344,36 @@ const changePassword = async (req, res) => {
             }
         })
 
-        if (sa !== thisAccount.SecurityAnswer) {
-            res.status(403).json({
-                msg: "Fail to pass security question"
-            })
-        } else {
-            User.findOneAndUpdate({ UserID: uid }, { Password: encrypt(np) }, (err) => {
-                if (err) {
-                    res.status(400).json({
-                        msg: "Error occurred: " + err
-                    })
-                    return;
-                }
-            })
+        // if (sa !== thisAccount.SecurityAnswer) {
+        //     res.status(403).json({
+        //         msg: "Fail to pass security question"
+        //     })
+        // } else {
+        //     User.findOneAndUpdate({ UserID: uid }, { Password: encrypt(np) }, (err) => {
+        //         if (err) {
+        //             res.status(400).json({
+        //                 msg: "Error occurred: " + err
+        //             })
+        //             return;
+        //         }
+        //     })
 
-            res.status(200).json({
-                msg: "password has been changed successfully"
-            })
-        }
+        //     res.status(200).json({
+        //         msg: "password has been changed successfully"
+        //     })
+        // }
+        User.findOneAndUpdate({ UserID: uid }, { Password: encrypt(np) }, (err) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        })
+
+        res.status(200).json({
+            msg: "password has been changed successfully"
+        })
 
     } catch (err) {
         console.log(err)
