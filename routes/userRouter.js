@@ -2,7 +2,6 @@ const express = require("express");
 
 const userRouter = express.Router();
 
-const path=require('path')
 const userController = require("../controller/userController.js");
 const {ensureAuthorized} = require("../utils/token.js");
 const {uploadFile} = require('../utils/multer.js')
