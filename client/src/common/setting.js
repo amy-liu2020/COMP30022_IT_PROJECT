@@ -28,46 +28,42 @@ export const SettingP = () => {
                 height: "100vh",
                 display: "grid",
                 gridTemplateColumns: "auto",
-                gap: 0,
                 gridTemplateRows: "60px auto",
                 gridTemplateAreas: `"header header header header""main main main main "`,
                 bgcolor: "primary.light",
             }}
         >
-            <Nav tab="disabled" />
+            <Nav tab="contact" />
             <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <Box sx={{ gridArea: "main" }}>
                     <Box
                         sx={{
                             display: "flex",
                             flexDirection: "column",
-                            rowGap: "15px",
+                            rowGap: "15px"
                         }}
                     >
-                        
                         <Box
                             sx={{
-                                position: 'absolute', left: '15%', top: '25%',
+                                position: 'absolute', left: '15%', top: '23%',
                                 transform: 'translate(-50%, -50%)'
                             }}
                         >
                             <Typography variant="h3">Setting</Typography>
                             <Typography variant="h5">change colour theme</Typography>
                         </Box>
-                        
+
                         <Box
                             sx={{
-                                position: 'absolute', left: '100%', top: '25%',
-                                transform: 'translate(-50%, -50%)',
-                                width: "740px",
-                                
+                                display: "flex",
+                                columnGap: "20px",
+                                position: 'absolute', left: '83%', top: '26%',
+                                transform: 'translate(-50%, -50%)'
                             }}
                         >
                             <Button
                                 variant="contained"
-                                sx={{
-                                    margin:"20px"
-                                }}
+
                             >
                                 cancel
                             </Button>
@@ -78,7 +74,7 @@ export const SettingP = () => {
                             </Button>
                         </Box>
 
-                        <Stack direction="row" spacing={6}
+                        <Stack direction="row" spacing={7}
                             sx={{
                                 position: 'absolute', left: '50%', top: '60%',
                                 transform: 'translate(-50%, -50%)'
