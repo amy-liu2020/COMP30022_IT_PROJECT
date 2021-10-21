@@ -40,7 +40,6 @@ export const SettingP = () => {
                     <Box
                         sx={{
                             display: "flex",
-                            margin: "50px",
                             flexDirection: "column",
                             rowGap: "15px",
                         }}
@@ -48,8 +47,8 @@ export const SettingP = () => {
                         
                         <Box
                             sx={{
-                                display: "flex",
-                                flexDirection: "column",
+                                position: 'absolute', left: '15%', top: '25%',
+                                transform: 'translate(-50%, -50%)'
                             }}
                         >
                             <Typography variant="h3">Setting</Typography>
@@ -58,14 +57,17 @@ export const SettingP = () => {
                         
                         <Box
                             sx={{
-                                display: "flex",
+                                position: 'absolute', left: '100%', top: '25%',
+                                transform: 'translate(-50%, -50%)',
                                 width: "740px",
-                                columnGap: "20px",
+                                
                             }}
                         >
                             <Button
                                 variant="contained"
-
+                                sx={{
+                                    margin:"20px"
+                                }}
                             >
                                 cancel
                             </Button>
@@ -78,21 +80,22 @@ export const SettingP = () => {
 
                         <Stack direction="row" spacing={6}
                             sx={{
-                                marginLeft: "325px"
+                                position: 'absolute', left: '50%', top: '60%',
+                                transform: 'translate(-50%, -50%)'
                             }}
                         >
                             <Box
-                                bgcolor="#6E7F8A"
+                                bgcolor="#2F4656"
                                 width="170px"
                                 height="325px"
                             ></Box>
                             <Box
-                                bgcolor="#EDCACA"
+                                bgcolor="#C97070"
                                 width="170px"
                                 height="325px"
                             ></Box>
                             <Box
-                                bgcolor="#D0EBEE"
+                                bgcolor="#63ADB8"
                                 width="170px"
                                 height="325px"
                             ></Box>
