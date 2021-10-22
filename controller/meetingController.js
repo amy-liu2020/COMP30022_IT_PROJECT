@@ -1,6 +1,7 @@
 const Bin = require("../models/bin");
 const Meeting = require("../models/meeting");
-const Tag = require("../models/tag")
+const Tag = require("../models/tag");
+const Contact = require("../models/contact");
 
 const fs = require('fs');
 const mongoose = require("mongoose")
@@ -249,7 +250,7 @@ const meetingEdit = async (req, res) => {
 
 const meetingDelete = async (req, res) => {
     let mid = req.params.id
-    let uid = req.token
+    let uid = req.token.userId
     let meeting = await Meeting.findByIdAndUpdate(mid, { IsActive: false }, (err) => {
         if (err) {
             res.status(400).json({
@@ -308,7 +309,7 @@ const fuzzySearch = async (req, res) => {
                 return;
             }
         }
-    ).lean()
+    )
     res.status(200).json({
         msg: "Search meeting successfully",
         searchResult: searchResult

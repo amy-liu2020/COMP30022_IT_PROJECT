@@ -1,19 +1,27 @@
-import { MdAdd } from "react-icons/md";
-import { FaTimes } from "react-icons/fa";
-// import { useState } from "react/cjs/react.development";
+
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { GetTags, AddTag, DeleteTag } from "../api";
 
-// pop-up that allow user to enter tagName
-const PopUp = ({ tagOf, turnOff }) => {
-    const [tagName, setTagName] = useState(null);
+import Chip from "@mui/material/Chip";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Divider from "@mui/material/Divider";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
+const AddTagDialog = ({ open, setOpen, tagOf }) => {
+    const [tagName, setTagName] = useState('');
     const [isPending, setPending] = useState(false);
 
-    // handle the tag creation
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-
+    const handleCreate = () => {
         // re-group data
         const tag = {
             tagName: tagName,
@@ -31,33 +39,33 @@ const PopUp = ({ tagOf, turnOff }) => {
                 window.location.reload(); // refresh page
             }
         });
+    }
+
+    const handleClose = () => {
+        setOpen(false);
     };
 
-    // todo: add styling for pop-up
     return (
-        <div className="pop-up">
-            <form onSubmit={onSubmitHandler}>
-                <input
+        <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Add new Tag</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Please enter a name for new tag.
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    label="Tag name"
                     type="text"
-                    placeholder="tagName"
-                    onChange={(e) => setTagName(e.target.value)}
-                    style={{
-                        marginBottom: "10px",
-                        width: "200px",
-                        height: "30px",
-                        fontSize: "20px",
-                    }}
+                    fullWidth
+                    variant="standard"
+                    onChange={(e) => {setTagName(e.target.value)}}
                 />
-                <div>
-                    <button type="button" onClick={turnOff}>
-                        cancel
-                    </button>
-                    <button type="submit" style={{ float: "right" }}>
-                        {isPending ? "uploading..." : "create"}
-                    </button>
-                </div>
-            </form>
-        </div>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleCreate}>{isPending ? "uploading..." : "create"}</Button>
+            </DialogActions>
+        </Dialog>
     );
 };
 
@@ -102,51 +110,87 @@ const SideMenu = ({ tagOf }) => {
 
     return (
         <>
-            {showPopup && (
-                <PopUp tagOf={tagOf} turnOff={() => setShowPopup(false)} />
-            )}
-            <div className="sideM">
-                <button
-                    className="sideM-create"
+            <AddTagDialog open={showPopup} setOpen={setShowPopup} tagOf={tagOf}/>
+            <Box sx={{ gridArea: "sidebar", bgcolor: "#77CFC3", display: "flex", flexDirection: "column", rowGap: "20px", padding: "20px"}}>
+                <Fab
+                    variant="extended"
                     onClick={() => history.push(`/${tab}/create`)}
                 >
-                    <MdAdd />
-                    create {tab}
-                </button>
-                <Link className="sideM-group" to={`/${tab}`}>
-                    all
-                </Link>
-                {pending ? (
-                    <p>updating...</p>
-                ) : (
-                    tags.map((tag, index) => (
-                        <Link
-                            className="sideM-group"
-                            key={index}
-                            to={`/${tab}/tag/${tag.value}`}
-                        >
-                            {tag.label}
-                            <FaTimes
-                                onClick={() => onDeleteTagHandler(tag.label)}
+                    <AddIcon sx={{ mr: 1 }} />
+                    {`create ${tab}`}
+                </Fab>
+
+                <Divider />
+                <Chip
+                    label="all"
+                    onClick={() => history.push(`/${tab}/`)}
+                    sx={{
+                        "&": {
+                            textAlign: "left",
+                            display: "flex",
+                            justifyContent: "space-between",
+                        },
+                        "&:hover": {
+                            cursor: "pointer",
+                        },
+                    }}
+                />
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 1,
+                        overflow: "auto",
+                        maxHeight: 200,
+                        alignItems: "stretch",
+                    }}
+                >
+                    {pending ? (
+                        <p>updating...</p>
+                    ) : (
+                        tags.map((tag, index) => (
+                            <Chip
+                                label={tag.TagName}
+                                key={index}
+                                onClick={() =>
+                                    history.push(`/${tab}/tag/${tag.TagName}`)
+                                }
+                                onDelete={() => onDeleteTagHandler(tag.TagName)}
+                                sx={{
+                                    "&": {
+                                        textAlign: "left",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        width: "100%",
+                                    },
+                                    "&:hover": {
+                                        cursor: "pointer",
+                                    },
+                                }}
+                                deleteIcon={<DeleteIcon />}
                             />
-                        </Link>
-                    ))
-                )}
-                <button
-                    className="sideM-addGroup"
-                    onClick={() => setShowPopup(true)}
-                >
+                        ))
+                    )}
+                </Box>
+                <Button id="addTagButton" variant="contained" onClick={() => setShowPopup(true)}>
                     add new tag
-                </button>
-                <button className="sideM-import">import</button>
-                <button
-                    className="sideM-export"
-                    onClick={() => history.push(`/${tab}/export`)}
-                >
-                    export
-                </button>
-                <button className="sideM-bin">bin</button>
-            </div>
+                </Button>
+                <Divider />
+                <Chip
+                    label="bin"
+                    onClick={() => history.push(`/${tab}/bin`)}
+                    sx={{
+                        "&": {
+                            textAlign: "left",
+                            display: "flex",
+                            justifyContent: "space-between"
+                        },
+                        "&:hover": {
+                            cursor: "pointer",
+                        },
+                    }}
+                />
+            </Box>
         </>
     );
 };

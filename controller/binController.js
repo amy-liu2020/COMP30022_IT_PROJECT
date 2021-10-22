@@ -52,7 +52,9 @@ const getBinList = async (req, res) => {
 }
 
 
-const getBinItem = async (req, res) => {
+
+const getBinItem = async (req,res) => {
+
     let bid = req.params.id;
 
     const item = await Bin.findById(bid, (err) => {
