@@ -424,6 +424,12 @@ const assignTag = async (req, res) => {
         }
     }).lean()
 
+    if(!tag){
+        res.status(403).json({
+            msg: "Tag do not exist"
+        })
+        return;
+    }
     Contact.findByIdAndUpdate(cid, { $push: { Tags: { TagName: tag.TagName, TagId: tag._id } } }, (err) => {
         if (err) {
             res.status(400).json({
