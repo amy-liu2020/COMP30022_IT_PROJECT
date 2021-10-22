@@ -13,28 +13,35 @@ const Reset = () => {
     const [confirmpassword, setConfirmpassword] = useState('');
 
     const handleSave = async () => {
-        changePassword({ oldpassword, newpassword, });
-        history.push(`/user/profile`)
+        if (newpassword !== confirmpassword) {
+            return;
+        }
+        if (oldpassword === newpassword) {
+            return;
+        }
+        await changePassword({ op: oldpassword, np: newpassword, });
+        localStorage.clear();
+        history.push("/");
     }
 
     return (
-        <div class="container">
-            <div class="container">
-                <div class="forget-form">
+        <div className="container">
+            <div className="container">
+                <div className="forget-form">
                     <span>PASSWORD AUTHENTICATION</span>
-                    <div class="input">
+                    <div className="input">
                         <label>Old Password</label>
                         <input type="password" placeholder="" value={oldpassword} onChange={(e) => { setOldpassword(e.target.value) }} />
                     </div>
-                    <div class="input">
+                    <div className="input">
                         <label>New Password</label>
                         <input type="password" placeholder="" value={newpassword} onChange={(e) => { setNewpassword(e.target.value) }} />
                     </div>
-                    <div class="input">
+                    <div className="input">
                         <label>Verify</label>
                         <input type="password" placeholder="" value={confirmpassword} onChange={(e) => { setConfirmpassword(e.target.value) }} />
                     </div>
-                    <div class="buttons">
+                    <div className="buttons">
                         <button onClick={handleSave}>
                             save
                         </button>
@@ -51,11 +58,6 @@ const Edit = () => {
     const [phone, setPhone] = useState('')
     const { data: photo } = GetPhoto();
     const { data, loading } = Getprofile();
-    console.log(photo)
-    let info = {};
-    if (data && data.info) {
-        info = data.info
-    }
 
     const handleSave = async () => {
         changeDetails({ phoneNumber: phone, Email: email });
@@ -81,11 +83,11 @@ const Edit = () => {
                         <button onClick={handleSubmit}>submit</button>
                     </label>
                     <div className="avatar"></div>
-                    <span>{info.UserID}</span>
+                    <span>{data.UserID}</span>
                 </div>
                 <div className="label">
                     <label>USERNAME</label>
-                    <span>{info.UserName}</span>
+                    <span>{data.UserName}</span>
                 </div>
                 <div className="label">
                     <label>EMAIL</label>
@@ -109,30 +111,26 @@ const Detail = () => {
     let history = useHistory();
     const { data: photo } = GetPhoto();
     const { data, loading } = Getprofile();
-    let info = {};
-    if (data && data.info) {
-        info = data.info
-    }
 
     return (
         <div className="container">
             {loading ? <span>{loading}</span> : <div className="profile">
                 <div className="info">
-                    
+
                     <div className="avatar"><img style={{ width: '100%', height: '100%' }} alt="avatar" src={photo && photo.photo && "data:;base64," + photo.photo} /></div>
-                    <span>{info.UserID}</span>
+                    <span>{data.UserID}</span>
                 </div>
                 <div className="label">
                     <label>USERNAME</label>
-                    <span>{info.UserName}</span>
+                    <span>{data.UserName}</span>
                 </div>
                 <div className="label">
                     <label>EMAIL</label>
-                    <span>{info.Email}</span>
+                    <span>{data.Email}</span>
                 </div>
                 <div className="label">
                     <label>PHONE NO</label>
-                    <span>{info.PhoneNumber}</span>
+                    <span>{data.PhoneNumber}</span>
                 </div>
                 <div className="buttons">
                     <button onClick={() => history.push(`/user/profile/edit`)}>
