@@ -1,23 +1,37 @@
-import Select from "react-select";
 import { GetTags } from "../api";
+import {Controller } from "react-hook-form";
+import Select from "react-select";
 
-const Tag = ({
-    tagOf,
-    defaultValue = null,
-    setSelectedTags,
-    isDisabled = false,
-}) => {
+const SelectTags = ({control, tagOf, isDisabled=false}) => {
     const { tags, loading, error } = GetTags(tagOf);
 
+    const formatTag = (tags) => {
+        let options = JSON.parse(JSON.stringify(tags)); // clone tags
+
+        options.map(opt => {
+            opt.TagId = opt._id;
+            opt.value = opt._id;
+            opt.label = opt.TagName;
+        })
+
+        return options;
+    }
+
     return (
-        <Select
-            defaultValue={defaultValue}
-            onChange={setSelectedTags}
-            options={tags}
-            isMulti
-            isLoading={loading || error}
-            isDisabled={isDisabled}
+        <Controller
+            control={control}
+            name="Tags"
+            render={({ field }) => (
+                <Select
+                    isMulti={true}
+                    isLoading={loading || error}
+                    {...field}
+                    isDisabled={isDisabled}
+                    options={tags ? formatTag(tags) : []}
+                />
+            )}
         />
     );
 };
-export default Tag;
+
+export default SelectTags;
