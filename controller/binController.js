@@ -3,33 +3,33 @@ const Contact = require("../models/contact");
 const Meeting = require("../models/meeting");
 const DEFAULT_MAX_PREVERVING_DATE = 24;
 
-const getBinList = async (req,res) => {
+const getBinList = async (req, res) => {
     try {
         let uid = req.token.userId
         let type = req.params.type
 
         var binList;
-        if(type === "C"){
-            binList = await Bin.find({AccountID:uid, Type:type}, (err) => {
-                if(err){
+        if (type === "C") {
+            binList = await Bin.find({ AccountID: uid, Type: type }, (err) => {
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
                     return;
                 }
             }).lean()
-        } else if (type === "M"){
-            binList = await Bin.find({AccountID:uid, Type:type}, (err) => {
-                if(err){
+        } else if (type === "M") {
+            binList = await Bin.find({ AccountID: uid, Type: type }, (err) => {
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
                     return;
                 }
             }).lean()
-        } else{
-            binList = await Bin.find({AccountID:uid}, (err) => {
-                if(err){
+        } else {
+            binList = await Bin.find({ AccountID: uid }, (err) => {
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
@@ -37,51 +37,51 @@ const getBinList = async (req,res) => {
                 }
             }).lean()
         }
-        
+
         res.status(200).json({
             msg: "Get bin list successfully",
-            binList:binList
+            binList: binList
         })
-    } catch(err){
+    } catch (err) {
         console.log(err)
         res.status(400).json({
             msg: "Error occurred: " + err
         })
     }
-    
+
 }
 
 
-const getBinItem = async (req,res) => {
+const getBinItem = async (req, res) => {
     let bid = req.params.id;
 
     const item = await Bin.findById(bid, (err) => {
-        if(err){
+        if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
             return;
         }
-        
+
     }).lean()
 
-    if(!item){
+    if (!item) {
         res.status(503).json({
             msg: "Database error"
         })
         return;
     } else {
-        if(item.Type === "C"){
+        if (item.Type === "C") {
             let cid = item.ID;
             const deletedContact = await Contact.findById(cid, (err) => {
-                if(err){
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
                     return;
                 }
             }).lean()
-            if(!deletedContact){
+            if (!deletedContact) {
                 res.status(503).json({
                     msg: "Database error"
                 })
@@ -89,21 +89,21 @@ const getBinItem = async (req,res) => {
             } else {
                 res.status(200).json({
                     msg: "Get single deleted contact successfully",
-                    deletedContact:deletedContact
+                    deletedContact: deletedContact
                 })
                 return;
             }
-        } else if(item.Type === "M"){
+        } else if (item.Type === "M") {
             let mid = item.ID;
             const deletedMeeting = await Meeting.findById(mid, (err) => {
-                if(err){
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
                     return;
                 }
             }).lean()
-            if(!deletedMeeting){
+            if (!deletedMeeting) {
                 res.status(503).json({
                     msg: "Database error"
                 })
@@ -111,7 +111,7 @@ const getBinItem = async (req,res) => {
             } else {
                 res.status(200).json({
                     msg: "Get single deleted meeting successfully",
-                    deletedMeeting:deletedMeeting
+                    deletedMeeting: deletedMeeting
                 })
                 return;
             }
@@ -120,7 +120,7 @@ const getBinItem = async (req,res) => {
 }
 
 
-const deleteBinItem = async (req,res) => {
+const deleteBinItem = async (req, res) => {
     let bid = req.params.id
     const item = await Bin.findById(bid, (err) => {
         res.status(400).json({
@@ -129,26 +129,26 @@ const deleteBinItem = async (req,res) => {
         return;
     }).lean()
 
-    if(!item){
+    if (!item) {
         res.status(503).json({
             msg: "Database error"
         })
         return;
     } else {
-        if(item.Type === "C"){
+        if (item.Type === "C") {
             let cid = item.ID;
             Contact.findByIdAndDelete(cid, (err) => {
-                if(err){
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
                     return;
                 }
             })
-        } else if(item.Type === "M"){
+        } else if (item.Type === "M") {
             let mid = item.ID;
             Meeting.findByIdAndDelete(mid, (err) => {
-                if(err){
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
@@ -169,7 +169,7 @@ const deleteBinItem = async (req,res) => {
 }
 
 
-const restoreBinItem = async (req,res) => {
+const restoreBinItem = async (req, res) => {
     let bid = req.params.id;
 
     const item = await Bin.findById(bid, (err) => {
@@ -179,26 +179,26 @@ const restoreBinItem = async (req,res) => {
         return;
     }).lean()
 
-    if(!item){
+    if (!item) {
         res.status(503).json({
             msg: "Database error"
         })
         return;
     } else {
-        if(item.Type === "C"){
+        if (item.Type === "C") {
             let cid = item.ID;
-            Contact.findByIdAndUpdate(cid, {IsActive:true},(err) => {
-                if(err){
+            Contact.findByIdAndUpdate(cid, { IsActive: true }, (err) => {
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
                     return;
                 }
             }).lean()
-        } else if(item.Type === "M"){
+        } else if (item.Type === "M") {
             let mid = item.ID;
-            Meeting.findByIdAndUpdate(mid, {IsActive:true}, (err) => {
-                if(err){
+            Meeting.findByIdAndUpdate(mid, { IsActive: true }, (err) => {
+                if (err) {
                     res.status(400).json({
                         msg: "Error occurred: " + err
                     })
@@ -220,11 +220,11 @@ const restoreBinItem = async (req,res) => {
 }
 
 
-const clearAll = async (req,res) => {
+const clearAll = async (req, res) => {
     let uid = req.token.userId
 
-    Bin.deleteMany({AccountID:uid}, (err)=>{
-        if(err){
+    Bin.deleteMany({ AccountID: uid }, (err) => {
+        if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
             })
@@ -238,7 +238,7 @@ const clearAll = async (req,res) => {
 
 const autoDeleteItems = async (req, res) => {
     const binList = await Bin.find({}, (err) => {
-        if(err){
+        if (err) {
             res.status(503).json({
                 msg: "Error occurred: " + err
             })
@@ -249,9 +249,9 @@ const autoDeleteItems = async (req, res) => {
     binList.forEach((item) => {
         let DelDate = item.DeleteDate;
         let curDate = new Date();
-        if((curDate - DelDate)/24/3600/1000 >= DEFAULT_MAX_PREVERVING_DATE){
-            Bin.findByIdAndDelete(item._id, (err)=>{
-                if(err){
+        if ((curDate - DelDate) / 24 / 3600 / 1000 >= DEFAULT_MAX_PREVERVING_DATE) {
+            Bin.findByIdAndDelete(item._id, (err) => {
+                if (err) {
                     res.status(503).json({
                         msg: "Error occurred: " + err
                     })
@@ -267,35 +267,29 @@ const fuzzySearch = async (req, res) => {
     let keyword = req.params.keyword
     let uid = req.token.userId
     let reg = new RegExp(keyword, "i")
-    const searchResult = await Meeting.find({
-        $and: [
-            {
-                Name:reg
-            },
-            { IsActive: true, AccountID: uid }
-        ]
-    }, (err) => {
-        if (err) {
-                res.status(400).json({
-                msg: "Error occurred: " + err
-            })
-            return;
-        }
-    }).lean()
-    res.status(200).json({
-        msg: "Search bin successfully",
-        searchResult: searchResult
-    });
+    const searchResult = await Bin.find(
+        {Name: reg, AccountID: uid }, (err) => {
+    if (err) {
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
+        return;
+    }
+}).lean()
+res.status(200).json({
+    msg: "Search bin successfully",
+    searchResult: searchResult
+});
 };
 
 
 module.exports = {
-    getBinList, 
-    getBinItem, 
-    deleteBinItem, 
-    restoreBinItem, 
-    clearAll, 
-    autoDeleteItems, 
+    getBinList,
+    getBinItem,
+    deleteBinItem,
+    restoreBinItem,
+    clearAll,
+    autoDeleteItems,
     fuzzySearch
 }
 

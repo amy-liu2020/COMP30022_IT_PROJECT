@@ -53,7 +53,6 @@ const doLogin = (req, res) => {
                     let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
                     res.status(200).json({
                         msg: "Login successfully",
-                        account: account,
                         token: token
                     })
                     return;
