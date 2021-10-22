@@ -200,8 +200,8 @@ const userChangePreferredColor = async (req, res) => {
         }
     })
     if (!theme) {
-        res.status(404).json({
-            msg: "Error occurred: " + err
+        res.status(403).json({
+            msg: "Theme not exist"
         })
         return;
     }
@@ -278,6 +278,11 @@ const forgetPassword = async (req, res) => {
                 return;
             }
         })
+        if(!thisAccount){
+            res.status(403).json({
+                msg: "Non existent UserId"
+            })
+        }
         let sqCode = thisAccount.securityQuestion;
         let question = SecurityQuestion.findOne({ Code: sqCode }, (err) => {
             res.status(400).json({
@@ -344,16 +349,17 @@ const changePassword = async (req, res) => {
         let thisAccount = await User.findOne({ UserID: uid, Password: encrypt(op) }, (err) => {
             if (err) {
                 res.status(400).json({
-                    msg: "Password incorrect"
+                    msg: "Error occurred: "+ err
                 })
             }
         })
 
-        // if (sa !== thisAccount.SecurityAnswer) {
-        //     res.status(403).json({
-        //         msg: "Fail to pass security question"
-        //     })
-        // } else {
+        if (!thisAccount) {
+            res.status(403).json({
+                msg: "Password incorrect"
+            })
+        }
+        //  else {
         //     User.findOneAndUpdate({ UserID: uid }, { Password: encrypt(np) }, (err) => {
         //         if (err) {
         //             res.status(400).json({
