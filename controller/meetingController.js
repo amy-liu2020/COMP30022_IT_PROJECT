@@ -1,6 +1,7 @@
 const Bin = require("../models/bin");
 const Meeting = require("../models/meeting");
 const Tag = require("../models/tag")
+const Contact = require("../models/contact");
 
 const fs = require('fs');
 const mongoose = require("mongoose")
