@@ -4,7 +4,7 @@ const userRouter = express.Router();
 
 const userController = require("../controller/userController.js");
 const {ensureAuthorized} = require("../utils/token.js");
-const {uploadFile} = require('../utils/multer.js')
+const {uploadFile, deleteMiddlePath} = require('../utils/multer.js')
 
 
 // user login
@@ -40,7 +40,7 @@ userRouter.get("/getPhoto", ensureAuthorized, (req, res) => {
 });
 
 userRouter.post("/upload", uploadFile, ensureAuthorized, (req, res) => {
-    userController.savePhoto(req, res)
+    userController.savePhoto(req, res, deleteMiddlePath);
 });
 
 userRouter.post("/changeColor", ensureAuthorized, (req, res) => {

@@ -1,6 +1,6 @@
 const express = require("express");
 const {ensureAuthorized} = require("../utils/token.js");
-const {uploadFile} = require('../utils/multer.js')
+const {uploadFile, deleteMiddlePath} = require('../utils/multer.js')
 
 const contactRouter = express.Router();
 var contactController = require("../controller/contactController");
@@ -36,8 +36,9 @@ contactRouter.get("/getPhoto/:id", (req,res) =>
 );
 
 // upload photo for a contact
-contactRouter.post("/uploadPhoto/:id", uploadFile, (req,res) => 
-    contactController.savePhoto(req,res)
+contactRouter.post("/uploadPhoto/:id", (req,res) => 
+    contactController.getPhoto(req,res,deleteMiddlePath)
+
 );
 
 contactRouter.delete("/delete/:id", ensureAuthorized, (req,res)=>{

@@ -317,7 +317,7 @@ const fuzzySearch = async (req, res) => {
 };
 
 
-const uploadAttachment = async (req, res) => {
+const uploadAttachment = async (req, res, cb) => {
     try {
         let attachment = req.body.file;
         let attachmentData = fs.readFileSync(attachment.path)
@@ -333,11 +333,14 @@ const uploadAttachment = async (req, res) => {
             }
         })
 
+        cb();
+
         res.status(200).json({
             msg: "Upload successfully"
         })
     } catch (err) {
         console.log(err)
+        cb();
         res.status(400).json({
             msg: "Error occurred: " + err
         })

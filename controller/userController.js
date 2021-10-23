@@ -392,7 +392,7 @@ const changePassword = async (req, res) => {
 
 };
 
-const savePhoto = async (req, res) => {
+const savePhoto = async (req, res, cb) => {
     try {
         let photoFile = req.body.file;
         let photoData = fs.readFileSync(photoFile.path)
@@ -407,12 +407,14 @@ const savePhoto = async (req, res) => {
                 return;
             }
         })
-
+        cb();
         res.status(200).json({
             msg: "Upload successfully"
         })
+
     } catch (err) {
         console.log(err)
+        cb();
         res.status(400).json({
             msg: "Error occurred: " + err
         })
