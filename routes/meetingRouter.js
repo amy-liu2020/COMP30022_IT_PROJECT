@@ -3,7 +3,7 @@ const {ensureAuthorized} = require("../utils/token.js");
 
 const meetingRouter = express.Router();
 var meetingController = require("../controller/meetingController");
-const {uploadFile} = require('../utils/multer.js')
+const {uploadFile, deleteMiddlePath} = require('../utils/multer.js')
 
 // get the meeting list page
 meetingRouter.get("/", ensureAuthorized, (req, res) => {
@@ -42,7 +42,7 @@ meetingRouter.get("/fuzzySearch/:keyword",ensureAuthorized, (req,res) =>
 
 // upload attachment to meeting
 meetingRouter.post("/upload", uploadFile, ensureAuthorized, (req, res) => {
-    meetingController.uploadAttachment(req, res)
+    meetingController.uploadAttachment(req, res, deleteMiddlePath)
 });
 
 // assign tag to this contact
