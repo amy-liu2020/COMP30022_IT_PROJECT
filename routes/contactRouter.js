@@ -31,20 +31,15 @@ contactRouter.post("/edit/:id", (req,res) =>
 );
 
 // get photo of contact
-contactRouter.post("/getPhoto/:id",uploadFile, (req,res) => 
+contactRouter.get("/getPhoto/:id", (req,res) => 
     contactController.getPhoto(req,res)
 );
 
 // upload photo for a contact
-contactRouter.post("/uploadPhoto/:id", (req,res) => 
-    contactController.getPhoto(req,res)
+contactRouter.post("/uploadPhoto/:id", uploadFile, (req,res) => 
+    contactController.savePhoto(req,res)
 );
 
-
-// delete single Contact
-// contactRouter.post("/delete/:id", ensureAuthorized, (req,res)=>{
-//     contactController.contactDelete(req,res)
-// })
 contactRouter.delete("/delete/:id", ensureAuthorized, (req,res)=>{
     contactController.contactDelete(req,res)
 })
