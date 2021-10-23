@@ -224,6 +224,53 @@ export async function ClearBinItem() {
 
 // contact section ------------------------------
 
+export function GetContactPhoto(id) {
+    const [photo, setPhoto] = useState(null);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    const arrayBufferToBase64 = (buffer) => {
+        var binary = '';
+        var bytes = [].slice.call(new Uint8Array(buffer));
+        bytes.forEach((b) => binary += String.fromCharCode(b));
+        return window.btoa(binary);
+    };
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/contact/getPhoto/${id}`, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                console.log(res.data);
+
+                var base64Flag = 'data:image/jpeg;base64,';
+                var imageStr = arrayBufferToBase64(res.data.photo.data);
+                res.data && setPhoto(base64Flag + imageStr);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [id]);
+
+    return { photo, loading, error };
+}
+
+export async function UploadContactPhoto(photo, id) {
+    const data = await axios
+        .post(`/api/contact/uploadPhoto/${id}`, photo)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
 export function GetOneContact(id) {
     const [contact, setContact] = useState([]);
     const [meetings, setMeetings] = useState([]);
@@ -370,6 +417,7 @@ export async function DeleteContact(id) {
         .catch((err) => errHandler(err));
     return data;
 }
+
 
 // meeting section -------------------------
 
@@ -597,7 +645,7 @@ export function uploadPhoto(formdata) {
 }
 
 export function GetPhoto() {
-    const [data, setData] = useState([]);
+    const [photo, setPhoto] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -605,7 +653,7 @@ export function GetPhoto() {
         axios
             .get(`/api/getPhoto`, { cancelToken: source.token })
             .then((res) => {
-                res.data && setData(res.data);
+                res.data && setPhoto(res.data.photo);
                 console.log(res);
             })
             .catch((err) => {
@@ -617,7 +665,7 @@ export function GetPhoto() {
         };
     }, []);
 
-    return { data, error };
+    return { photo, error };
 }
 
 export async function changeDetails(details) {
