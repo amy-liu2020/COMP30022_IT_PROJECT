@@ -9,6 +9,7 @@ import {
     GetContactsBySearch,
     GetBinItem,
     RestoreBinItem,
+    UploadContactPhoto,
 } from "../api";
 import {
     Switch,
@@ -42,6 +43,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import InputField from "../common/inputField";
+import { ContactPhoto } from "../common/avatar";
 
 const Div = styled("div")(({ theme }) => ({
     ...theme.typography.h4,
@@ -473,13 +475,7 @@ const ContactDetail = () => {
                     marginBottom="35px"
                 >
                     <Grid item xs="auto">
-                        <Avatar
-                            sx={{
-                                width: "200px",
-                                height: "200px",
-                                cursor: "pointer",
-                            }}
-                        />
+                        <ContactPhoto size="200px" id={contactId} />
                     </Grid>
                     <Grid item xs>
                         <Box
@@ -654,7 +650,7 @@ const ContactCreate = () => {
     const {
         handleSubmit,
         control,
-        formState: { isDirty },
+        formState: { isDirty},
     } = useForm({
         defaultValues: {
             FirstName: "",
@@ -687,6 +683,8 @@ const ContactCreate = () => {
         // redirect to list page
         history.push("/contact");
     };
+
+
 
     return (
         <Box
@@ -725,11 +723,11 @@ const ContactCreate = () => {
                                 flexDirection: "column",
                             }}
                         >
-                            <Box marginBottom="20px">
+                            <Box marginBottom="10px">
                                 <Controller
                                     name="FirstName"
                                     control={control}
-                                    rules={{ required: true }}
+                                    rules={{ required: "This field is required." }}
                                     render={({
                                         field,
                                         fieldState: { error },
@@ -739,6 +737,7 @@ const ContactCreate = () => {
                                             {...field}
                                             error={error}
                                             variant="standard"
+                                            helperText={error ? error.message : " "}
                                             inputProps={{
                                                 style: {
                                                     fontSize: 30,
@@ -751,7 +750,7 @@ const ContactCreate = () => {
                                 <Controller
                                     name="LastName"
                                     control={control}
-                                    rules={{ required: true }}
+                                    rules={{ required: "This field is required." }}
                                     render={({
                                         field,
                                         fieldState: { error },
@@ -761,6 +760,7 @@ const ContactCreate = () => {
                                             {...field}
                                             error={error}
                                             variant="standard"
+                                            helperText={error ? error.message : " "}
                                             inputProps={{
                                                 style: {
                                                     fontSize: 30,

@@ -4,6 +4,7 @@ import Logo from "../common/logo";
 import Setting from "../common/setting";
 import { loginUser, GetRegister, registerUser, Getprofile, uploadPhoto, GetPhoto, changeDetails, changePassword } from "../api";
 import { useState } from "react";
+import ProfilePhoto from "../common/avatar";
 
 const Reset = () => {
     let history = useHistory();
@@ -109,15 +110,13 @@ const Edit = () => {
 
 const Detail = () => {
     let history = useHistory();
-    const { data: photo } = GetPhoto();
-    const { data, loading } = Getprofile();
+    const { data, loading, error } = Getprofile();
 
     return (
         <div className="container">
             {loading ? <span>{loading}</span> : <div className="profile">
                 <div className="info">
-
-                    <div className="avatar"><img style={{ width: '100%', height: '100%' }} alt="avatar" src={photo && photo.photo && "data:;base64," + photo.photo} /></div>
+                    <ProfilePhoto size="100px"/>
                     <span>{data.UserID}</span>
                 </div>
                 <div className="label">
