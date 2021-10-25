@@ -1,24 +1,16 @@
 import {
-    GetContacts,
     GetOneContact,
     DeleteContact,
     CreateContact,
     EditContact,
-    GetContactsByTag,
+    GetContactsByUrl,
     GetBinList,
-    GetContactsBySearch,
     GetBinItem,
     RestoreBinItem,
     UploadContactPhoto,
 } from "../api";
-import {
-    Switch,
-    Route,
-    useRouteMatch,
-    useHistory,
-    useParams,
-} from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Switch, Route, useHistory, useParams } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
 import { Controller, useForm } from "react-hook-form";
@@ -30,7 +22,6 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TablePagination,
     TableCell,
     Button,
     TextField,
@@ -40,233 +31,13 @@ import {
     Avatar,
     Grid,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import InputField from "../common/inputField";
 import { ContactPhoto } from "../common/avatar";
 
-const Div = styled("div")(({ theme }) => ({
-    ...theme.typography.h4,
-    gridArea: "main",
-    padding: theme.spacing(1),
-    margin: "auto",
-}));
+import { BaseTable } from "../common/table";
 
-function BasicTable({ contacts }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    let history = useHistory();
-
-    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - contacts.length);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    return (
-        <>
-            {contacts.length ? (
-                <Box
-                    sx={{
-                        gridArea: "main",
-                    }}
-                >
-                    <TableContainer>
-                        <Table sx={{ minWidth: 400 }} aria-label="simple table">
-                            <colgroup>
-                                <col width="40%" />
-                                <col width="30%" />
-                                <col width="30%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Name
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Phone Number
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Email
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {contacts
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row._id}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/contact/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <TableCell>
-                                                {row.FirstName +
-                                                    " " +
-                                                    row.LastName}
-                                            </TableCell>
-                                            <TableCell>
-                                                {row.MobileNo}
-                                            </TableCell>
-                                            <TableCell>{row.Email}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={contacts.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
-            ) : (
-                <Div>no record found.</Div>
-            )}
-        </>
-    );
-}
-
-function BinTable({ contacts }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    let history = useHistory();
-
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    return (
-        <>
-            {contacts.length ? (
-                <Box
-                    sx={{
-                        gridArea: "main",
-                    }}
-                >
-                    <TableContainer>
-                        <Table sx={{ minWidth: 400 }}>
-                            <colgroup>
-                                <col width="50%" />
-                                <col width="50%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Name
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Delete Date
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {contacts
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row.name}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/contact/bin/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <TableCell>{row.Name}</TableCell>
-                                            <TableCell>
-                                                {row.DeleteDate.slice(0, 10)}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={contacts.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
-            ) : (
-                <Div>no record found.</Div>
-            )}
-        </>
-    );
-}
-
+// related meetings
 function RelatedMeetings({ meetings }) {
     let history = useHistory();
 
@@ -323,70 +94,78 @@ function RelatedMeetings({ meetings }) {
     );
 }
 
-// show all active contacts
-const ContactAll = () => {
-    const { contacts, loading, error } = GetContacts();
+/**
+ * Display active contacts in table.
+ */
+export const ContactTable = () => {
+    let { tagName, keyword } = useParams(); // use to filter contacts
+    const { contacts, loading, error } = GetContactsByUrl(tagName, keyword);
+
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Name",
+                accessor: (row) => row.FirstName + " " + row.LastName,
+            },
+            {
+                Header: "Phone Number",
+                accessor: "MobileNo",
+            },
+            {
+                Header: "Email",
+                accessor: "Email",
+            },
+        ],
+        []
+    );
 
     if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <p>error</p>;
     }
 
-    return <BasicTable contacts={contacts} />;
+    return <BaseTable columns={columns} data={contacts} path="/contact/" />;
 };
 
-// show contact with specific tag
-const ContactWithTag = () => {
-    let { tagName } = useParams();
-    const { contacts, loading, error } = GetContactsByTag(tagName);
-
-    if (loading) {
-        return <Loading />;
-    }
-    if (error) {
-        return <p>{error}</p>;
-    }
-
-    return <BasicTable contacts={contacts} />;
-};
-
-// show all deleted contacts
-const ContactBin = () => {
+/**
+ * Display deleted contacts in table.
+ */
+export const ContactBin = () => {
     const { data, loading, error } = GetBinList("C");
 
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Name",
+                accessor: "Name",
+            },
+            {
+                Header: "Delete Date",
+                accessor: (row) => row.DeleteDate.slice(0, 10),
+            },
+        ],
+        []
+    );
+
     if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <p>error</p>;
     }
-    return <BinTable contacts={data} />;
+
+    return <BaseTable columns={columns} data={data} path="/contact/bin/" />;
 };
 
-// show all from search keyword
-const ContactSearch = () => {
-    let { keyword } = useParams();
-    const { contacts, loading, error } = GetContactsBySearch(keyword);
-
-    if (loading) {
-        return <Loading />;
-    }
-
-    if (error) {
-        return <p>{error}</p>;
-    }
-    return <BasicTable contacts={contacts} />;
-};
-
-// show details of specific contact
+// detail
 const ContactDetail = () => {
-    let { contactId } = useParams();
+    let { id } = useParams();
     let history = useHistory();
-    const { contact, meetings, loading, error } = GetOneContact(contactId);
+    const { contact, meetings, loading, error } = GetOneContact(id);
     const {
         reset,
         control,
@@ -402,6 +181,7 @@ const ContactDetail = () => {
             defa.Tags.map((opt) => {
                 opt.value = opt.TagId;
                 opt.label = opt.TagName;
+                return opt;
             });
         }
 
@@ -416,7 +196,7 @@ const ContactDetail = () => {
             }
 
             // send data to server
-            EditContact(data, contactId).then((data) => {
+            EditContact(data, id).then((data) => {
                 if (data === undefined) {
                     alert("error");
                 } else {
@@ -432,7 +212,7 @@ const ContactDetail = () => {
 
     const onDeleteHandler = () => {
         // send request to server
-        DeleteContact(contactId).then((res) => {
+        DeleteContact(id).then((res) => {
             console.log(res);
         });
 
@@ -475,7 +255,7 @@ const ContactDetail = () => {
                     marginBottom="35px"
                 >
                     <Grid item xs="auto">
-                        <ContactPhoto size="200px" id={contactId} />
+                        <ContactPhoto size="200px" id={id} />
                     </Grid>
                     <Grid item xs>
                         <Box
@@ -857,16 +637,16 @@ const ContactCreate = () => {
     );
 };
 
-// restore deleted Contact
+// bin item
 const ContactRestore = () => {
-    let { BinId } = useParams();
+    let { id } = useParams();
     let history = useHistory();
-    const { data, loading, error } = GetBinItem(BinId);
+    const { data, loading, error } = GetBinItem(id);
     const { reset, control } = useForm();
     const inputDisable = true;
 
     const onRestoreHandler = () => {
-        RestoreBinItem(BinId).then((res) => console.log(res));
+        RestoreBinItem(id).then((res) => console.log(res));
     };
 
     const customReset = (data) => {
@@ -1076,10 +856,8 @@ const ContactRestore = () => {
     );
 };
 
-// decide which subPage will be render based on path
-export const Contact = () => {
-    let { path } = useRouteMatch();
-
+// router
+const Contact = () => {
     return (
         <Box
             sx={{
@@ -1094,26 +872,27 @@ export const Contact = () => {
             <Nav tab="contact" />
             <SideMenu tagOf="C" />
             <Switch>
-                <Route path={`${path}/create`}>
-                    <ContactCreate />
-                </Route>
-                <Route path={`${path}/bin/:BinId`}>
-                    <ContactRestore />
-                </Route>
-                <Route path={`${path}/bin`}>
+                <Route exact path={"/contact/bin"}>
                     <ContactBin />
                 </Route>
-                <Route path={`${path}/tag/:tagName`}>
-                    <ContactWithTag />
+                <Route exact path={"/contact/bin/:id"}>
+                    <ContactRestore />
                 </Route>
-                <Route path={`${path}/search/:keyword`}>
-                    <ContactSearch />
+                <Route
+                    exact
+                    path={[
+                        "/contact/search/:keyword",
+                        "/contact/tag/:tagName",
+                        "/contact/",
+                    ]}
+                >
+                    <ContactTable />
                 </Route>
-                <Route path={`${path}/:contactId`}>
+                <Route exact path={"/contact/create"}>
+                    <ContactCreate />
+                </Route>
+                <Route exact path={"/contact/:id"}>
                     <ContactDetail />
-                </Route>
-                <Route exact path={path}>
-                    <ContactAll />
                 </Route>
             </Switch>
         </Box>

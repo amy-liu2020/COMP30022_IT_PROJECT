@@ -33,7 +33,7 @@ export const SettingP = () => {
                 bgcolor: "primary.light",
             }}
         >
-            <Nav tab="contact" />
+            <Nav/>
             <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <Box sx={{ gridArea: "main" }}>
                     <Box
