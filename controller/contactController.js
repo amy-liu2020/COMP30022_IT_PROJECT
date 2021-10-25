@@ -307,7 +307,7 @@ const fuzzySearch = async (req, res) => {
     );
     res.status(200).json({
         msg: "Search contact successfully",
-        searchResult: searchResult,
+        contacts: searchResult,
     });
 };
 

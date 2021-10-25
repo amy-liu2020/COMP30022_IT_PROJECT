@@ -230,9 +230,9 @@ export function GetContactPhoto(id) {
     const [error, setError] = useState(null);
 
     const arrayBufferToBase64 = (buffer) => {
-        var binary = '';
+        var binary = "";
         var bytes = [].slice.call(new Uint8Array(buffer));
-        bytes.forEach((b) => binary += String.fromCharCode(b));
+        bytes.forEach((b) => (binary += String.fromCharCode(b)));
         return window.btoa(binary);
     };
 
@@ -246,7 +246,7 @@ export function GetContactPhoto(id) {
                 setLoading(false);
                 console.log(res.data);
 
-                var base64Flag = 'data:image/jpeg;base64,';
+                var base64Flag = "data:image/jpeg;base64,";
                 var imageStr = arrayBufferToBase64(res.data.photo.data);
                 res.data && setPhoto(base64Flag + imageStr);
             })
@@ -320,6 +320,7 @@ export function GetContacts() {
             .then((res) => {
                 setLoading(false);
                 res.data && setContacts(res.data.contacts);
+                console.log(res.data);
             })
             .catch((err) => {
                 setLoading(false);
@@ -334,15 +335,20 @@ export function GetContacts() {
     return { contacts, loading, error };
 }
 
-export function GetContactsByTag(tagName) {
+export function GetContactsByUrl(tagName, keyword) {
     const [contacts, setContacts] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const source = axios.CancelToken.source();
+        const url = tagName
+            ? `/api/contact/getByTag/${tagName}`
+            : keyword
+            ? `/api/contact/fuzzySearch/${keyword}`
+            : "/api/contact";
         axios
-            .get(`/api/contact/getByTag/${tagName}`, {
+            .get(url, {
                 cancelToken: source.token,
             })
             .then((res) => {
@@ -358,36 +364,7 @@ export function GetContactsByTag(tagName) {
         return () => {
             source.cancel();
         };
-    }, [tagName]);
-
-    return { contacts, loading, error };
-}
-
-export function GetContactsBySearch(keyword) {
-    const [contacts, setContacts] = useState([]);
-    const [loading, setLoading] = useState("loading...");
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios
-            .get(`/api/contact/fuzzySearch/${keyword}`, {
-                cancelToken: source.token,
-            })
-            .then((res) => {
-                setLoading(false);
-                res.data && setContacts(res.data.searchResult);
-                console.log(res.data);
-            })
-            .catch((err) => {
-                setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            });
-        return () => {
-            source.cancel();
-        };
-    }, [keyword]);
+    }, [tagName, keyword]);
 
     return { contacts, loading, error };
 }
@@ -417,7 +394,6 @@ export async function DeleteContact(id) {
         .catch((err) => errHandler(err));
     return data;
 }
-
 
 // meeting section -------------------------
 
