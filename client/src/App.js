@@ -9,8 +9,8 @@ import Contact from "./pages/contact";
 import Meeting from "./pages/meeting";
 import User from "./pages/user";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import axios from "axios";
-import {useState} from "react"
+import { NotFound } from "./pages/404";
+import { UnAuth } from "./pages/unAuth";
 
 const dark = createTheme({
     palette: {
@@ -25,25 +25,50 @@ const dark = createTheme({
     },
 });
 
+function PrivateRoute({ children, ...rest }) {
+    let token = localStorage.getItem("token");
+
+    return (
+        <Route
+            {...rest}
+            render={({ location }) =>
+                token ? (
+                    children
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: "/unAuth",
+                            state: { from: location },
+                        }}
+                    />
+                )
+            }
+        />
+    );
+}
+
 function App() {
     return (
         <ThemeProvider theme={dark}>
             <Router>
                 <Switch>
-                    <Route path="/contact">
+                    <PrivateRoute path="/contact">
                         <Contact />
-                    </Route>
-                    <Route path="/meeting">
+                    </PrivateRoute>
+                    <PrivateRoute path="/meeting">
                         <Meeting />
-                    </Route>
+                    </PrivateRoute>
                     <Route path="/user">
                         <User />
                     </Route>
                     <Route exact path="/">
                         <Redirect to="/user/login" />
                     </Route>
-                    <Route path="/">
-                        <p>404 not found</p>
+                    <Route exact path="/unAuth">
+                        <UnAuth/>
+                    </Route>
+                    <Route path={["/notFound", "*"]}>
+                        <NotFound />
                     </Route>
                 </Switch>
             </Router>
