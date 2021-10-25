@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { GetTags, AddTag, DeleteTag } from "../api";
@@ -18,7 +17,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 const AddTagDialog = ({ open, setOpen, tagOf }) => {
-    const [tagName, setTagName] = useState('');
+    const [tagName, setTagName] = useState("");
     const [isPending, setPending] = useState(false);
 
     const handleCreate = () => {
@@ -39,7 +38,7 @@ const AddTagDialog = ({ open, setOpen, tagOf }) => {
                 window.location.reload(); // refresh page
             }
         });
-    }
+    };
 
     const handleClose = () => {
         setOpen(false);
@@ -54,16 +53,20 @@ const AddTagDialog = ({ open, setOpen, tagOf }) => {
                 </DialogContentText>
                 <TextField
                     autoFocus
-                    label="Tag name"
+                    placeholder="Tag name"
                     type="text"
                     fullWidth
                     variant="standard"
-                    onChange={(e) => {setTagName(e.target.value)}}
+                    onChange={(e) => {
+                        setTagName(e.target.value);
+                    }}
                 />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleCreate}>{isPending ? "uploading..." : "create"}</Button>
+                <Button onClick={handleCreate}>
+                    {isPending ? "uploading..." : "create"}
+                </Button>
             </DialogActions>
         </Dialog>
     );
@@ -98,11 +101,6 @@ const SideMenu = ({ tagOf }) => {
         });
     };
 
-    // when tags is loading
-    if (loading) {
-        return <p>{loading}</p>;
-    }
-
     // error when fail to fetch tags
     if (error) {
         return <p>{error}</p>;
@@ -110,8 +108,21 @@ const SideMenu = ({ tagOf }) => {
 
     return (
         <>
-            <AddTagDialog open={showPopup} setOpen={setShowPopup} tagOf={tagOf}/>
-            <Box sx={{ gridArea: "sidebar", bgcolor: "#77CFC3", display: "flex", flexDirection: "column", rowGap: "20px", padding: "20px"}}>
+            <AddTagDialog
+                open={showPopup}
+                setOpen={setShowPopup}
+                tagOf={tagOf}
+            />
+            <Box
+                sx={{
+                    gridArea: "sidebar",
+                    bgcolor: "#77CFC3",
+                    display: "flex",
+                    flexDirection: "column",
+                    rowGap: "20px",
+                    padding: "20px",
+                }}
+            >
                 <Fab
                     variant="extended"
                     onClick={() => history.push(`/${tab}/create`)}
@@ -145,8 +156,20 @@ const SideMenu = ({ tagOf }) => {
                         alignItems: "stretch",
                     }}
                 >
-                    {pending ? (
-                        <p>updating...</p>
+                    {pending || loading ? (
+                        <Chip
+                            label="..."
+                            sx={{
+                                "&": {
+                                    textAlign: "left",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                },
+                                "&:hover": {
+                                    cursor: "pointer",
+                                },
+                            }}
+                        />
                     ) : (
                         tags.map((tag, index) => (
                             <Chip
@@ -172,7 +195,11 @@ const SideMenu = ({ tagOf }) => {
                         ))
                     )}
                 </Box>
-                <Button id="addTagButton" variant="contained" onClick={() => setShowPopup(true)}>
+                <Button
+                    id="addTagButton"
+                    variant="contained"
+                    onClick={() => setShowPopup(true)}
+                >
                     add new tag
                 </Button>
                 <Divider />
@@ -183,7 +210,7 @@ const SideMenu = ({ tagOf }) => {
                         "&": {
                             textAlign: "left",
                             display: "flex",
-                            justifyContent: "space-between"
+                            justifyContent: "space-between",
                         },
                         "&:hover": {
                             cursor: "pointer",

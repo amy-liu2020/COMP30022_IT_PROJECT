@@ -70,10 +70,9 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Upload Photo</DialogTitle>
             <DialogContent>
-                <DialogContentText>Please select a photo.</DialogContentText>
                 <Avatar
                     src={preview}
-                    sx={{ width: "200px", height: "200px" }}
+                    sx={{ width: "200px", height: "200px", margin: "15px"}}
                 />
                 <label htmlFor="contained-button-file">
                     <Input
@@ -86,7 +85,7 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
                         variant="contained"
                         component="span"
                         type="button"
-                        sx={{ width: "200px", marginTop: "10px" }}
+                        sx={{ width: "200px", marginTop: "10px", marginLeft: "15px"}}
                     >
                         select photo
                     </Button>

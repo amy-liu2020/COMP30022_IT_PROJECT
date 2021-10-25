@@ -1,22 +1,17 @@
-import { Box } from "@mui/system";
-import CircularProgress from "@mui/material/CircularProgress";
+import { CircularProgress, Backdrop } from "@mui/material";
 
 const Loading = () => {
     return (
-        <Box
+        <Backdrop
             sx={{
-                position: "absolute",
-                display: "flex",
-                width: "100vw",
-                height: "100vh",
-                bgcolor: "rgba(0, 0, 0, 0.4)",
-                justifyContent: "center",
-                alignItems: "center",
+                color: "#fff",
+                zIndex: (theme) => theme.zIndex.drawer + 1,
             }}
+            open={true}
         >
-            <CircularProgress size={180} />
-        </Box>
-    )
-}
+            <CircularProgress size={120} />
+        </Backdrop>
+    );
+};
 
 export default Loading;
