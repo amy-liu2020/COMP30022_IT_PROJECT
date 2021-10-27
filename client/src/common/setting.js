@@ -9,7 +9,8 @@ import { GetTheme } from "../api";
 
 export const SettingP = () => {
     let { userID } = useParams();
-    const [user, setUser] = useState([]);
+    const [theme, setTheme] = useState(GetTheme(userID));
+
     const {
         register,
         formState: { errors },
@@ -64,7 +65,7 @@ export const SettingP = () => {
                         >
                             <Button
                                 variant="contained"
-
+                                onClick={() => ResetTheme(userID)}
                             >
                                 cancel
                             </Button>
@@ -85,21 +86,37 @@ export const SettingP = () => {
                                 bgcolor="#2F4656"
                                 width="170px"
                                 height="325px"
+                                sx={{
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => SetTheme("dark")}
                             ></Box>
                             <Box
                                 bgcolor="#C97070"
                                 width="170px"
                                 height="325px"
+                                sx={{
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => SetTheme("red")}
                             ></Box>
                             <Box
                                 bgcolor="#63ADB8"
                                 width="170px"
                                 height="325px"
+                                sx={{
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => SetTheme("blue")}
                             ></Box>
                             <Box
                                 bgcolor="#77CFC3"
                                 width="170px"
                                 height="325px"
+                                sx={{
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => SetTheme("green")}
                             ></Box>
                         </Stack>
                         
@@ -199,25 +216,31 @@ export const SetTheme = (color) => {
 };
 
 // get theme
-const getTheme = () => {
-    if (
-        document.documentElement.style.getPropertyValue("--nav-bg-color") ===
-        "#6E7F8A"
-    ) {
-        return "dark";
-    } else if (
-        document.documentElement.style.getPropertyValue("--nav-bg-color") ===
-        "#EDCACA"
-    ) {
-        return "red";
-    } else if (
-        document.documentElement.style.getPropertyValue("--nav-bg-color") ===
-        "#D0EBEE"
-    ) {
-        return "blue";
-    } else {
-        return "green";
-    }
-};
+// const GetTheme = () => {
+//     if (
+//         document.documentElement.style.getPropertyValue("--nav-bg-color") ===
+//         "#6E7F8A"
+//     ) {
+//         return "dark";
+//     } else if (
+//         document.documentElement.style.getPropertyValue("--nav-bg-color") ===
+//         "#EDCACA"
+//     ) {
+//         return "red";
+//     } else if (
+//         document.documentElement.style.getPropertyValue("--nav-bg-color") ===
+//         "#D0EBEE"
+//     ) {
+//         return "blue";
+//     } else {
+//         return "green";
+//     }
+// };
+
+// reset theme
+const ResetTheme = (userID) => {
+    SetTheme(GetTheme(userID));
+}
+
 
 export default Setting;

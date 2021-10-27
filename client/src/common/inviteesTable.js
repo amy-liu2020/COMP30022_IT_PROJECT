@@ -21,19 +21,6 @@ const MenuProps = {
   },
 };
 
-const me = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
-
 export const InviteesTable = ({ invitees, onChange, isDisabled=false }) => {
   const { contacts, loading, error } = GetContacts();
   const [selectedValue, setSelectedValue] = useState([]);

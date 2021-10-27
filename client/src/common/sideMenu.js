@@ -196,7 +196,7 @@ const SideMenu = ({ tagOf }) => {
                     )}
                 </Box>
                 <Button
-                    id="addTagButton"
+                    // id="addTagButton"
                     variant="contained"
                     onClick={() => setShowPopup(true)}
                 >
