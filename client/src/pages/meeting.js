@@ -342,6 +342,7 @@ const MeetingDetail = () => {
     const { data, loading, error } = GetOneMeeting(id);
     const [isDisabled, setIsDisable] = useState(true);
     const [invitees, setInvitees] = useState([]);
+    const [attachments, setAttachments] = useState([]);
     const {
         reset,
         handleSubmit,
@@ -377,9 +378,11 @@ const MeetingDetail = () => {
         if (invitees) {
             data.InviteeIds = invitees;
         }
+        if (attachments) {
+            data.Attachment = attachments;
+        }
 
         // send data to server
-        data.Attachment = []; // need to be update later
         EditMeeting(data, id).then((res) => alert(res.msg));
 
         // switch to view mode
@@ -410,6 +413,12 @@ const MeetingDetail = () => {
                 defaultValue.Invitees.map(
                     (invitee) => (invitee._id = invitee.InviteeId)
                 )
+            );
+        }
+
+        if (defaultValue.attachments) {
+            setAttachments(
+                defaultValue.Attachment
             );
         }
         // reset defaultValue
@@ -540,6 +549,7 @@ const MeetingDetail = () => {
                             name="Attachment"
                             control={control}
                             disabled={isDisabled}
+                            onChange={setAttachments}
                             label="Attachment"
                             type="file"
                         />
@@ -582,6 +592,8 @@ const MeetingDetail = () => {
         </Box>
     );
 };
+
+
 
 // restore deleted meeting
 const MeetingRestore = () => {

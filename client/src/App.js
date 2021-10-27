@@ -25,6 +25,19 @@ const dark = createTheme({
     },
 });
 
+const darkorg = createTheme({
+    palette: {
+        primary: {
+            main: "#77CFC3",
+            light: "#EBF8F6",
+            dark: "#8BE8DA",
+        },
+        secondary: {
+            main: "#000000",
+        },
+    },
+});
+
 function PrivateRoute({ children, ...rest }) {
     let token = localStorage.getItem("token");
 

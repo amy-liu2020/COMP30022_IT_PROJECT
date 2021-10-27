@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import users from "../json/UserList.json";
 import { Box } from "@mui/system";
 import { Typography, Stack,Button } from "@mui/material";
+import { GetTheme } from "../api";
 
 export const SettingP = () => {
     let { userID } = useParams();
