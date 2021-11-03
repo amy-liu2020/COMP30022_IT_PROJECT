@@ -7,8 +7,8 @@ export const ErrorModal = ({error}) => {
 
     return (
         <Modal open={open} onClose={() => setOpen(false)}>
-            <CenterBox>
-                <Typography>Error</Typography>
+            <CenterBox bgcolor="white" padding="15px 30px">
+                <Typography variant="h6">Error</Typography>
                 <Typography>{error}</Typography>
             </CenterBox>
         </Modal>

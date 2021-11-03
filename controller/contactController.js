@@ -69,7 +69,8 @@ const getSingleContact = async (req, res) => {
         let cid = req.params.id;
         const contact = await Contact.findById(
             cid,
-            { IsActive: 0, AccountID: 0 },
+            "FirstName LastName MobileNo HomeNo Company Email Address JobTitle Notes DOB Relationship Tags",
+            { IsActive: true},
             (err) => {
                 if (err) {
                     res.status(400).json({
