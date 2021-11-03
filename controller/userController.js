@@ -51,8 +51,10 @@ const doLogin = (req, res) => {
                 if (account) {
                     res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
                     let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
+                    const theme = Theme.findById(account.Color).lean();
                     res.status(200).json({
                         msg: "Login successfully",
+                        color: theme,
                         token: token
                     })
                     return;
