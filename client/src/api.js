@@ -659,32 +659,3 @@ export function GetTheme() {
 
     return { data, loading, error };
 }
-<<<<<<< Updated upstream
-=======
-
-// export function GetTheme() {
-//     const [data, setData] = useState([]);
-//     const [loading, setLoading] = useState("loading...");
-//     const [error, setError] = useState(null);
-
-//     useEffect(() => {
-//         const source = axios.CancelToken.source();
-//         axios
-//             .get(`userPreferredColor`, ensureAuthoried, (req, res) => {
-//                 setLoading(false);
-//                 setData(res.data.palette);
-//                 console.log(res.data.palette);
-//             })
-//             .catch((err) => {
-//                 setLoading(false);
-//                 errHandler(err);
-//                 setError("An error occured.");
-//             });
-//         return () => {
-//             source.cancel();
-//         };
-//     });
-
-//     return { data, loading, error };
-// }
->>>>>>> Stashed changes
