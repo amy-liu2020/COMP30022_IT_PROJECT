@@ -102,9 +102,6 @@ const SideMenu = ({ tagOf }) => {
     };
 
     // error when fail to fetch tags
-    if (error) {
-        return <p>{error}</p>;
-    }
 
     return (
         <>
@@ -156,7 +153,7 @@ const SideMenu = ({ tagOf }) => {
                         alignItems: "stretch",
                     }}
                 >
-                    {pending || loading ? (
+                    {pending || loading || error ? (
                         <Chip
                             label="..."
                             sx={{

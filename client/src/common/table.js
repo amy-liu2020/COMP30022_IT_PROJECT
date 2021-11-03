@@ -12,6 +12,7 @@ import {
     TableHead,
     TableRow,
     TablePagination,
+    Typography,
 } from "@mui/material";
 
 /**
@@ -235,7 +236,16 @@ export const BaseTable = ({ columns, data, path }) => {
     };
 
     if (!rows.length) {
-        return <Box>no record(s) has been found.</Box>;
+        return (
+            <Box
+                sx={{
+                    gridArea: "main",
+                    margin: "auto"
+                }}
+            >
+                <Typography variant="h4">no record(s) has been found.</Typography>
+            </Box>
+        );
     }
 
     return (
@@ -278,14 +288,14 @@ export const BaseTable = ({ columns, data, path }) => {
                             page * rowsPerPage,
                             page * rowsPerPage + rowsPerPage
                         )
-                        .map((row, i) => {
+                        .map((row) => {
                             prepareRow(row);
                             return (
                                 <TableRow
-                                    key={i}
+                                    key={row.index}
                                     hover={true}
                                     onClick={() =>
-                                        history.push(path + data[i]._id)
+                                        history.push(path + data[row.index]._id)
                                     }
                                     {...row.getRowProps()}
                                 >

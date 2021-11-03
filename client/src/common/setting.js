@@ -2,7 +2,6 @@ import { Nav } from "./nav";
 import { Route, useRouteMatch, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import users from "../json/UserList.json";
 import { Box } from "@mui/system";
 import { Typography, Stack,Button } from "@mui/material";
 import { GetTheme } from "../api";
@@ -15,10 +14,7 @@ export const SettingP = () => {
         register,
         formState: { errors },
         handleSubmit,
-    } = useForm({
-        criteriaMode: "all",
-        defaultValues: users[userID],
-    });
+    } = useForm();
 
     const onSubmitHandler = (data) => {
         console.log(data);

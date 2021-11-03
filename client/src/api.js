@@ -13,52 +13,15 @@ axios.interceptors.request.use(
     }
 );
 
-// component for handling user login
-export async function loginUser(user) {
-    const endpoint = `/api/login`;
-
-    // POST the email and password to FoodBuddy API to
-    // authenticate user and receive the token explicitly
-    // i.e. data = token
-    user.withCredentials = true;
-    let data = await axios({
-        url: endpoint,
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: JSON.stringify(
-            {
-                userId: user.userId,
-                password: user.password,
-            },
-            { withCredentials: true } // IMPORTANT
-        ),
-    })
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
-    // put token ourselves in the local storage, we will
-    // send the token in the request header to the API server
-
-    if (data !== undefined) {
-        console.log(data);
-
-        // set token
-        localStorage.setItem("token", "Bearer " + data.token);
-
-        // create url for profile image
-        if (data.Photo) {
-            console.log(data.Photo);
-            localStorage.setItem(
-                "avatar",
-                URL.createObjectURL(new Blob(data.Photo.data))
-            );
-        }
-    }
-
+export async function LoginUser(user) {
+    const data = await axios
+        .post("/api/login", user)
+        .then((res) => {
+            localStorage.setItem("token", "Bearer " + res.data.token);
+            return "login success"
+        })
+        .catch((err) => errHandler(err));
     return data;
-    // return data;
 }
 
 export async function registerUser(user) {
@@ -197,7 +160,7 @@ export function GetBinItem(id) {
 
 export async function DeleteBinItem(id) {
     let data = await axios
-        .post(`/api/bin/delete/:id`, [])
+        .post(`/api/bin/delete/${id}`, [])
         .then((res) => res.data)
         .catch((err) => errHandler(err));
 
@@ -206,7 +169,7 @@ export async function DeleteBinItem(id) {
 
 export async function RestoreBinItem(id) {
     let data = await axios
-        .post(`/api/bin/restore/:id`, [])
+        .post(`/api/bin/restore/${id}`, [])
         .then((res) => res.data)
         .catch((err) => errHandler(err));
 
@@ -287,6 +250,7 @@ export function GetOneContact(id) {
                 setLoading(false);
                 console.log(res.data);
                 res.data && setContact(res.data.contact);
+                res.data && setMeetings(res.data.relatedMeeting);
                 setContact((values) => ({
                     ...values,
                     DOB: values.DOB && values.DOB.slice(0, 10),
@@ -539,16 +503,20 @@ function errHandler(error) {
     if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        console.log(error.response.data);
-        console.log(error.response.status);
+        if (error.response.data.msg){
+            return error.response.data.msg;
+        }else{
+            return error.response.data;
+        }
     } else if (error.request) {
         // The request was made but no response was received
         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
         // http.ClientRequest in node.js
-        console.log(error.request);
+        // console.log(error.request);
+        return "timeout";
     } else {
         // Something happened in setting up the request that triggered an Error
-        console.log("Error", error.message);
+        return error.message;
     }
 }
 
