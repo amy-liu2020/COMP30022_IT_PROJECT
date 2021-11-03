@@ -16,12 +16,13 @@ import {
     GetMeetingsBySearch,
     GetBinItem,
     RestoreBinItem,
+    GetMeetingsByUrl,
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
 import { Controller, useForm } from "react-hook-form";
 import SelectTags from "../common/tag";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { tableCellClasses } from "@mui/material/TableCell";
 import Loading from "../common/loading";
@@ -46,6 +47,10 @@ import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import InputField from "../common/inputField";
 import { InviteesTable } from "../common/inviteesTable";
+import { BaseTable } from "../common/table";
+import { ErrorModal } from "../common/errorModal";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
@@ -63,278 +68,76 @@ const Div = styled("div")(({ theme }) => ({
     gridArea: "main",
 }));
 
-function BasicTable({ meetings }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    let history = useHistory();
+/**
+ * Display active meetings in table.
+ */
+ export const MeetingTable = () => {
+    let { tagName, keyword } = useParams(); // use to filter contacts
+    const { meetings, loading, error } = GetMeetingsByUrl(tagName, keyword);
 
-    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - meetings.length);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    return (
-        <>
-            {meetings.length ? (
-                <Box
-                    sx={{
-                        gridArea: "main",
-                    }}
-                >
-                    <TableContainer>
-                        <Table sx={{ minWidth: 400 }}>
-                            <colgroup>
-                                <col width="40%" />
-                                <col width="30%" />
-                                <col width="30%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 22,
-                                        }}
-                                    >
-                                        Title
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 22,
-                                        }}
-                                    >
-                                        Location
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 22,
-                                        }}
-                                    >
-                                        Date
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {meetings
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row._id}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/meeting/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <TableCell>{row.Title}</TableCell>
-                                            <TableCell>
-                                                {row.Location}
-                                            </TableCell>
-                                            <TableCell>
-                                                {row.StartTime &&
-                                                    row.StartTime.slice(0, 10)}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <StyledTableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={meetings.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
-            ) : (
-                <Div>no record found.</Div>
-            )}
-        </>
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Title",
+                accessor: "Title",
+            },
+            {
+                Header: "Location",
+                accessor: "Location",
+            },
+            {
+                Header: "Time",
+                accessor: "Time",
+            },
+        ],
+        []
     );
-}
-
-function BinTable({ meetings }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    let history = useHistory();
-
-    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - meetings.length);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    return (
-        <>
-            {meetings.length ? (
-                <Box
-                    sx={{
-                        gridArea: "main",
-                    }}
-                >
-                    <TableContainer>
-                        <Table sx={{ minWidth: 400 }}>
-                            <colgroup>
-                                <col width="50%" />
-                                <col width="50%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Name
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Delete Date
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {meetings
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row.name}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/meeting/bin/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <TableCell>{row.Name}</TableCell>
-                                            <TableCell>
-                                                {row.DeleteDate.slice(0, 10)}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={meetings.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
-            ) : (
-                <Div>no record found.</Div>
-            )}
-        </>
-    );
-}
-
-// show all active meetings
-const MeetingAll = () => {
-    const { meetings, loading, error } = GetMeetings();
 
     if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <ErrorModal error={error} />;
     }
 
-    return <BasicTable meetings={meetings} />;
+    return <BaseTable columns={columns} data={meetings} path="/meeting/" />;
 };
 
-// show meeting with specific tag
-const MeetingWithTag = () => {
-    let { tagName } = useParams();
-    const { meetings, loading, error } = GetMeetingsWithTag(tagName);
 
-    if (loading) {
-        return <Loading />;
-    }
-
-    if (error) {
-        return <p>{error}</p>;
-    }
-
-    return <BasicTable meetings={meetings} />;
-};
-
-// show all deleted meetings
-const MeetingBin = () => {
+/**
+ * Display deleted meetings in table.
+ */
+ export const MeetingBin = () => {
     const { data, loading, error } = GetBinList("M");
 
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Title",
+                accessor: "Title",
+            },
+            {
+                Header: "Delete Date",
+                accessor: (row) => row.DeleteDate.slice(0, 10),
+            },
+        ],
+        []
+    );
+
     if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <ErrorModal error={error} />;
     }
-    return <BinTable meetings={data} />;
+
+    return <BaseTable columns={columns} data={data} path="/meeting/bin/" />;
 };
 
-// show all from search keyword
-const MeetingSearch = () => {
-    let { keyword } = useParams();
-    const { meetings, loading, error } = GetMeetingsBySearch(keyword);
 
-    if (loading) {
-        return <Loading />;
-    }
 
-    if (error) {
-        return <p>{error}</p>;
-    }
-    return <BasicTable meetings={meetings} />;
-};
 
 const MeetingDetail = () => {
     let history = useHistory();
@@ -1013,17 +816,18 @@ export const Meeting = () => {
                 <Route path={`${path}/bin`}>
                     <MeetingBin />
                 </Route>
-                <Route path={`${path}/tag/:tagName`}>
-                    <MeetingWithTag />
-                </Route>
-                <Route path={`${path}/search/:keyword`}>
-                    <MeetingSearch />
+                <Route
+                    exact
+                    path={[
+                        "/meeting/search/:keyword",
+                        "/meeting/tag/:tagName",
+                        "/meeting/",
+                    ]}
+                >
+                    <MeetingTable />
                 </Route>
                 <Route path={`${path}/:id`}>
                     <MeetingDetail />
-                </Route>
-                <Route exact path={path}>
-                    <MeetingAll />
                 </Route>
                 
             </Switch>

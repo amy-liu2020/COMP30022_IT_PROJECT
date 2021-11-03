@@ -312,7 +312,7 @@ const fuzzySearch = async (req, res) => {
     )
     res.status(200).json({
         msg: "Search meeting successfully",
-        searchResult: searchResult
+        meetings: searchResult
     });
 };
 

@@ -417,6 +417,40 @@ export function GetMeetings() {
     return { meetings, loading, error };
 }
 
+export function GetMeetingsByUrl(tagName, keyword) {
+    const [meetings, setMeetings] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        const url = tagName
+            ? `/api/meeting/getByTag/${tagName}`
+            : keyword
+            ? `/api/meeting/fuzzySearch/${keyword}`
+            : "/api/meeting";
+        axios
+            .get(url, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setMeetings(res.data.meetings);
+                console.log(res.data);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured. Please enter valid characters.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [tagName, keyword]);
+
+    return { meetings, loading, error };
+}
+
 export function GetMeetingsWithTag(tagName) {
     const [meetings, setMeetings] = useState([]);
     const [loading, setLoading] = useState("loading...");
@@ -659,3 +693,4 @@ export function GetTheme() {
 
     return { data, loading, error };
 }
+

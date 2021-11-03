@@ -2,7 +2,7 @@ import { Nav } from "./nav";
 import { Route, useRouteMatch, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Box } from "@mui/system";
+import { Box, palette } from "@mui/system";
 import { Typography, Stack, Button } from "@mui/material";
 import { GetTheme } from "../api";
 import { createTheme } from "@mui/material";
@@ -61,18 +61,20 @@ const blue = createTheme({
     },
 });
 
-export const SettingP = () => {
+export const SettingP = ({setTemp}) => {
     let { userID } = useParams();
-    localStorage.setItem("tempTheme", dark);
+
     const {
         register,
         formState: { errors },
         handleSubmit,
     } = useForm();
 
+
     const onSubmitHandler = (data) => {
         console.log(data);
     };
+
 
     
     return (
@@ -146,7 +148,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={ localStorage.setItem("tempTheme", dark) }
+                                onClick={ () => {setTemp(dark)} } 
                             ></Box>
                             <Box
                                 bgcolor="#C97070"
@@ -155,7 +157,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={ localStorage.setItem("tempTheme", red) }
+                                onClick={ () => {setTemp(red)} } 
                             ></Box>
                             <Box
                                 bgcolor="#63ADB8"
@@ -164,7 +166,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={ localStorage.setItem("tempTheme", blue) }                            ></Box>
+                                onClick={ () => {setTemp(blue)} }></Box>
                             <Box
                                 bgcolor="#77CFC3"
                                 width="170px"
@@ -172,7 +174,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={ localStorage.setItem("tempTheme", green) }                            ></Box>
+                                onClick={ () => {setTemp(green)} }></Box>
                         </Stack>
                         
                     </Box>
@@ -215,12 +217,13 @@ export const SettingP = () => {
 // render setting page
 const Setting = () => {
     let { path } = useRouteMatch();
-
+    const [temp, setTemp] = useState(green);
+    
     return (
-        <ThemeProvider theme={localStorage.getItem("tempTheme")}>
+        <ThemeProvider theme={temp}>
             <div className="two-part-layout">
                 <Route exact path={path}>
-                    <SettingP />
+                    <SettingP setTemp={setTemp}/>
                 </Route>
             </div>
         </ThemeProvider>

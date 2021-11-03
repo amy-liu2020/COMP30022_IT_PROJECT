@@ -268,7 +268,7 @@ export const BaseTable = ({ columns, data, path }) => {
                         <col width="50%" />
                     </colgroup>
                 )}
-                <TableHead>
+                <TableHead sx={{ backgroundColor: "primary.light" }}>
                     {headerGroups.map((headerGroup) => (
                         <TableRow {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map((column) => (
