@@ -30,11 +30,6 @@ const ThemeSchema = new mongoose.Schema({
                 required:true
             }
         }
-    },
-    ColorName: {
-        type:String,
-        required:true,
-        unique:true
     }
 }, { versionKey: false });
 
