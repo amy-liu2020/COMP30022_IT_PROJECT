@@ -15,6 +15,7 @@ import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { Paper } from "@mui/material";
 import { useForm } from "react-hook-form";
 import ProfilePhoto from "./avatar";
+import { palette } from "@mui/system";
 
 const Search = ({ tab }) => {
     const { register, handleSubmit } = useForm();
@@ -76,7 +77,7 @@ export const Nav = ({ tab }) => {
         <Box
             sx={{
                 gridArea: "header",
-                bgcolor: "#8BE8DA",
+                bgcolor: "primary.dark",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "flex-start",

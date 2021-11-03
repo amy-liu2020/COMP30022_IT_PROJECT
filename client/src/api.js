@@ -615,7 +615,7 @@ export function changePassword(data) {
 }
 
 // setting
-export function GetTheme(id) {
+export function GetTheme() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
@@ -623,7 +623,7 @@ export function GetTheme(id) {
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .get(`/api/meeting/${id}`, { cancelToken: source.token })
+            .get(`/api/userPreferredColor`, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
                 setData(res.data.palette);
@@ -637,7 +637,7 @@ export function GetTheme(id) {
         return () => {
             source.cancel();
         };
-    }, [id]);
+    });
 
     return { data, loading, error };
 }

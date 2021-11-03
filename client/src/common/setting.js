@@ -3,13 +3,67 @@ import { Route, useRouteMatch, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Box } from "@mui/system";
-import { Typography, Stack,Button } from "@mui/material";
+import { Typography, Stack, Button } from "@mui/material";
 import { GetTheme } from "../api";
+import { createTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/system";
+import { useEffect } from "react";
+
+const green = createTheme({
+    palette: {
+        primary: {
+            main: "#77CFC0",
+            light: "#EBF8F6",
+            dark: "#8BE8DA",
+        },
+        secondary: {
+            main: "#000000",
+        },
+    },
+});
+
+const dark = createTheme({
+    palette: {
+        primary: {
+            main: "#2F4656",
+            light: "#d3e5fa",
+            dark: "#6E7F8A",
+        },
+        secondary: {
+            main: "#000000",
+        },
+    },
+});
+
+const red = createTheme({
+    palette: {
+        primary: {
+            main: "#C97070",
+            light: "#FFF8F9",
+            dark: "#EDCACA",
+        },
+        secondary: {
+            main: "#000000",
+        },
+    },
+});
+
+const blue = createTheme({
+    palette: {
+        primary: {
+            main: "#63ADB8",
+            light: "#d4f4f8",
+            dark: "#63D5DA",
+        },
+        secondary: {
+            main: "#000000",
+        },
+    },
+});
 
 export const SettingP = () => {
     let { userID } = useParams();
-    const [theme, setTheme] = useState(GetTheme(userID));
-
+    localStorage.setItem("tempTheme", dark);
     const {
         register,
         formState: { errors },
@@ -20,6 +74,7 @@ export const SettingP = () => {
         console.log(data);
     };
 
+    
     return (
         <Box
             sx={{
@@ -61,12 +116,18 @@ export const SettingP = () => {
                         >
                             <Button
                                 variant="contained"
-                                onClick={() => ResetTheme(userID)}
+                                sx={{
+                                    color: "black"
+                                }}
+                                // onClick={() => ResetTheme()}
                             >
                                 cancel
                             </Button>
                             <Button
                                 variant="contained"
+                                sx={{
+                                    color: "black"
+                                }}
                             >
                                 save
                             </Button>
@@ -85,7 +146,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={() => SetTheme("dark")}
+                                onClick={ localStorage.setItem("tempTheme", dark) }
                             ></Box>
                             <Box
                                 bgcolor="#C97070"
@@ -94,7 +155,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={() => SetTheme("red")}
+                                onClick={ localStorage.setItem("tempTheme", red) }
                             ></Box>
                             <Box
                                 bgcolor="#63ADB8"
@@ -103,8 +164,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={() => SetTheme("blue")}
-                            ></Box>
+                                onClick={ localStorage.setItem("tempTheme", blue) }                            ></Box>
                             <Box
                                 bgcolor="#77CFC3"
                                 width="170px"
@@ -112,8 +172,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={() => SetTheme("green")}
-                            ></Box>
+                                onClick={ localStorage.setItem("tempTheme", green) }                            ></Box>
                         </Stack>
                         
                     </Box>
@@ -158,58 +217,60 @@ const Setting = () => {
     let { path } = useRouteMatch();
 
     return (
-        <div className="two-part-layout">
-            <Route exact path={path}>
-                <SettingP />
-            </Route>
-        </div>
+        <ThemeProvider theme={localStorage.getItem("tempTheme")}>
+            <div className="two-part-layout">
+                <Route exact path={path}>
+                    <SettingP />
+                </Route>
+            </div>
+        </ThemeProvider>
     );
 };
 
 // set theme
-export const SetTheme = (color) => {
-    if (color === "dark") {
-        document.documentElement.style.setProperty("--nav-bg-color", "#6E7F8A");
-        document.documentElement.style.setProperty(
-            "--sideM-bg-color",
-            "#2F4656"
-        );
-        document.documentElement.style.setProperty(
-            "--content-bg-color",
-            "#d3e5fa"
-        );
-    } else if (color === "red") {
-        document.documentElement.style.setProperty("--nav-bg-color", "#EDCACA");
-        document.documentElement.style.setProperty(
-            "--sideM-bg-color",
-            "#C97070"
-        );
-        document.documentElement.style.setProperty(
-            "--content-bg-color",
-            "#FFF8F9"
-        );
-    } else if (color === "blue") {
-        document.documentElement.style.setProperty("--nav-bg-color", "#63D5DA");
-        document.documentElement.style.setProperty(
-            "--sideM-bg-color",
-            "#63ADB8"
-        );
-        document.documentElement.style.setProperty(
-            "--content-bg-color",
-            "#d4f4f8"
-        );
-    } else {
-        document.documentElement.style.setProperty("--nav-bg-color", "#8BE8DA");
-        document.documentElement.style.setProperty(
-            "--sideM-bg-color",
-            "#77CFC3"
-        );
-        document.documentElement.style.setProperty(
-            "--content-bg-color",
-            "#EBF8F6"
-        );
-    }
-};
+// export const SetTheme = (color) => {
+//     if (color === "dark") {
+//         document.documentElement.style.setProperty("--nav-bg-color", "#6E7F8A");
+//         document.documentElement.style.setProperty(
+//             "--sideM-bg-color",
+//             "#2F4656"
+//         );
+//         document.documentElement.style.setProperty(
+//             "--content-bg-color",
+//             "#d3e5fa"
+//         );
+//     } else if (color === "red") {
+//         document.documentElement.style.setProperty("--nav-bg-color", "#EDCACA");
+//         document.documentElement.style.setProperty(
+//             "--sideM-bg-color",
+//             "#C97070"
+//         );
+//         document.documentElement.style.setProperty(
+//             "--content-bg-color",
+//             "#FFF8F9"
+//         );
+//     } else if (color === "blue") {
+//         document.documentElement.style.setProperty("--nav-bg-color", "#63D5DA");
+//         document.documentElement.style.setProperty(
+//             "--sideM-bg-color",
+//             "#63ADB8"
+//         );
+//         document.documentElement.style.setProperty(
+//             "--content-bg-color",
+//             "#d4f4f8"
+//         );
+//     } else {
+//         document.documentElement.style.setProperty("--nav-bg-color", "#8BE8DA");
+//         document.documentElement.style.setProperty(
+//             "--sideM-bg-color",
+//             "#77CFC3"
+//         );
+//         document.documentElement.style.setProperty(
+//             "--content-bg-color",
+//             "#EBF8F6"
+//         );
+//     }
+// };
 
 // get theme
 // const GetTheme = () => {
@@ -234,9 +295,9 @@ export const SetTheme = (color) => {
 // };
 
 // reset theme
-const ResetTheme = (userID) => {
-    SetTheme(GetTheme(userID));
-}
+// const ResetTheme = () => {
+//     SetTheme(GetTheme());
+// }
 
 
 export default Setting;

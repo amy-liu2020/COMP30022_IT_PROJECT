@@ -94,7 +94,7 @@ function BasicTable({ meetings }) {
                                     <TableCell
                                         sx={{
                                             backgroundColor: "primary.light",
-                                            fontSize: 18,
+                                            fontSize: 22,
                                         }}
                                     >
                                         Title
@@ -102,7 +102,7 @@ function BasicTable({ meetings }) {
                                     <TableCell
                                         sx={{
                                             backgroundColor: "primary.light",
-                                            fontSize: 18,
+                                            fontSize: 22,
                                         }}
                                     >
                                         Location
@@ -110,7 +110,7 @@ function BasicTable({ meetings }) {
                                     <TableCell
                                         sx={{
                                             backgroundColor: "primary.light",
-                                            fontSize: 18,
+                                            fontSize: 22,
                                         }}
                                     >
                                         Date
@@ -416,7 +416,7 @@ const MeetingDetail = () => {
             );
         }
 
-        if (defaultValue.attachments) {
+        if (defaultValue.Attachment) {
             setAttachments(
                 defaultValue.Attachment
             );

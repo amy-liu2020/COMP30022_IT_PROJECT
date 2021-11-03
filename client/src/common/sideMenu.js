@@ -113,7 +113,7 @@ const SideMenu = ({ tagOf }) => {
             <Box
                 sx={{
                     gridArea: "sidebar",
-                    bgcolor: "#77CFC3",
+                    bgcolor: "primary.main",
                     display: "flex",
                     flexDirection: "column",
                     rowGap: "20px",
@@ -193,9 +193,12 @@ const SideMenu = ({ tagOf }) => {
                     )}
                 </Box>
                 <Button
-                    // id="addTagButton"
+                    bgcolor="primary.main"
                     variant="contained"
                     onClick={() => setShowPopup(true)}
+                    sx={{
+                        color: "black"
+                    }}
                 >
                     add new tag
                 </Button>
