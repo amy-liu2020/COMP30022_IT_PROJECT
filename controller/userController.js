@@ -51,8 +51,10 @@ const doLogin = (req, res) => {
                 if (account) {
                     res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
                     let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
+                    const theme = Theme.findById(account.Color).lean();
                     res.status(200).json({
                         msg: "Login successfully",
+                        color: theme,
                         token: token
                     })
                     return;
@@ -147,50 +149,12 @@ const userDoRegister = async (req, res) => {
 
 }
 
-const userPreferredColor = async (req, res) => {
-    try {
-        let uid = req.token.userId
-
-        let thisAccount = await User.findOne({ UserID: uid }).lean();
-        let color = thisAccount.Color;
-        if (!color) {
-            color = "Green"
-            User.findOneAndUpdate({ UserID: uid }, { Color: color }, (err) => {
-                if (err) {
-                    res.status(400).json({
-                        msg: "Error occurred: " + err
-                    })
-                    return;
-                }
-
-            })
-        }
-        let theme = Theme.findOne({ ColorName: color }, (err) => {
-            if (err) {
-                res.status(400).json({
-                    msg: "Error occurred: " + err
-                })
-                return;
-            }
-        })
-        res.status(200).json({
-            msg: "Get preferred color successfully",
-            theme: theme
-        })
-    } catch (err) {
-        console.log(err)
-        res.status(400).json({
-            msg: "Error occurred: " + err
-        })
-    }
-};
-
 const userChangePreferredColor = async (req, res) => {
     let uid = req.token.userId
 
-    let { colorName } = req.body
+    let { colorId } = req.body
 
-    const theme = Theme.findOne({ ColorName: colorName }, (err) => {
+    const theme = Theme.findById(colorId, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
@@ -204,7 +168,7 @@ const userChangePreferredColor = async (req, res) => {
         })
         return;
     }
-    User.findOneAndUpdate({ UserID: uid }, { Color: colorName }, (err) => {
+    User.findOneAndUpdate({ UserID: uid }, { Color: colorId }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
