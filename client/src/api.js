@@ -24,29 +24,13 @@ export async function LoginUser(user) {
     return data;
 }
 
-export async function registerUser(user) {
-    // define the route which the FoodBuddy API is handling
-    // login/authentication
-    const endpoint = `/api/doRegister`;
-
-    // POST the email and password to FoodBuddy API to
-    // authenticate user and receive the token explicitly
-    // i.e. data = token
-    user.withCredentials = true;
-    let data = await axios({
-        url: endpoint,
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: JSON.stringify(
-            user,
-            { withCredentials: true } // IMPORTANT
-        ),
-    })
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
+export async function RegisterUser(user) {
+    const data = await axios
+        .post("/api/doRegister", user)
+        .then((res) => {
+            return "register success"
+        })
+        .catch((err) => errHandler(err));
     return data;
 }
 
@@ -549,7 +533,7 @@ export function Getprofile() {
     return { data, loading, error };
 }
 
-export function GetRegister(register) {
+export function GetRegister() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
@@ -560,18 +544,16 @@ export function GetRegister(register) {
             .get(`/api/register`, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
+                res.data && setData(res.data.questions);
             })
             .catch((err) => {
                 setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
+                setError(errHandler(err));
             });
         return () => {
             source.cancel();
         };
-    }, []);
+    });
 
     return { data, loading, error };
 }
