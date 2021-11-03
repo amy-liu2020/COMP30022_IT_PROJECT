@@ -39,8 +39,8 @@ const UserSchema = new mongoose.Schema({
     },
     //prefered theme colour
     Color: {
-        type: String,
-        default: "Green"
+        type: mongoose.Schema.Types.ObjectId,
+        default: "616a44b350b370d550ad657e"
     },
     Token: {
         type: String,
