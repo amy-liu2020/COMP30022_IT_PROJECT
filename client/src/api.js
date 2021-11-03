@@ -660,13 +660,11 @@ export function GetTheme() {
             .get(`/api/userPreferredColor`, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
-                setData(res.data.palette);
-                console.log(res.data.palette);
+                setData(res.data.theme);
             })
             .catch((err) => {
                 setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
+                setError(errHandler(err));
             });
         return () => {
             source.cancel();

@@ -7,7 +7,6 @@ import { Typography, Stack, Button } from "@mui/material";
 import { GetTheme } from "../api";
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
-import { useEffect } from "react";
 
 const green = createTheme({
     palette: {
