@@ -5,7 +5,7 @@ import Setting from "../common/setting";
 import {
     LoginUser,
     GetRegister,
-    registerUser,
+    RegisterUser,
     Getprofile,
     uploadPhoto,
     GetPhoto,
@@ -25,6 +25,8 @@ import {
     Typography,
     InputAdornment,
     IconButton,
+    Select,
+    MenuItem,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -241,26 +243,26 @@ const Profile = () => {
     );
 };
 
-const LoginSchema = yup.object().shape({
-    userId: yup
-        .string()
-        .ensure()
-        .required("userId is required")
-        .min(8, "userId must at least 8 characters")
-        .max(16, "userId must not exceed 16 characters"),
-    password: yup
-        .string()
-        .ensure()
-        .required("password is required")
-        .min(8, "password must at least 8 characters")
-        .max(16, "password must not exceed 16 characters"),
-});
-
 const Login = () => {
+    const Schema = yup.object().shape({
+        userId: yup
+            .string()
+            .ensure()
+            .required("userId is required")
+            .min(8, "userId must at least 8 characters")
+            .max(16, "userId must not exceed 16 characters"),
+        password: yup
+            .string()
+            .ensure()
+            .required("password is required")
+            .min(8, "password must at least 8 characters")
+            .max(16, "password must not exceed 16 characters"),
+    });
+
     let history = useHistory();
     const [showPass, setShowPass] = useState(false);
     const { control, handleSubmit } = useForm({
-        resolver: yupResolver(LoginSchema),
+        resolver: yupResolver(Schema),
         defaultValues: {
             userId: "",
             password: "",
@@ -273,10 +275,9 @@ const Login = () => {
 
     const onSubmit = (data) => {
         LoginUser(data).then((res) => {
+            alert(res);
             if (res === "login success") {
-                console.log("success");
-            } else {
-                alert(res);
+                history.push("/contact");
             }
         });
     };
@@ -285,7 +286,7 @@ const Login = () => {
         <Box bgcolor="primary.dark" width="100vw" height="100vh">
             <CenterBox
                 width="20vw"
-                height="50vh"
+                height="60vh"
                 minWidth="300px"
                 sx={{
                     display: "flex",
@@ -374,106 +375,238 @@ const Login = () => {
 };
 
 const Register = () => {
+    const Schema = yup.object().shape({
+        userId: yup
+            .string()
+            .ensure()
+            .required("userId is required")
+            .min(8, "userId must at least 8 characters")
+            .max(16, "userId must not exceed 16 characters"),
+        password: yup
+            .string()
+            .ensure()
+            .required("password is required")
+            .min(8, "password must at least 8 characters")
+            .max(16, "password must not exceed 16 characters"),
+        confirmpassword: yup
+            .string()
+            .test(
+                "passwords-match",
+                "confirm password must match password",
+                function (value) {
+                    return this.parent.password === value;
+                }
+            ),
+        username: yup
+            .string()
+            .ensure()
+            .required("username is required")
+            .min(8, "username must at least 8 characters")
+            .max(16, "username must not exceed 16 characters"),
+        securityQuestion: yup.number().required(),
+        securityAnswer: yup
+            .string()
+            .ensure()
+            .required("answer is required")
+            .max(40, "answer must not exceed 16 characters"),
+    });
+
     let history = useHistory();
-    const [username, setUsername] = useState("");
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [questionCode, setQuestionCode] = useState(0);
-    const [answer, setAnswer] = useState("");
+    const { data, loading, error } = GetRegister();
+    const [showPass0, setShowPass0] = useState(false);
+    const [showPass1, setShowPass1] = useState(false);
+    const { control, handleSubmit } = useForm({
+        resolver: yupResolver(Schema),
+        defaultValues: {
+            userId: "",
+            password: "",
+            confirmpassword: "",
+            username: "",
+            securityQuestion: 0,
+            securityAnswer: "",
+        },
+    });
 
-    let questions = [];
-    const { data } = GetRegister();
-    if (data && data.questions) {
-        questions = data.questions;
-    }
+    const showPass0Handler = () => {
+        setShowPass0(!showPass0);
+    };
 
-    const handleRegister = () => {
-        if (
-            username.length === 0 ||
-            password.length === 0 ||
-            confirmPassword.length === 0 ||
-            answer.length === 0
-        ) {
-            return;
-        }
-        if (password !== confirmPassword) {
-            return;
-        }
-        registerUser({
-            userId: username,
-            password,
-            username: name,
-            securityQuestion: questionCode,
-            securityAnswer: answer,
-        }).then((data) => {
-            if (data !== undefined) {
+    const showPass1Handler = () => {
+        setShowPass1(!showPass1);
+    };
+
+    const onSubmit = (data) => {
+        console.log(data);
+        RegisterUser(data).then((res) => {
+            alert(res);
+            if (res === "register success") {
                 history.push("/user/login");
             }
         });
     };
 
+    if (error) {
+        return <p>error</p>;
+    }
+
+    if (loading) {
+        return <p>loading</p>;
+    }
+
     return (
-        <div className="login-bg">
-            <div className="login-form">
+        <Box bgcolor="primary.dark" width="100vw" height="100vh">
+            <CenterBox
+                width="20vw"
+                height="90vh"
+                minWidth="300px"
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "stretch",
+                }}
+            >
                 <Logo />
-                <input
-                    type="text"
-                    placeholder="username"
-                    value={username}
-                    onChange={(e) => {
-                        setUsername(e.target.value);
-                    }}
+                <Controller
+                    name="userId"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                        <TextField
+                            placeholder="userId"
+                            fullWidth
+                            {...field}
+                            error={error !== undefined}
+                            helperText={error ? error.message : " "}
+                            InputProps={{ style: { backgroundColor: "white" } }}
+                        />
+                    )}
                 />
-                <input
-                    type="password"
-                    placeholder="password"
-                    value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                    }}
+                <Controller
+                    name="password"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                        <TextField
+                            placeholder="password"
+                            fullWidth
+                            {...field}
+                            error={error !== undefined}
+                            helperText={error ? error.message : " "}
+                            type={showPass0 ? "text" : "password"}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={showPass0Handler}
+                                            edge="end"
+                                        >
+                                            {showPass0 ? (
+                                                <VisibilityOff />
+                                            ) : (
+                                                <Visibility />
+                                            )}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                                style: { backgroundColor: "white" },
+                            }}
+                        />
+                    )}
                 />
-                <input
-                    type="password"
-                    placeholder="confirm password"
-                    value={confirmPassword}
-                    onChange={(e) => {
-                        setConfirmPassword(e.target.value);
-                    }}
+                <Controller
+                    name="confirmpassword"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                        <TextField
+                            placeholder="confirmpassword"
+                            fullWidth
+                            {...field}
+                            error={error !== undefined}
+                            helperText={error ? error.message : " "}
+                            type={showPass1 ? "text" : "password"}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={showPass1Handler}
+                                            edge="end"
+                                        >
+                                            {showPass1 ? (
+                                                <VisibilityOff />
+                                            ) : (
+                                                <Visibility />
+                                            )}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                                style: { backgroundColor: "white" },
+                            }}
+                        />
+                    )}
                 />
-                <input
-                    type="text"
-                    placeholder="name"
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.target.value);
-                    }}
+                <Controller
+                    name="username"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                        <TextField
+                            placeholder="username"
+                            fullWidth
+                            {...field}
+                            error={error !== undefined}
+                            helperText={error ? error.message : " "}
+                            InputProps={{ style: { backgroundColor: "white" } }}
+                        />
+                    )}
                 />
-                <select
-                    placeholder="security question"
-                    value={questionCode}
-                    onChange={(e) => {
-                        setQuestionCode(e.target.value);
-                    }}
-                >
-                    {questions.map(({ Code, Question }) => (
-                        <option value={Code}>{Question}</option>
-                    ))}
-                </select>
-                <input
-                    type="text"
-                    placeholder="answer"
-                    value={answer}
-                    onChange={(e) => {
-                        setAnswer(e.target.value);
-                    }}
+                <Controller
+                    name="securityQuestion"
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                            SelectDisplayProps={{
+                                style: { backgroundColor: "white" },
+                            }}
+                            {...field}
+                            sx={{ marginBottom: "20px" }}
+                        >
+                            {data.map((que) => (
+                                    <MenuItem key={que.Code} value={que.Code}>
+                                        {que.Question}
+                                    </MenuItem>
+                                ))}
+                        </Select>
+                    )}
                 />
-                <div className="login-buttons">
-                    <button onClick={() => history.goBack()}>cancel</button>
-                    <button onClick={handleRegister}>confirm</button>
-                </div>
-            </div>
-        </div>
+                <Controller
+                    name="securityAnswer"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                        <TextField
+                            placeholder="answer"
+                            fullWidth
+                            {...field}
+                            error={error !== undefined}
+                            helperText={error ? error.message : " "}
+                            InputProps={{ style: { backgroundColor: "white" } }}
+                        />
+                    )}
+                />
+                <Box>
+                    <Button
+                        variant="contained"
+                        sx={{ backgroundColor: "white" }}
+                        onClick={() => history.goBack()}
+                    >
+                        cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        sx={{ backgroundColor: "white", float: "right" }}
+                        onClick={handleSubmit(onSubmit)}
+                    >
+                        register
+                    </Button>
+                </Box>
+            </CenterBox>
+        </Box>
     );
 };
 
