@@ -165,7 +165,7 @@ const userPreferredColor = async (req, res) => {
 
             })
         }
-        let theme = Theme.findById(colorId, (err) => {
+        let theme = await Theme.findById(colorId, (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
