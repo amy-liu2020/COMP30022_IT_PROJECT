@@ -416,7 +416,7 @@ const MeetingDetail = () => {
             );
         }
 
-        if (defaultValue.attachments) {
+        if (defaultValue.Attachment) {
             setAttachments(
                 defaultValue.Attachment
             );

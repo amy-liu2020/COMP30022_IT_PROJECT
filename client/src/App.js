@@ -11,11 +11,12 @@ import User from "./pages/user";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NotFound } from "./pages/404";
 import { UnAuth } from "./pages/unAuth";
+import { GetTheme } from "./api";
 
 const dark = createTheme({
     palette: {
         primary: {
-            main: "#77CFC3",
+            main: "#77CFC0",
             light: "#EBF8F6",
             dark: "#8BE8DA",
         },
@@ -25,22 +26,9 @@ const dark = createTheme({
     },
 });
 
-const darkorg = createTheme({
-    palette: {
-        primary: {
-            main: "#77CFC3",
-            light: "#EBF8F6",
-            dark: "#8BE8DA",
-        },
-        secondary: {
-            main: "#000000",
-        },
-    },
-});
 
 function PrivateRoute({ children, ...rest }) {
     let token = localStorage.getItem("token");
-
     return (
         <Route
             {...rest}
@@ -61,6 +49,8 @@ function PrivateRoute({ children, ...rest }) {
 }
 
 function App() {
+    const { data, loading, error } = GetTheme();
+    const userTheme = GetUserTheme(data.palette);
     return (
         <ThemeProvider theme={dark}>
             <Router>
@@ -88,5 +78,25 @@ function App() {
         </ThemeProvider>
     );
 }
+
+const GetUserTheme = (data) => {
+    // let defa = JSON.parse(JSON.stringify(data));
+    const userTheme = createTheme({
+        palette: {
+            primary: {
+                main: data.primary.main,
+                light: data.palette.primary.light,
+                dark: data.palette.primary.dark
+            },
+            secondary: {
+                main: data.palette.secondary.main,
+                light: data.palette.secondary.light,
+                dark: data.palette.secondary.dark
+            },
+        },
+    });
+    return userTheme;
+}
+
 
 export default App;

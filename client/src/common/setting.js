@@ -3,12 +3,13 @@ import { Route, useRouteMatch, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Box } from "@mui/system";
-import { Typography, Stack,Button } from "@mui/material";
+import { Typography, Stack, Button } from "@mui/material";
 import { GetTheme } from "../api";
+import { createTheme } from "@mui/material";
 
 export const SettingP = () => {
     let { userID } = useParams();
-    const [theme, setTheme] = useState(GetTheme(userID));
+    const [theme, setTheme] = useState(GetTheme());
 
     const {
         register,
@@ -19,6 +20,58 @@ export const SettingP = () => {
     const onSubmitHandler = (data) => {
         console.log(data);
     };
+
+    const green = createTheme({
+        palette: {
+            primary: {
+                main: "#77CFC0",
+                light: "#EBF8F6",
+                dark: "#8BE8DA",
+            },
+            secondary: {
+                main: "#000000",
+            },
+        },
+    });
+
+    const dark = createTheme({
+        palette: {
+            primary: {
+                main: "#2F4656",
+                light: "#d3e5fa",
+                dark: "#6E7F8A",
+            },
+            secondary: {
+                main: "#000000",
+            },
+        },
+    });
+
+    const red = createTheme({
+        palette: {
+            primary: {
+                main: "#C97070",
+                light: "#FFF8F9",
+                dark: "#EDCACA",
+            },
+            secondary: {
+                main: "#000000",
+            },
+        },
+    });
+
+    const blue = createTheme({
+        palette: {
+            primary: {
+                main: "#63ADB8",
+                light: "#d4f4f8",
+                dark: "#63D5DA",
+            },
+            secondary: {
+                main: "#000000",
+            },
+        },
+    });
 
     return (
         <Box
@@ -85,7 +138,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={() => SetTheme("dark")}
+                                // onClick={ (theme) => themeSwitcher(dark) }
                             ></Box>
                             <Box
                                 bgcolor="#C97070"
@@ -94,7 +147,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={() => SetTheme("red")}
+                                // onClick={ (theme) => themeSwitcher(red) }
                             ></Box>
                             <Box
                                 bgcolor="#63ADB8"
@@ -103,7 +156,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={() => SetTheme("blue")}
+                                // onClick={ (theme) => themeSwitcher(blue) }
                             ></Box>
                             <Box
                                 bgcolor="#77CFC3"
@@ -112,7 +165,7 @@ export const SettingP = () => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={() => SetTheme("green")}
+                                // onClick={ (theme) => themeSwitcher(green) }
                             ></Box>
                         </Stack>
                         
@@ -234,8 +287,8 @@ export const SetTheme = (color) => {
 // };
 
 // reset theme
-const ResetTheme = (userID) => {
-    SetTheme(GetTheme(userID));
+const ResetTheme = () => {
+    SetTheme(GetTheme());
 }
 
 
