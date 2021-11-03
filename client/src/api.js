@@ -206,7 +206,7 @@ export async function DeleteBinItem(id) {
 
 export async function RestoreBinItem(id) {
     let data = await axios
-        .post(`/api/bin/restore/:id`, [])
+        .post(`/api/bin/restore/${id}`, [])
         .then((res) => res.data)
         .catch((err) => errHandler(err));
 

@@ -401,7 +401,7 @@ const ContactRestore = () => {
     });
 
     const onRestore = () => {
-        RestoreBinItem(id).then((res) => console.log(res));
+        RestoreBinItem(id).then((res) => {console.log(res); history.push("/contact")});
     };
 
     const customReset = (data) => {
@@ -431,7 +431,7 @@ const ContactRestore = () => {
 
     return (
         <ContactForm
-            viewOnly={false}
+            viewOnly={true}
             control={control}
             buttons={<Button onClick={onRestore}>restore</Button>}
         />
@@ -447,7 +447,7 @@ const ContactForm = ({ viewOnly, control, buttons, id }) => {
                 </Grid>
                 <Grid item xs={12} md={3} order={1} minWidth="200px">
                     {id ? (
-                        <ContactPhoto id={id} />
+                        <ContactPhoto id={id} size="200px"/>
                     ) : (
                         <Avatar sx={{ width: "200px", height: "200px" }} />
                     )}
