@@ -51,10 +51,8 @@ const doLogin = (req, res) => {
                 if (account) {
                     res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
                     let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
-                    const theme = Theme.findById(account.Color).lean();
                     res.status(200).json({
                         msg: "Login successfully",
-                        color: theme,
                         token: token
                     })
                     return;
@@ -148,6 +146,44 @@ const userDoRegister = async (req, res) => {
     }
 
 }
+
+const userPreferredColor = async (req, res) => {
+    try {
+        let uid = req.token.userId
+
+        let thisAccount = await User.findOne({ UserID: uid }).lean();
+        let colorId = thisAccount.Color;
+        if (!colorId) {
+            colorId = "616a44b350b370d550ad657e"
+            User.findOneAndUpdate({ UserID: uid }, { Color: colorId }, (err) => {
+                if (err) {
+                    res.status(400).json({
+                        msg: "Error occurred: " + err
+                    })
+                    return;
+                }
+
+            })
+        }
+        let theme = Theme.findById(colorId, (err) => {
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            }
+        })
+        res.status(200).json({
+            msg: "Get preferred color successfully",
+            theme: theme
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({
+            msg: "Error occurred: " + err
+        })
+    }
+};
 
 const userChangePreferredColor = async (req, res) => {
     let uid = req.token.userId
