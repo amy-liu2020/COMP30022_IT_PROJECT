@@ -7,6 +7,7 @@ import {
     GetBinList,
     GetBinItem,
     RestoreBinItem,
+    DeleteBinItem,
 } from "../api";
 import { Switch, Route, useHistory, useParams } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
@@ -402,7 +403,17 @@ const ContactRestore = () => {
     });
 
     const onRestore = () => {
-        RestoreBinItem(id).then((res) => {console.log(res); history.push("/contact")});
+        RestoreBinItem(id).then((res) => {
+            console.log(res);
+            history.push("/contact");
+        });
+    };
+
+    const onDelete = () => {
+        DeleteBinItem(id).then((res) => {
+            console.log(res);
+            history.push("/contact/bin");
+        });
     };
 
     const customReset = (data) => {
@@ -434,12 +445,17 @@ const ContactRestore = () => {
         <ContactForm
             viewOnly={true}
             control={control}
-            buttons={<Button onClick={onRestore}>restore</Button>}
+            buttons={
+                <>
+                    <Button onClick={onDelete}>delete</Button>
+                    <Button onClick={onRestore}>restore</Button>
+                </>
+            }
         />
     );
 };
 
-const ContactForm = ({ viewOnly, control, buttons, id, meetings=[]}) => {
+const ContactForm = ({ viewOnly, control, buttons, id, meetings = [] }) => {
     return (
         <Box bgcolor="primary.light" gridArea="main" padding="10px 30px">
             <Grid container columnSpacing={3}>
@@ -448,7 +464,7 @@ const ContactForm = ({ viewOnly, control, buttons, id, meetings=[]}) => {
                 </Grid>
                 <Grid item xs={12} md={3} order={1} minWidth="200px">
                     {id ? (
-                        <ContactPhoto id={id} size="200px"/>
+                        <ContactPhoto id={id} size="200px" />
                     ) : (
                         <Avatar sx={{ width: "200px", height: "200px" }} />
                     )}

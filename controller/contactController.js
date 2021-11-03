@@ -92,7 +92,6 @@ const getSingleContact = async (req, res) => {
                 }
             }
         );
-        console.log(relatedMeeting);
         res.status(200).json({
             msg: "Get single contact successfully",
             contact: contact,

@@ -197,7 +197,7 @@ export function GetBinItem(id) {
 
 export async function DeleteBinItem(id) {
     let data = await axios
-        .post(`/api/bin/delete/:id`, [])
+        .post(`/api/bin/delete/${id}`, [])
         .then((res) => res.data)
         .catch((err) => errHandler(err));
 
