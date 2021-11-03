@@ -287,6 +287,7 @@ export function GetOneContact(id) {
                 setLoading(false);
                 console.log(res.data);
                 res.data && setContact(res.data.contact);
+                res.data && setMeetings(res.data.relatedMeeting);
                 setContact((values) => ({
                     ...values,
                     DOB: values.DOB && values.DOB.slice(0, 10),

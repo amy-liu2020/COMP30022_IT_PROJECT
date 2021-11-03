@@ -81,7 +81,7 @@ const getSingleContact = async (req, res) => {
             }
         ).lean();
         const relatedMeeting = await Meeting.find(
-            { Invitees: { elemMatch: { InviteeId: cid } } },
+            { Invitees: { $elemMatch: { InviteeId: cid } } },
             "Title StartTime",
             (err) => {
                 if (err) {

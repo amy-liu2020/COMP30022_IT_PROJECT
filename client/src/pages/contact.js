@@ -319,6 +319,7 @@ const ContactDetail = () => {
             viewOnly={viewOnly}
             control={control}
             id={id}
+            meetings={meetings}
             buttons={
                 viewOnly ? (
                     <>
@@ -438,7 +439,7 @@ const ContactRestore = () => {
     );
 };
 
-const ContactForm = ({ viewOnly, control, buttons, id }) => {
+const ContactForm = ({ viewOnly, control, buttons, id, meetings=[]}) => {
     return (
         <Box bgcolor="primary.light" gridArea="main" padding="10px 30px">
             <Grid container columnSpacing={3}>
@@ -569,7 +570,7 @@ const ContactForm = ({ viewOnly, control, buttons, id }) => {
                 </Grid>
                 <Grid item sx={6} order={5}>
                     <Grid>
-                        <RelatedMeetings meetings={[]} />
+                        <RelatedMeetings meetings={meetings} />
                     </Grid>
                 </Grid>
             </Grid>
