@@ -54,7 +54,7 @@ userRouter.post("/changePassword", ensureAuthorized, (req, res) => {
 });
 
 // user forget the password and need to pass security questions
-userRouter.get("/forgetPassword", ensureAuthorized, (req, res) => {
+userRouter.post("/forgetPassword", ensureAuthorized, (req, res) => {
     userController.forgetPassword(req, res)
 });
 

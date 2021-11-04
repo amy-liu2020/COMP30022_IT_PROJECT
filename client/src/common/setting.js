@@ -7,7 +7,6 @@ import { ChangeTheme } from "../api";
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
 
-
 const green = createTheme({
     palette: {
         primary: {

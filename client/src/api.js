@@ -18,7 +18,7 @@ export async function LoginUser(user) {
         .post("/api/login", user)
         .then((res) => {
             localStorage.setItem("token", "Bearer " + res.data.token);
-            return "login success"
+            return "login success";
         })
         .catch((err) => errHandler(err));
     return data;
@@ -28,7 +28,7 @@ export async function RegisterUser(user) {
     const data = await axios
         .post("/api/doRegister", user)
         .then((res) => {
-            return "register success"
+            return "register success";
         })
         .catch((err) => errHandler(err));
     return data;
@@ -521,9 +521,9 @@ function errHandler(error) {
     if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        if (error.response.data.msg){
+        if (error.response.data.msg) {
             return error.response.data.msg;
-        }else{
+        } else {
             return error.response.data;
         }
     } else if (error.request) {
@@ -552,12 +552,10 @@ export function Getprofile() {
             .then((res) => {
                 setLoading(false);
                 res.data && setData(res.data.info);
-                console.log(res);
             })
             .catch((err) => {
                 setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
+                setError(errHandler(err));
             });
         return () => {
             source.cancel();
@@ -587,65 +585,88 @@ export function GetRegister() {
         return () => {
             source.cancel();
         };
-    });
+    },[]);
 
     return { data, loading, error };
 }
 
-export function uploadPhoto(formdata) {
-    const source = axios.CancelToken.source();
-    axios
-        .post(`/api/upload`, formdata, { cancelToken: source.token })
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => {
-            errHandler(err);
-        });
+export async function uploadPhoto(photo) {
+
+    const data = await axios
+        .post("/api/upload", photo)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
 }
 
 export function GetPhoto() {
-    const [photo, setPhoto] = useState([]);
+    const [photo, setPhoto] = useState(null);
+    const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
+
+    const arrayBufferToBase64 = (buffer) => {
+        var binary = "";
+        var bytes = [].slice.call(new Uint8Array(buffer));
+        bytes.forEach((b) => (binary += String.fromCharCode(b)));
+        return window.btoa(binary);
+    };
 
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .get(`/api/getPhoto`, { cancelToken: source.token })
+            .get(`/api/getPhoto`, {
+                cancelToken: source.token,
+            })
             .then((res) => {
-                res.data && setPhoto(res.data.photo);
-                console.log(res);
+                setLoading(false);
+                console.log(res.data);
+
+                var base64Flag = "data:image/jpeg;base64,";
+                var imageStr = arrayBufferToBase64(res.data.photo.data);
+                res.data && setPhoto(base64Flag + imageStr);
             })
             .catch((err) => {
-                errHandler(err);
-                setError("An error occured.");
+                setLoading(false);
+                setError(errHandler(err));
             });
         return () => {
             source.cancel();
         };
     }, []);
 
-    return { photo, error };
+    return { photo, loading, error };
 }
 
 export async function changeDetails(details) {
     let data = await axios
         .post(`/api/changeDetails`, details)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+export async function changePassword(pass) {
+    let data = await axios
+        .post(`/api/changePassword`, pass)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+export async function getSecurityQuestion(userid) {
+    let data = await axios
+        .post(`/api/forgetPassword`, userid)
         .then((res) => res.data)
         .catch((err) => errHandler(err));
     return data;
 }
 
-export function changePassword(data) {
-    const source = axios.CancelToken.source();
-    axios
-        .post(`/api/changePassword`, data, { cancelToken: source.token })
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => {
-            errHandler(err);
-        });
+export async function verifyForgetPass(change) {
+    let data = await axios
+        .post(`/api/doChangeForgottenPassword`, change)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
 }
 
 // setting
@@ -661,17 +682,16 @@ export function GetTheme() {
             .then((res) => {
                 setLoading(false);
                 setData(res.data.theme);
-                console.log(res);
+                console.log(res)
             })
             .catch((err) => {
                 setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            }, []);
+                setError(errHandler(err));
+            });
         return () => {
             source.cancel();
         };
-    }, []);
+    },[]);
 
     return { data, loading, error };
 }
