@@ -695,3 +695,11 @@ export function GetTheme() {
 
     return { data, loading, error };
 }
+
+export async function ChangeTheme(colorId) {
+    let data = await axios
+        .post(`/api/changeColor`, {colorId: colorId})
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
