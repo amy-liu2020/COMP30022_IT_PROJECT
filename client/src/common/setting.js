@@ -59,19 +59,19 @@ const blue = createTheme({
     },
 });
 
-export const SettingP = ({setTemp}) => {
-
+export const SettingP = ({ setTemp }) => {
     const [colorId, setColorId] = useState("");
 
     const handleSubmit = (event) => {
-        console.log(colorId);
+        event.preventDefault();
 
         // send saved theme to server
-        ChangeTheme(colorId).then((res) => alert(res.msg));
-    }
+        ChangeTheme(colorId).then((res) => {
+            alert(res.msg);
+            window.location.reload();
+        });
+    };
 
-
-    
     return (
         <Box
             sx={{
@@ -83,58 +83,68 @@ export const SettingP = ({setTemp}) => {
                 bgcolor: "primary.light",
             }}
         >
-            <Nav/>
+            <Nav />
             <form onSubmit={handleSubmit}>
                 <Box sx={{ gridArea: "main" }}>
                     <Box
                         sx={{
                             display: "flex",
                             flexDirection: "column",
-                            rowGap: "15px"
+                            rowGap: "15px",
                         }}
                     >
                         <Box
                             sx={{
-                                position: 'absolute', left: '15%', top: '23%',
-                                transform: 'translate(-50%, -50%)'
+                                position: "absolute",
+                                left: "15%",
+                                top: "23%",
+                                transform: "translate(-50%, -50%)",
                             }}
                         >
                             <Typography variant="h3">Setting</Typography>
-                            <Typography variant="h5">change colour theme</Typography>
+                            <Typography variant="h5">
+                                change colour theme
+                            </Typography>
                         </Box>
 
                         <Box
                             sx={{
                                 display: "flex",
                                 columnGap: "20px",
-                                position: 'absolute', left: '83%', top: '26%',
-                                transform: 'translate(-50%, -50%)'
+                                position: "absolute",
+                                left: "83%",
+                                top: "26%",
+                                transform: "translate(-50%, -50%)",
                             }}
                         >
                             <Button
                                 variant="contained"
                                 sx={{
-                                    color: "black"
+                                    color: "black",
                                 }}
                                 onClick={() => setTemp(undefined)}
                             >
                                 cancel
                             </Button>
                             <Button
-                                type = "submit"
+                                type="submit"
                                 variant="contained"
                                 sx={{
-                                    color: "black"
+                                    color: "black",
                                 }}
                             >
                                 save
                             </Button>
                         </Box>
 
-                        <Stack direction="row" spacing={7}
+                        <Stack
+                            direction="row"
+                            spacing={7}
                             sx={{
-                                position: 'absolute', left: '50%', top: '60%',
-                                transform: 'translate(-50%, -50%)'
+                                position: "absolute",
+                                left: "50%",
+                                top: "60%",
+                                transform: "translate(-50%, -50%)",
                             }}
                         >
                             <Box
@@ -142,39 +152,50 @@ export const SettingP = ({setTemp}) => {
                                 width="170px"
                                 height="325px"
                                 sx={{
-                                    cursor: "pointer"
+                                    cursor: "pointer",
                                 }}
-                                onClick={ () => {setTemp(dark); setColorId("6182658e1f3090371ea8a319")}}
+                                onClick={() => {
+                                    setTemp(dark);
+                                    setColorId("6182658e1f3090371ea8a319");
+                                }}
                             ></Box>
                             <Box
                                 bgcolor="#C97070"
                                 width="170px"
                                 height="325px"
                                 sx={{
-                                    cursor: "pointer"
+                                    cursor: "pointer",
                                 }}
-                                onClick={ () => {setTemp(red); setColorId("6182655c1f3090371ea8a317")} }
+                                onClick={() => {
+                                    setTemp(red);
+                                    setColorId("6182655c1f3090371ea8a317");
+                                }}
                             ></Box>
                             <Box
                                 bgcolor="#63ADB8"
                                 width="170px"
                                 height="325px"
                                 sx={{
-                                    cursor: "pointer"
+                                    cursor: "pointer",
                                 }}
-                                onClick={ () => {setTemp(blue); setColorId("618265bf1f3090371ea8a31a")} }
+                                onClick={() => {
+                                    setTemp(blue);
+                                    setColorId("618265bf1f3090371ea8a31a");
+                                }}
                             ></Box>
                             <Box
                                 bgcolor="#77CFC3"
                                 width="170px"
                                 height="325px"
                                 sx={{
-                                    cursor: "pointer"
+                                    cursor: "pointer",
                                 }}
-                                onClick={ () => {setTemp(green); setColorId("616a44b350b370d550ad657e")} }
+                                onClick={() => {
+                                    setTemp(green);
+                                    setColorId("616a44b350b370d550ad657e");
+                                }}
                             ></Box>
                         </Stack>
-                        
                     </Box>
                 </Box>
             </form>
@@ -186,17 +207,16 @@ export const SettingP = ({setTemp}) => {
 const Setting = () => {
     let { path } = useRouteMatch();
     const [temp, setTemp] = useState(undefined);
-    
+
     return (
         <ThemeProvider theme={temp}>
             <div className="two-part-layout">
                 <Route exact path={path}>
-                    <SettingP setTemp={setTemp}/>
+                    <SettingP setTemp={setTemp} />
                 </Route>
             </div>
         </ThemeProvider>
     );
 };
-
 
 export default Setting;
