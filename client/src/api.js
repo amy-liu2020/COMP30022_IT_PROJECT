@@ -645,21 +645,33 @@ export async function changeDetails(details) {
     return data;
 }
 
-export function changePassword(data) {
-    const source = axios.CancelToken.source();
-    axios
-        .post(`/api/changePassword`, data, { cancelToken: source.token })
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => {
-            errHandler(err);
-        });
+export async function changePassword(pass) {
+    let data = await axios
+        .post(`/api/changePassword`, pass)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+export async function getSecurityQuestion(userid) {
+    let data = await axios
+        .post(`/api/forgetPassword`, userid)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+export async function verifyForgetPass(change) {
+    let data = await axios
+        .post(`/api/doChangeForgottenPassword`, change)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
 }
 
 // setting
 export function GetTheme() {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -670,6 +682,7 @@ export function GetTheme() {
             .then((res) => {
                 setLoading(false);
                 setData(res.data.theme);
+                console.log(res)
             })
             .catch((err) => {
                 setLoading(false);
@@ -678,7 +691,7 @@ export function GetTheme() {
         return () => {
             source.cancel();
         };
-    });
+    },[]);
 
     return { data, loading, error };
 }

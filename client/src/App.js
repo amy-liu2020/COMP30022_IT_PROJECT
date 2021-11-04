@@ -91,7 +91,7 @@ function App() {
     const { data, loading, error } = GetTheme();
 
     return (
-        <ThemeProvider theme={data.length ? createTheme(data) : green}>
+        <ThemeProvider theme={data ? createTheme(data) : red}>
             <Router>
                 <Switch>
                     <PrivateRoute path="/contact">
