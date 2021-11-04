@@ -650,7 +650,7 @@ export function changePassword(data) {
 
 // setting
 export function GetTheme() {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
@@ -660,19 +660,26 @@ export function GetTheme() {
             .get(`/api/userPreferredColor`, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
-                setData(res.data.palette);
-                console.log(res.data.palette);
+                setData(res.data.theme);
+                console.log(res);
             })
             .catch((err) => {
                 setLoading(false);
                 errHandler(err);
                 setError("An error occured.");
-            });
+            }, []);
         return () => {
             source.cancel();
         };
-    });
+    }, []);
 
     return { data, loading, error };
 }
 
+export async function ChangeTheme(colorId) {
+    let data = await axios
+        .post(`/api/changeColor`, {colorId: colorId})
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}

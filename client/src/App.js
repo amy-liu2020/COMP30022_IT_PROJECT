@@ -89,9 +89,9 @@ function PrivateRoute({ children, ...rest }) {
 
 function App() {
     const { data, loading, error } = GetTheme();
-    const userTheme = GetUserTheme(data);
+
     return (
-        <ThemeProvider theme={red}>
+        <ThemeProvider theme={data ? createTheme(data) : green}>
             <Router>
                 <Switch>
                     <PrivateRoute path="/contact">
@@ -116,26 +116,6 @@ function App() {
             </Router>
         </ThemeProvider>
     );
-}
-
-const GetUserTheme = (data) => {
-    let defa = JSON.parse(JSON.stringify(data));
-    console.log(defa);
-    // const userTheme = createTheme({
-    //     palette: {
-    //         primary: {
-    //             main: data.primary.main,
-    //             light: data.primary.light,
-    //             dark: data.primary.dark
-    //         },
-    //         secondary: {
-    //             main: data.secondary.main,
-    //             // light: data.secondary.light,
-    //             // dark: data.secondary.dark
-    //         },
-    //     },
-    // });
-    // return userTheme;
 }
 
 

@@ -190,7 +190,7 @@ const userChangePreferredColor = async (req, res) => {
 
     let { colorId } = req.body
 
-    const theme = Theme.findById(colorId, (err) => {
+    const theme = await Theme.findById(colorId, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
@@ -204,6 +204,7 @@ const userChangePreferredColor = async (req, res) => {
         })
         return;
     }
+    console.log(colorId);
     User.findOneAndUpdate({ UserID: uid }, { Color: colorId }, (err) => {
         if (err) {
             res.status(400).json({
@@ -211,7 +212,7 @@ const userChangePreferredColor = async (req, res) => {
             })
         } else {
             res.status(200).json({
-                msg: "Change preferred color successfully"
+                msg: "Change theme successfully."
             })
         }
     })

@@ -49,8 +49,7 @@ import InputField from "../common/inputField";
 import { InviteesTable } from "../common/inviteesTable";
 import { BaseTable } from "../common/table";
 import { ErrorModal } from "../common/errorModal";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+
 
 const StyledTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
