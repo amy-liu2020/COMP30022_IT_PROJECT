@@ -7,7 +7,11 @@ import {
 } from "react-router-dom";
 import Contact from "./pages/contact";
 import Meeting from "./pages/meeting";
-import User from "./pages/user";
+import Profile from "./pages/profile";
+import Forget from "./pages/forget";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import Setting from "./pages/setting";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NotFound } from "./pages/404";
 import { UnAuth } from "./pages/unAuth";
@@ -25,46 +29,6 @@ const green = createTheme({
         },
     },
 });
-
-const dark = createTheme({
-    palette: {
-        primary: {
-            main: "#2F4656",
-            light: "#d3e5fa",
-            dark: "#6E7F8A",
-        },
-        secondary: {
-            main: "#000000",
-        },
-    },
-});
-
-const red = createTheme({
-    palette: {
-        primary: {
-            main: "#C97070",
-            light: "#FFF8F9",
-            dark: "#EDCACA",
-        },
-        secondary: {
-            main: "#000000",
-        },
-    },
-});
-
-const blue = createTheme({
-    palette: {
-        primary: {
-            main: "#63ADB8",
-            light: "#d4f4f8",
-            dark: "#63D5DA",
-        },
-        secondary: {
-            main: "#000000",
-        },
-    },
-});
-
 
 function PrivateRoute({ children, ...rest }) {
     let token = localStorage.getItem("token");
@@ -100,14 +64,26 @@ function App() {
                     <PrivateRoute path="/meeting">
                         <Meeting />
                     </PrivateRoute>
-                    <Route path="/user">
-                        <User />
+                    <PrivateRoute path="/profile">
+                        <Profile />
+                    </PrivateRoute>
+                    <PrivateRoute path="/setting">
+                        <Setting />
+                    </PrivateRoute>
+                    <Route exact path="/login">
+                        <Login />
+                    </Route>
+                    <Route exact path="/register">
+                        <Register />
+                    </Route>
+                    <Route exact path="/forget">
+                        <Forget />
                     </Route>
                     <Route exact path="/">
-                        <Redirect to="/user/login" />
+                        <Redirect to="/login" />
                     </Route>
                     <Route exact path="/unAuth">
-                        <UnAuth/>
+                        <UnAuth />
                     </Route>
                     <Route path={["/notFound", "*"]}>
                         <NotFound />
@@ -117,6 +93,5 @@ function App() {
         </ThemeProvider>
     );
 }
-
 
 export default App;

@@ -54,12 +54,12 @@ userRouter.post("/changePassword", ensureAuthorized, (req, res) => {
 });
 
 // user forget the password and need to pass security questions
-userRouter.post("/forgetPassword", ensureAuthorized, (req, res) => {
+userRouter.post("/forgetPassword", (req, res) => {
     userController.forgetPassword(req, res)
 });
 
 // user reset password in the case they forgot
-userRouter.post("/doChangeForgottenPassword", ensureAuthorized, (req, res) => {
+userRouter.post("/doChangeForgottenPassword", (req, res) => {
     userController.changeForgottenPassword(req, res)
 });
 

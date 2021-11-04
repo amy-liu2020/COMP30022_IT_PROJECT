@@ -21,18 +21,9 @@ import { Nav } from "../common/nav";
 import { Controller, useForm } from "react-hook-form";
 import SelectTags from "../common/tag";
 import { useState, useEffect, useMemo } from "react";
-
-import { tableCellClasses } from "@mui/material/TableCell";
 import Loading from "../common/loading";
 
 import {
-    Table,
-    TableBody,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
-    TableCell,
     Button,
     TextField,
     Divider,
@@ -41,29 +32,11 @@ import {
     Grid,
     Input,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import InputField from "../common/inputField";
 import { InviteesTable } from "../common/inviteesTable";
 import { BaseTable } from "../common/table";
 import { ErrorModal } from "../common/errorModal";
-
-
-const StyledTableCell = styled(TableCell)(() => ({
-    [`&.${tableCellClasses.head}`]: {
-        fontSize: 18,
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
-}));
-
-const Div = styled("div")(({ theme }) => ({
-    ...theme.typography.h4,
-    padding: theme.spacing(1),
-    margin: "auto",
-    gridArea: "main",
-}));
 
 /**
  * Display active meetings in table.

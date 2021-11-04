@@ -14,7 +14,7 @@ import MenuList from "@mui/material/MenuList";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { Paper } from "@mui/material";
 import { useForm } from "react-hook-form";
-import ProfilePhoto from "./avatar";
+import { ProfilePhoto } from "./avatar";
 
 const Search = ({ tab }) => {
     const { register, handleSubmit } = useForm();
@@ -82,7 +82,7 @@ export const Nav = ({ tab }) => {
                 justifyContent: "flex-start",
                 alignItems: "center",
                 columnGap: "20px",
-                paddingLeft: "40px",
+                paddingLeft: "20px",
             }}
         >
             <Logo width={70} />
@@ -102,7 +102,7 @@ export const Nav = ({ tab }) => {
             </Button>
             {tab && <Search tab={tab} />}
             <IconButton
-                onClick={() => history.push("/user/setting")}
+                onClick={() => history.push("/setting")}
                 sx={{ marginLeft: "auto" }}
             >
                 <SettingsIcon color="secondary" sx={{ fontSize: 30 }} />
@@ -122,7 +122,7 @@ export const Nav = ({ tab }) => {
                     >
                         <MenuList autoFocusItem={open}>
                             <MenuItem
-                                onClick={() => history.push("/user/profile")}
+                                onClick={() => history.push("/profile")}
                             >
                                 Profile
                             </MenuItem>
@@ -133,6 +133,23 @@ export const Nav = ({ tab }) => {
                     </ClickAwayListener>
                 </Paper>
             </Popper>
+        </Box>
+    );
+};
+
+// header that just has logo
+export const NavJustLogo = () => {
+    return (
+        <Box
+            sx={{
+                gridArea: "header",
+                bgcolor: "primary.main",
+                display: "flex",
+                alignItems: "center",
+                paddingLeft: "20px",
+            }}
+        >
+            <Logo width={70} />
         </Box>
     );
 };
