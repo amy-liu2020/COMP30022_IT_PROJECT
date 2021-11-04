@@ -52,7 +52,7 @@ function PrivateRoute({ children, ...rest }) {
 }
 
 function App() {
-    const { data, loading, error } = GetTheme();
+    const { data } = GetTheme();
 
     return (
         <ThemeProvider theme={data ? createTheme(data) : green}>
