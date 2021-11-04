@@ -320,11 +320,12 @@ const fuzzySearch = async (req, res) => {
 const uploadAttachment = async (req, res, cb) => {
     try {
         let attachment = req.body.file;
+        let attachmentName = req.body.filename
         let attachmentData = fs.readFileSync(attachment.path)
 
 
         let mid = req.params.id
-        Meeting.findByIdAndUpdate(mid, { Attachment: attachmentData }, (err) => {
+        Meeting.findByIdAndUpdate(mid, { Attachment : {Data: attachmentData, Name: attachmentName}}, (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
