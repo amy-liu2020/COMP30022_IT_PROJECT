@@ -37,6 +37,7 @@ import { BaseTable } from "../common/table";
 import { ErrorModal } from "../common/errorModal";
 
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FormRecord } from "../common/inputField";
 import * as yup from "yup";
 
 // related meetings
@@ -197,49 +198,6 @@ const ContactSchema = yup.object().shape({
         .max(140, "Notes must not exceed 140 characters"),
     Tags: yup.array().ensure(),
 });
-
-const FormRecord = ({
-    control,
-    name,
-    label,
-    type,
-    viewOnly,
-    labelWidth = "230px",
-}) => {
-    return (
-        <Controller
-            control={control}
-            name={name}
-            render={({ field, fieldState: { error } }) => (
-                <Box
-                    minWidth="350px"
-                    maxWidth="400px"
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "stretch",
-                    }}
-                >
-                    <Typography variant="h6" sx={{ width: labelWidth }}>
-                        {label ? label : name}
-                    </Typography>
-                    <TextField
-                        fullWidth
-                        hiddenLabel={true}
-                        variant="standard"
-                        error={error !== undefined}
-                        helperText={error ? error.message : " "}
-                        InputProps={{
-                            readOnly: viewOnly,
-                        }}
-                        type={type}
-                        {...field}
-                    />
-                </Box>
-            )}
-        />
-    );
-};
 
 const ContactDetail = () => {
     let { id } = useParams();

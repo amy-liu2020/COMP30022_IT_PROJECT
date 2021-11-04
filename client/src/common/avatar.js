@@ -1,26 +1,59 @@
-import { GetContactPhoto, GetPhoto } from "../api";
-import { Avatar, IconButton, Input } from "@mui/material";
-import { useState } from "react";
-import { UploadContactPhoto } from "../api";
-import { useEffect } from "react";
+import {
+    GetContactPhoto,
+    GetPhoto,
+    UploadContactPhoto,
+    uploadPhoto,
+} from "../api";
+import {
+    Avatar,
+    IconButton,
+    Input,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from "@mui/material";
+import { useState, useEffect } from "react";
 
-import AddIcon from "@mui/icons-material/Add";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+const ProfilePhoto = ({ size, editable }) => {
+    const { photo, loading, error } = GetPhoto();
+    const [showDialog, setShowDialog] = useState(false);
 
-const ProfilePhoto = ({ size }) => {
-    const { photo } = GetPhoto();
+    const editPhotoHandler = () => {
+        setShowDialog(true);
+    };
+
+    if (editable) {
+        return (
+            <>
+                {showDialog && (
+                    <UploadPhotoDialog
+                        open={showDialog}
+                        setOpen={setShowDialog}
+                    />
+                )}
+                <IconButton
+                    type="button"
+                    onClick={editPhotoHandler}
+                    sx={{
+                        width: size,
+                        height: size,
+                        alignSelf: "center",
+                    }}
+                >
+                    <Avatar
+                        src={photo}
+                        sx={{ width: "100%", height: "100%", bgcolor: "#fff" }}
+                    />
+                </IconButton>
+            </>
+        );
+    }
 
     return (
         <Avatar
-            alt="avatar"
-            src={photo && "data:;base64," + photo}
+            src={photo}
             sx={{ width: size, height: size, bgcolor: "#fff" }}
         />
     );
@@ -38,11 +71,19 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
 
         // send to server
         setPending(true);
-        UploadContactPhoto(formData, id).then((res) => {
-            console.log(res);
-            setPending(false);
-            setOpen(false);
-        });
+        if (id) {
+            UploadContactPhoto(formData, id).then((res) => {
+                console.log(res);
+                setPending(false);
+                setOpen(false);
+            });
+        } else {
+            uploadPhoto(formData).then((res) => {
+                console.log(res);
+                setPending(false);
+                setOpen(false);
+            });
+        }
 
         // refresh page
         window.location.reload();
@@ -72,7 +113,7 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
             <DialogContent>
                 <Avatar
                     src={preview}
-                    sx={{ width: "200px", height: "200px", margin: "15px"}}
+                    sx={{ width: "200px", height: "200px", margin: "15px" }}
                 />
                 <label htmlFor="contained-button-file">
                     <Input
@@ -85,7 +126,11 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
                         variant="contained"
                         component="span"
                         type="button"
-                        sx={{ width: "200px", marginTop: "10px", marginLeft: "15px"}}
+                        sx={{
+                            width: "200px",
+                            marginTop: "10px",
+                            marginLeft: "15px",
+                        }}
                     >
                         select photo
                     </Button>
@@ -94,7 +139,7 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
                 <Button onClick={handleCreate}>
-                    {pending ? "uploading..." : "create"}
+                    {pending ? "uploading..." : "upload"}
                 </Button>
             </DialogActions>
         </Dialog>
@@ -120,10 +165,7 @@ export const ContactPhoto = ({ size, id }) => {
             )}
 
             <IconButton type="button" onClick={editPhotoHandler}>
-                <Avatar
-                    src={photo}
-                    sx={{ width: size, height: size }}
-                />
+                <Avatar src={photo} sx={{ width: size, height: size }} />
             </IconButton>
         </>
     );

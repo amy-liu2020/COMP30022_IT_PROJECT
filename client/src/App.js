@@ -12,7 +12,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NotFound } from "./pages/404";
 import { UnAuth } from "./pages/unAuth";
 import { GetTheme } from "./api";
-import { useState, useEffect} from "react";
 
 const green = createTheme({
     palette: {
@@ -91,16 +90,8 @@ function PrivateRoute({ children, ...rest }) {
 function App() {
     const { data, loading, error } = GetTheme();
 
-    if (error) {
-        return <p>error</p>
-    }
-
-    if (loading) {
-        return <p>loading</p>
-    }
-
     return (
-        <ThemeProvider theme={createTheme(data)}>
+        <ThemeProvider theme={data.length ? createTheme(data) : green}>
             <Router>
                 <Switch>
                     <PrivateRoute path="/contact">

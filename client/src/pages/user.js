@@ -12,12 +12,12 @@ import {
     changeDetails,
     changePassword,
 } from "../api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProfilePhoto from "../common/avatar";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CenterBox } from "../common/layout";
+import { CenterBox, TwoPartBox } from "../common/layout";
 import {
     Box,
     Button,
@@ -29,6 +29,10 @@ import {
     MenuItem,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { FormRecord } from "../common/inputField";
+import { Nav } from "../common/nav";
+import Loading from "../common/loading";
+import { ErrorModal } from "../common/errorModal";
 
 const Reset = () => {
     let history = useHistory();
@@ -96,129 +100,123 @@ const Reset = () => {
     );
 };
 
-const Edit = () => {
-    let history = useHistory();
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const { data: photo } = GetPhoto();
-    const { data, loading } = Getprofile();
-
-    const handleSave = async () => {
-        changeDetails({ phoneNumber: phone, Email: email });
-        history.push(`/user/profile`);
-    };
-
-    const handleSubmit = () => {
-        const file = document.getElementById("photoupload").files[0];
-        if (file.size > 0) {
-            const formData = new FormData();
-            formData.append("file", file);
-            uploadPhoto(formData);
-        }
-    };
-
-    return (
-        <div className="container">
-            {loading ? (
-                <span>{loading}</span>
-            ) : (
-                <div className="profile">
-                    <div className="info">
-                        <div className="avatar">
-                            <img
-                                style={{ width: "100%", height: "100%" }}
-                                alt="avatar"
-                                src={
-                                    photo &&
-                                    photo.photo &&
-                                    "data:;base64," + photo.photo
-                                }
-                            />
-                        </div>
-                        <label>
-                            photo:{" "}
-                            <input id="photoupload" type="file" name="photo" />
-                            <button onClick={handleSubmit}>submit</button>
-                        </label>
-                        <div className="avatar"></div>
-                        <span>{data.UserID}</span>
-                    </div>
-                    <div className="label">
-                        <label>USERNAME</label>
-                        <span>{data.UserName}</span>
-                    </div>
-                    <div className="label">
-                        <label>EMAIL</label>
-                        <input
-                            type="text"
-                            placeholder=""
-                            value={email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="label">
-                        <label>PHONE NO</label>
-                        <input
-                            type="text"
-                            placeholder=""
-                            value={phone}
-                            onChange={(e) => {
-                                setPhone(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="buttons">
-                        <button onClick={handleSave}>Save</button>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
 const Detail = () => {
+    const phoneReg =
+        /^((\+61\s?)?(\((0|02|03|04|07|08)\))?)?\s?\d{1,4}\s?\d{1,4}\s?\d{0,4}$/;
+
+    const Schema = yup.object().shape({
+        UserName: yup
+            .string()
+            .ensure()
+            .required("Username is required")
+            .min(8, "Username must at least 8 characters")
+            .max(16, "Username must not exceed 16 characters"),
+        Email: yup.string().ensure().email("Invalid email format"),
+        PhoneNumber: yup.string().ensure().matches(phoneReg, {
+            message: "Invalid phone number format",
+            excludeEmptyString: true,
+        }),
+    });
+
     let history = useHistory();
-    const { data, loading, error } = Getprofile();
+    const { reset, control, handleSubmit } = useForm({
+        resolver: yupResolver(Schema),
+        defaultValues: {
+            UserID: "",
+            UserName: "",
+            Email: "",
+            PhoneNumber: "",
+        },
+    });
+    const [viewOnly, setViewOnly] = useState(true);
+    const {data, loading, error} = Getprofile();
+
+    const onEdit = () => {
+        setViewOnly(false);
+    };
+
+    const onCancel = () => {
+        setViewOnly(true);
+    };
+
+    const onSubmit = (data) => {
+
+        changeDetails(data).then(res => {
+            alert(res)
+            if (res === "Edit user information successfully") {
+                setViewOnly(true);
+            }
+        })
+    };
+
+    useEffect(() => {
+        reset(data);
+    }, [data])
+
+    if (loading) {
+        return <Loading />
+    }
+
+    if (error) {
+        return <ErrorModal error={error}/>
+    }
 
     return (
-        <div className="container">
-            {loading ? (
-                <span>{loading}</span>
+        <CenterBox
+            width="20vw"
+            height="60vh"
+            minWidth="400px"
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "stretch",
+            }}
+        >
+            <ProfilePhoto size="180px" editable={true}/> 
+            <p> </p>
+            <FormRecord name="UserID" viewOnly={true} control={control} />
+            <FormRecord name="UserName" viewOnly={viewOnly} control={control} />
+            <FormRecord
+                name="Email"
+                viewOnly={viewOnly}
+                control={control}
+                type="email"
+            />
+            <FormRecord
+                name="PhoneNumber"
+                label="Phone Number"
+                viewOnly={viewOnly}
+                control={control}
+                type="tel"
+            />
+            {viewOnly ? (
+                <Box>
+                    <Button variant="contained" onClick={onEdit}>
+                        edit info
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => history.push("/user/profile/reset")}
+                        sx={{ float: "right" }}
+                    >
+                        change password
+                    </Button>
+                </Box>
             ) : (
-                <div className="profile">
-                    <div className="info">
-                        <ProfilePhoto size="100px" />
-                        <span>{data.UserID}</span>
-                    </div>
-                    <div className="label">
-                        <label>USERNAME</label>
-                        <span>{data.UserName}</span>
-                    </div>
-                    <div className="label">
-                        <label>EMAIL</label>
-                        <span>{data.Email}</span>
-                    </div>
-                    <div className="label">
-                        <label>PHONE NO</label>
-                        <span>{data.PhoneNumber}</span>
-                    </div>
-                    <div className="buttons">
-                        <button
-                            onClick={() => history.push(`/user/profile/edit`)}
-                        >
-                            Edit my info
-                        </button>
-                        <button
-                            onClick={() => history.push(`/user/profile/reset`)}
-                        >
-                            Change Password
-                        </button>
-                    </div>
-                </div>
+                <Box>
+                    <Button variant="contained" onClick={onCancel}>
+                        cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={handleSubmit(onSubmit)}
+                        sx={{ float: "right" }}
+                    >
+                        save
+                    </Button>
+                </Box>
             )}
-        </div>
+        </CenterBox>
     );
 };
 
@@ -226,20 +224,17 @@ const Profile = () => {
     let { path } = useRouteMatch();
 
     return (
-        <div>
-            <NavigationBar />
+        <TwoPartBox>
+            <Nav />
             <Switch>
                 <Route path={[`${path}/reset`]}>
                     <Reset />
-                </Route>
-                <Route path={`${path}/edit`}>
-                    <Edit />
                 </Route>
                 <Route exact path={path}>
                     <Detail />
                 </Route>
             </Switch>
-        </div>
+        </TwoPartBox>
     );
 };
 
@@ -403,7 +398,9 @@ const Register = () => {
             .required("username is required")
             .min(8, "username must at least 8 characters")
             .max(16, "username must not exceed 16 characters"),
-        securityQuestion: yup.number().required(),
+        securityQuestion: yup
+            .number()
+            .required("need to select one security question"),
         securityAnswer: yup
             .string()
             .ensure()
@@ -422,7 +419,7 @@ const Register = () => {
             password: "",
             confirmpassword: "",
             username: "",
-            securityQuestion: 0,
+            securityQuestion: "0",
             securityAnswer: "",
         },
     });
@@ -559,20 +556,22 @@ const Register = () => {
                 <Controller
                     name="securityQuestion"
                     control={control}
-                    render={({ field }) => (
-                        <Select
-                            SelectDisplayProps={{
-                                style: { backgroundColor: "white" },
-                            }}
-                            {...field}
-                            sx={{ marginBottom: "20px" }}
-                        >
-                            {data.map((que) => (
+                    render={({ field, fieldState: { error } }) => (
+                        <>
+                            <Select
+                                SelectDisplayProps={{
+                                    style: { backgroundColor: "white" },
+                                }}
+                                {...field}
+                            >
+                                {data.map((que) => (
                                     <MenuItem key={que.Code} value={que.Code}>
                                         {que.Question}
                                     </MenuItem>
                                 ))}
-                        </Select>
+                            </Select>
+                            <p>{error ? error.message : " "}</p>
+                        </>
                     )}
                 />
                 <Controller

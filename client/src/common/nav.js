@@ -1,6 +1,6 @@
 // navigation bar which contains logo, tabs, search bar, setting and profile photo
 import Logo from "./logo";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -15,7 +15,6 @@ import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { Paper } from "@mui/material";
 import { useForm } from "react-hook-form";
 import ProfilePhoto from "./avatar";
-import { palette } from "@mui/system";
 
 const Search = ({ tab }) => {
     const { register, handleSubmit } = useForm();

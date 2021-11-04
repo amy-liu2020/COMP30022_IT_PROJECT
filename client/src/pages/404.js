@@ -6,7 +6,7 @@ import Logo from "../common/logo";
 export const NotFound = () => {
     return (
         <TwoPartBox>
-            <Box sx={{ gridArea: "header", bgcolor: "primary.main", padding: "10px 20px"}}>
+            <Box sx={{ gridArea: "header", bgcolor: "primary.main", display: "flex", alignItems: "center", paddingLeft: "20px"}}>
                 <Logo width={70}/>
             </Box>
             <CenterBox>

@@ -255,7 +255,7 @@ const getPhoto = async (req, res) => {
 
         res.status(200).json({
             msg: "Get user photo successfully",
-            photo: thisAccount.Photo.toString('base64')
+            photo: thisAccount.Photo
         })
 
     } catch (err) {
@@ -424,8 +424,8 @@ const savePhoto = async (req, res, cb) => {
 
 const changeDetails = (req, res) => {
     let uid = req.token.userId
-    let { phoneNumber, Email } = req.body
-    User.findOneAndUpdate({ UserID: uid }, { PhoneNumber: phoneNumber, Email: Email }, (err) => {
+    let { PhoneNumber, Email, UserName } = req.body
+    User.findOneAndUpdate({ UserID: uid }, { PhoneNumber: PhoneNumber, Email: Email, UserName: UserName }, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err
