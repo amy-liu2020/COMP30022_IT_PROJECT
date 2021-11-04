@@ -89,7 +89,7 @@ function PrivateRoute({ children, ...rest }) {
 
 function App() {
     const { data, loading, error } = GetTheme();
-    // const userTheme = GetUserTheme(data.palette);
+    const userTheme = GetUserTheme(data);
     return (
         <ThemeProvider theme={red}>
             <Router>
@@ -118,24 +118,25 @@ function App() {
     );
 }
 
-// const GetUserTheme = (data) => {
-//     // let defa = JSON.parse(JSON.stringify(data));
-//     const userTheme = createTheme({
-//         palette: {
-//             primary: {
-//                 main: data.primary.main,
-//                 light: data.palette.primary.light,
-//                 dark: data.palette.primary.dark
-//             },
-//             secondary: {
-//                 main: data.palette.secondary.main,
-//                 light: data.palette.secondary.light,
-//                 dark: data.palette.secondary.dark
-//             },
-//         },
-//     });
-//     return userTheme;
-// }
+const GetUserTheme = (data) => {
+    let defa = JSON.parse(JSON.stringify(data));
+    console.log(defa);
+    // const userTheme = createTheme({
+    //     palette: {
+    //         primary: {
+    //             main: data.primary.main,
+    //             light: data.primary.light,
+    //             dark: data.primary.dark
+    //         },
+    //         secondary: {
+    //             main: data.secondary.main,
+    //             // light: data.secondary.light,
+    //             // dark: data.secondary.dark
+    //         },
+    //     },
+    // });
+    // return userTheme;
+}
 
 
 export default App;
