@@ -16,49 +16,7 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 
-const ProfilePhoto = ({ size, editable }) => {
-    const { photo, loading, error } = GetPhoto();
-    const [showDialog, setShowDialog] = useState(false);
-
-    const editPhotoHandler = () => {
-        setShowDialog(true);
-    };
-
-    if (editable) {
-        return (
-            <>
-                {showDialog && (
-                    <UploadPhotoDialog
-                        open={showDialog}
-                        setOpen={setShowDialog}
-                    />
-                )}
-                <IconButton
-                    type="button"
-                    onClick={editPhotoHandler}
-                    sx={{
-                        width: size,
-                        height: size,
-                        alignSelf: "center",
-                    }}
-                >
-                    <Avatar
-                        src={photo}
-                        sx={{ width: "100%", height: "100%", bgcolor: "#fff" }}
-                    />
-                </IconButton>
-            </>
-        );
-    }
-
-    return (
-        <Avatar
-            src={photo}
-            sx={{ width: size, height: size, bgcolor: "#fff" }}
-        />
-    );
-};
-
+// dialog for upload photo
 const UploadPhotoDialog = ({ open, setOpen, id }) => {
     const [photo, setPhoto] = useState(null);
     const [pending, setPending] = useState(false);
@@ -146,6 +104,51 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
     );
 };
 
+// avatar for profile
+export const ProfilePhoto = ({ size, editable }) => {
+    const { photo, loading, error } = GetPhoto();
+    const [showDialog, setShowDialog] = useState(false);
+
+    const editPhotoHandler = () => {
+        setShowDialog(true);
+    };
+
+    if (editable) {
+        return (
+            <>
+                {showDialog && (
+                    <UploadPhotoDialog
+                        open={showDialog}
+                        setOpen={setShowDialog}
+                    />
+                )}
+                <IconButton
+                    type="button"
+                    onClick={editPhotoHandler}
+                    sx={{
+                        width: size,
+                        height: size,
+                        alignSelf: "center",
+                    }}
+                >
+                    <Avatar
+                        src={photo}
+                        sx={{ width: "100%", height: "100%", bgcolor: "#fff" }}
+                    />
+                </IconButton>
+            </>
+        );
+    }
+
+    return (
+        <Avatar
+            src={photo}
+            sx={{ width: size, height: size, bgcolor: "#fff" }}
+        />
+    );
+};
+
+// avatar for contact
 export const ContactPhoto = ({ size, id }) => {
     const { photo } = GetContactPhoto(id);
     const [showDialog, setShowDialog] = useState(false);
@@ -170,5 +173,3 @@ export const ContactPhoto = ({ size, id }) => {
         </>
     );
 };
-
-export default ProfilePhoto;

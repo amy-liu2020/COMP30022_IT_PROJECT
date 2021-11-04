@@ -1,4 +1,4 @@
-import { Nav } from "./nav";
+import { Nav } from "../common/nav";
 import { Route, useRouteMatch } from "react-router-dom";
 import { useState } from "react";
 import { Box } from "@mui/system";

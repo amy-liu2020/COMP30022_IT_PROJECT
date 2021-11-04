@@ -29,7 +29,7 @@ app.use(function (req, res, next) {
     console.log(arr)
     if(arr[1] !== "api"){
         next()
-    } else if (arr[2] === "profile" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === undefined) {
+    } else if (arr[2] === "forgetPassword" || arr[2] === "login" || arr[2] === "register" || arr[2] === "doRegister" || arr[2] === "doChangeForgottenPassword" || arr[2] === "userPreferredColor" || arr[2] === undefined) {
         console.log("white list")
         next()
     } else {

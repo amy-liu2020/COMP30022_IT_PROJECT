@@ -45,8 +45,6 @@ export const FormRecord = ({
     labelWidth = "230px",
 }) => {
 
-    
-
     return (
         <Controller
             control={control}
