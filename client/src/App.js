@@ -91,7 +91,7 @@ function App() {
     const { data, loading, error } = GetTheme();
 
     return (
-        <ThemeProvider theme={data ? createTheme(data) : red}>
+        <ThemeProvider theme={data ? createTheme(data) : green}>
             <Router>
                 <Switch>
                     <PrivateRoute path="/contact">
@@ -117,25 +117,6 @@ function App() {
         </ThemeProvider>
     );
 }
-
-// const GetUserTheme = (data) => {
-//     // let defa = JSON.parse(JSON.stringify(data));
-//     const userTheme = createTheme({
-//         palette: {
-//             primary: {
-//                 main: data.primary.main,
-//                 light: data.palette.primary.light,
-//                 dark: data.palette.primary.dark
-//             },
-//             secondary: {
-//                 main: data.palette.secondary.main,
-//                 light: data.palette.secondary.light,
-//                 dark: data.palette.secondary.dark
-//             },
-//         },
-//     });
-//     return userTheme;
-// }
 
 
 export default App;

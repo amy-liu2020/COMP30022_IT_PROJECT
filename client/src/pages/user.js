@@ -390,6 +390,7 @@ const Login = () => {
             alert(res);
             if (res === "login success") {
                 history.push("/contact");
+                window.location.reload();
             }
         });
     };

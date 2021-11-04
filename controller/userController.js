@@ -37,17 +37,24 @@ const doLogin = (req, res) => {
 
     try {
         let { userId, password } = req.body;
-        let ePassword = encrypt(password);
-        console.log({ userId, ePassword });
-        let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
-        User.findOneAndUpdate(
-            { UserID: userId, Password: ePassword },
-            { Token: token },
-            (err, account) => {
-                if (err) {
-                    res.status(400).json({
-                        msg: "Error occurred: " + err,
-                    });
+        let ePassword = encrypt(password)
+        console.log({ userId, ePassword })
+        var token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
+        User.findOneAndUpdate({ UserID: userId, Password: ePassword }, {Token: token}, (err, account) => {
+
+            if (err) {
+                res.status(400).json({
+                    msg: "Error occurred: " + err
+                })
+                return;
+            } else {
+                if (account) {
+                    res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
+                    
+                    res.status(200).json({
+                        msg: "Login successfully",
+                        token: token
+                    })
                     return;
                 } else {
                     if (account) {
@@ -186,7 +193,7 @@ const userChangePreferredColor = async (req, res) => {
 
     let { colorId } = req.body;
 
-    const theme = Theme.findById(colorId, (err) => {
+    const theme = await Theme.findById(colorId, (err) => {
         if (err) {
             res.status(400).json({
                 msg: "Error occurred: " + err,
@@ -200,6 +207,7 @@ const userChangePreferredColor = async (req, res) => {
         });
         return;
     }
+    console.log(colorId);
     User.findOneAndUpdate({ UserID: uid }, { Color: colorId }, (err) => {
         if (err) {
             res.status(400).json({
@@ -207,8 +215,8 @@ const userChangePreferredColor = async (req, res) => {
             });
         } else {
             res.status(200).json({
-                msg: "Change preferred color successfully",
-            });
+                msg: "Change theme successfully."
+            })
         }
     });
 };

@@ -1,10 +1,9 @@
 import { Nav } from "./nav";
-import { Route, useRouteMatch, useParams } from "react-router-dom";
+import { Route, useRouteMatch } from "react-router-dom";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Box, palette } from "@mui/system";
+import { Box } from "@mui/system";
 import { Typography, Stack, Button } from "@mui/material";
-import { GetTheme } from "../api";
+import { ChangeTheme } from "../api";
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
 
@@ -61,18 +60,15 @@ const blue = createTheme({
 });
 
 export const SettingP = ({setTemp}) => {
-    let { userID } = useParams();
 
-    const {
-        register,
-        formState: { errors },
-        handleSubmit,
-    } = useForm();
+    const [colorId, setColorId] = useState("");
 
+    const handleSubmit = (event) => {
+        console.log(colorId);
 
-    const onSubmitHandler = (data) => {
-        console.log(data);
-    };
+        // send saved theme to server
+        ChangeTheme(colorId).then((res) => alert(res.msg));
+    }
 
 
     
@@ -88,7 +84,7 @@ export const SettingP = ({setTemp}) => {
             }}
         >
             <Nav/>
-            <form onSubmit={handleSubmit(onSubmitHandler)}>
+            <form onSubmit={handleSubmit}>
                 <Box sx={{ gridArea: "main" }}>
                     <Box
                         sx={{
@@ -120,11 +116,12 @@ export const SettingP = ({setTemp}) => {
                                 sx={{
                                     color: "black"
                                 }}
-                                // onClick={() => ResetTheme()}
+                                onClick={() => setTemp(undefined)}
                             >
                                 cancel
                             </Button>
                             <Button
+                                type = "submit"
                                 variant="contained"
                                 sx={{
                                     color: "black"
@@ -147,7 +144,7 @@ export const SettingP = ({setTemp}) => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={ () => {setTemp(dark)} } 
+                                onClick={ () => {setTemp(dark); setColorId("6182658e1f3090371ea8a319")}}
                             ></Box>
                             <Box
                                 bgcolor="#C97070"
@@ -156,7 +153,7 @@ export const SettingP = ({setTemp}) => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={ () => {setTemp(red)} } 
+                                onClick={ () => {setTemp(red); setColorId("6182655c1f3090371ea8a317")} }
                             ></Box>
                             <Box
                                 bgcolor="#63ADB8"
@@ -165,7 +162,8 @@ export const SettingP = ({setTemp}) => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={ () => {setTemp(blue)} }></Box>
+                                onClick={ () => {setTemp(blue); setColorId("618265bf1f3090371ea8a31a")} }
+                            ></Box>
                             <Box
                                 bgcolor="#77CFC3"
                                 width="170px"
@@ -173,40 +171,11 @@ export const SettingP = ({setTemp}) => {
                                 sx={{
                                     cursor: "pointer"
                                 }}
-                                onClick={ () => {setTemp(green)} }></Box>
+                                onClick={ () => {setTemp(green); setColorId("616a44b350b370d550ad657e")} }
+                            ></Box>
                         </Stack>
                         
                     </Box>
-                    {/* <button
-                        className="setting-button"
-                        type="button"
-                        onClick={() => SetTheme(user.Color)}
-                    >
-                        cancel
-                    </button>
-                    <button className="setting-button" type="submit">
-                        save
-                    </button>
-                    <div
-                        class="box blue"
-                        onClick={() => SetTheme("blue")}
-                        {...register("Color")}
-                    ></div>
-                    <div
-                        class="box red"
-                        onClick={() => SetTheme("red")}
-                        {...register("Color")}
-                    ></div>
-                    <div
-                        class="box green"
-                        onClick={() => SetTheme("green")}
-                        {...register("Color")}
-                    ></div>
-                    <div
-                        class="box dark"
-                        onClick={() => SetTheme("dark")}
-                        {...register("Color")}
-                    ></div> */}
                 </Box>
             </form>
         </Box>
@@ -216,7 +185,7 @@ export const SettingP = ({setTemp}) => {
 // render setting page
 const Setting = () => {
     let { path } = useRouteMatch();
-    const [temp, setTemp] = useState(green);
+    const [temp, setTemp] = useState(undefined);
     
     return (
         <ThemeProvider theme={temp}>
@@ -228,78 +197,6 @@ const Setting = () => {
         </ThemeProvider>
     );
 };
-
-// set theme
-// export const SetTheme = (color) => {
-//     if (color === "dark") {
-//         document.documentElement.style.setProperty("--nav-bg-color", "#6E7F8A");
-//         document.documentElement.style.setProperty(
-//             "--sideM-bg-color",
-//             "#2F4656"
-//         );
-//         document.documentElement.style.setProperty(
-//             "--content-bg-color",
-//             "#d3e5fa"
-//         );
-//     } else if (color === "red") {
-//         document.documentElement.style.setProperty("--nav-bg-color", "#EDCACA");
-//         document.documentElement.style.setProperty(
-//             "--sideM-bg-color",
-//             "#C97070"
-//         );
-//         document.documentElement.style.setProperty(
-//             "--content-bg-color",
-//             "#FFF8F9"
-//         );
-//     } else if (color === "blue") {
-//         document.documentElement.style.setProperty("--nav-bg-color", "#63D5DA");
-//         document.documentElement.style.setProperty(
-//             "--sideM-bg-color",
-//             "#63ADB8"
-//         );
-//         document.documentElement.style.setProperty(
-//             "--content-bg-color",
-//             "#d4f4f8"
-//         );
-//     } else {
-//         document.documentElement.style.setProperty("--nav-bg-color", "#8BE8DA");
-//         document.documentElement.style.setProperty(
-//             "--sideM-bg-color",
-//             "#77CFC3"
-//         );
-//         document.documentElement.style.setProperty(
-//             "--content-bg-color",
-//             "#EBF8F6"
-//         );
-//     }
-// };
-
-// get theme
-// const GetTheme = () => {
-//     if (
-//         document.documentElement.style.getPropertyValue("--nav-bg-color") ===
-//         "#6E7F8A"
-//     ) {
-//         return "dark";
-//     } else if (
-//         document.documentElement.style.getPropertyValue("--nav-bg-color") ===
-//         "#EDCACA"
-//     ) {
-//         return "red";
-//     } else if (
-//         document.documentElement.style.getPropertyValue("--nav-bg-color") ===
-//         "#D0EBEE"
-//     ) {
-//         return "blue";
-//     } else {
-//         return "green";
-//     }
-// };
-
-// reset theme
-// const ResetTheme = () => {
-//     SetTheme(GetTheme());
-// }
 
 
 export default Setting;
