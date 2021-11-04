@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
-Interceptor
+//Interceptor
 const jwt = require('jsonwebtoken')
 const User = require("./models/user")
 app.use(function (req, res, next) {

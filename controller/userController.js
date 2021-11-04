@@ -39,8 +39,8 @@ const doLogin = (req, res) => {
         let { userId, password } = req.body;
         let ePassword = encrypt(password)
         console.log({ userId, ePassword })
-        let token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
-        User.findOneAndUpdate({ UserID: userId, Password: ePassword }, { Token: token }, (err, account) => {
+        var token = jwt.sign({ userId }, PRIVATE_KEY, { expiresIn: EXPIRESD });
+        User.findOneAndUpdate({ UserID: userId, Password: ePassword }, {Token: token}, (err, account) => {
 
             if (err) {
                 res.status(400).json({
@@ -50,6 +50,7 @@ const doLogin = (req, res) => {
             } else {
                 if (account) {
                     res.cookie("AttemptTimes", 0, { maxAge: 1000, overwrite: true })
+                    
                     res.status(200).json({
                         msg: "Login successfully",
                         token: token
