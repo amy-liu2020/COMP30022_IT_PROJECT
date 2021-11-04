@@ -336,7 +336,7 @@ const uploadAttachment = async (req, res, cb) => {
         cb();
 
         res.status(200).json({
-            msg: "Upload successfully"
+            msg: "Attachment uploaded successfully"
         })
     } catch (err) {
         console.log(err)

@@ -14,7 +14,8 @@ import {
     GetBinItem,
     RestoreBinItem,
     GetMeetingsByUrl,
-    DeleteBinItem
+    DeleteBinItem,
+    UploadAttachment
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
@@ -24,6 +25,7 @@ import { useState, useEffect, useMemo } from "react";
 import Loading from "../common/loading";
 
 import {
+    TableCell,
     Button,
     TextField,
     Divider,
@@ -57,7 +59,7 @@ import { ErrorModal } from "../common/errorModal";
             },
             {
                 Header: "Time",
-                accessor: "Time",
+                accessor: (row) => row.StartTime.slice(0, 10),
             },
         ],
         []
@@ -85,7 +87,7 @@ import { ErrorModal } from "../common/errorModal";
         () => [
             {
                 Header: "Title",
-                accessor: "Title",
+                accessor: "Name",
             },
             {
                 Header: "Delete Date",
@@ -115,7 +117,7 @@ const MeetingDetail = () => {
     const { data, loading, error } = GetOneMeeting(id);
     const [isDisabled, setIsDisable] = useState(true);
     const [invitees, setInvitees] = useState([]);
-    const [attachments, setAttachments] = useState([]);
+    const [attachment, setAttachment] = useState(null);
     const {
         reset,
         handleSubmit,
@@ -151,12 +153,19 @@ const MeetingDetail = () => {
         if (invitees) {
             data.InviteeIds = invitees;
         }
-        if (attachments) {
-            data.Attachment = attachments;
-        }
-
+        console.log(data);
         // send data to server
-        EditMeeting(data, id).then((res) => alert(res.msg));
+        // EditMeeting(data, id).then((res) => alert(res.msg));
+
+        // if (attachment) {
+        //     // reform attachment data
+        //     const formData = new FormData();
+        //     formData.append("file", attachment);
+        //     UploadAttachment(formData, id).then((res) => alert(res.msg));
+
+        //     // refresh page
+        //     window.location.reload();
+        // }
 
         // switch to view mode
         setIsDisable(true);
@@ -165,7 +174,7 @@ const MeetingDetail = () => {
     const CustomReset = (data) => {
         let defaultValue = JSON.parse(JSON.stringify(data));
         // re-format data
-        defaultValue.Attachment = undefined;
+
         if (defaultValue.StartTime) {
             defaultValue.Date = defaultValue.StartTime.slice(0, 10);
             defaultValue.StartTime = defaultValue.StartTime.slice(11, 16);
@@ -190,7 +199,7 @@ const MeetingDetail = () => {
         }
 
         if (defaultValue.Attachment) {
-            setAttachments(
+            setAttachment(
                 defaultValue.Attachment
             );
         }
@@ -212,6 +221,11 @@ const MeetingDetail = () => {
         CustomReset(data);
         setIsDisable(!isDisabled);
     };
+
+    const changeHandler = (event) => {
+		setAttachment(event.target.files[0]);
+        console.log(event.target.files[0]);
+	};
 
     useEffect(() => {
         CustomReset(data);
@@ -322,7 +336,7 @@ const MeetingDetail = () => {
                             name="Attachment"
                             control={control}
                             disabled={isDisabled}
-                            onChange={setAttachments}
+                            onChange={changeHandler}
                             label="Attachment"
                             type="file"
                         />
@@ -374,27 +388,26 @@ const MeetingRestore = () => {
     let history = useHistory();
     const { data, loading, error } = GetBinItem(id);
     const { reset, control } = useForm();
-    const inputDisable = true;
     const [invitees, setInvitees] = useState([]);
+    const [attachment, setAttachment] = useState(null);
 
     const onRestore = () => {
         RestoreBinItem(id).then((res) => {
             console.log(res);
-            history.push("/contact");
+            history.push("/meeting");
         });
     };
 
     const onDelete = () => {
         DeleteBinItem(id).then((res) => {
             console.log(res);
-            history.push("/contact/bin");
+            history.push("/meeting/bin");
         });
     };
 
     const CustomReset = (data) => {
         let defaultValue = JSON.parse(JSON.stringify(data));
         // re-format data
-        defaultValue.Attachment = undefined;
         if (defaultValue.StartTime) {
             defaultValue.Date = defaultValue.StartTime.slice(0, 10);
             defaultValue.StartTime = defaultValue.StartTime.slice(11, 16);
@@ -417,6 +430,10 @@ const MeetingRestore = () => {
                 )
             );
         }
+
+        if (defaultValue.Attachment) {
+            setAttachment(attachment);
+        }
         // reset defaultValue
         reset(defaultValue);
     };
@@ -433,6 +450,23 @@ const MeetingRestore = () => {
         return <p>{error}</p>;
     }
 
+    return (
+        <MeetingForm
+        inputDisable={true}
+        control={control}
+        invitees={invitees}
+        setInvitees={setInvitees}
+        buttons={
+            <>
+                <Button onClick={onDelete}>delete</Button>
+                <Button onClick={onRestore}>restore</Button>
+            </>
+        }
+        />
+    );
+};
+
+const MeetingForm = ({ inputDisable, control, buttons, invitees = [], setInvitees }) => {
     return (
         <Box
             sx={{
@@ -483,8 +517,7 @@ const MeetingRestore = () => {
                         />
                     </Grid>
                     <Grid item xs="auto">
-                        <Button onClick={onDelete}>delete</Button>
-                        <Button type="button" onClick={onRestore}>restore</Button>
+                        {buttons}
                     </Grid>
                 </Grid>
                 <Divider />
@@ -584,11 +617,17 @@ const MeetingCreate = () => {
             Tags: [],
             Invitees: [],
             OtherInvitees: "",
-            Attachment: [],
+            // Attachment: null,
         },
     });
 
     const [invitees, setInvitees] = useState([]);
+    const [attachment, setAttachment] = useState(null);
+
+    // const changeHandler = (event) => {
+	// 	setAttachment(event.target.files[0]);
+    //     console.log(event.target.files[0]);
+	// };
 
     // handle user input data
     const onSubmitHandler = (data) => {
@@ -617,8 +656,15 @@ const MeetingCreate = () => {
             data.InviteeIds = invitees;
         }
 
-        // send data to server
-        data.Attachment = []; // need to be update later
+        // if (attachment) {
+        //     // reform attachment data
+        //     const formData = new FormData();
+        //     formData.append("file", attachment);
+        //     UploadAttachment(formData, id).then((res) => alert(res.msg));
+
+        //     // refresh page
+        //     window.location.reload();
+        // }
 
         CreateMeeting(data).then((res) => {
             alert(res.msg);
@@ -724,12 +770,13 @@ const MeetingCreate = () => {
                             label="URL"
                             type="url"
                         />
-                        <InputField
+                        {/* <InputField
                             name="Attachment"
                             control={control}
                             label="Attachment"
                             type="file"
-                        />
+                            onChange={changeHandler}
+                        /> */}
                     </Grid>
                     <Grid item xs="auto" marginTop="25px" maxWidth="300px">
                         <Box component={Paper} padding="10px">
@@ -789,7 +836,7 @@ export const Meeting = () => {
                 <Route path={`${path}/create`}>
                     <MeetingCreate />
                 </Route>
-                <Route path={`${path}/bin/:BinId`}>
+                <Route path={`${path}/bin/:id`}>
                     <MeetingRestore />
                 </Route>
                 <Route path={`${path}/bin`}>
