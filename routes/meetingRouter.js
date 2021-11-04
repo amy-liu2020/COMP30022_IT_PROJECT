@@ -41,7 +41,7 @@ meetingRouter.get("/fuzzySearch/:keyword",ensureAuthorized, (req,res) =>
 );
 
 // upload attachment to meeting
-meetingRouter.post("/upload", uploadFile, ensureAuthorized, (req, res) => {
+meetingRouter.post("/upload/:id", uploadFile, ensureAuthorized, (req, res) => {
     meetingController.uploadAttachment(req, res, deleteMiddlePath)
 });
 

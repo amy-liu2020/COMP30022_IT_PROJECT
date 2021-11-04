@@ -323,8 +323,8 @@ const uploadAttachment = async (req, res, cb) => {
         let attachmentData = fs.readFileSync(attachment.path)
 
 
-        let uid = req.token.userId;
-        Meeting.findOneAndUpdate({ AccountID: uid }, { Attachment: attachmentData }, (err) => {
+        let mid = req.params.id
+        Meeting.findByIdAndUpdate(mid, { Attachment: attachmentData }, (err) => {
             if (err) {
                 res.status(400).json({
                     msg: "Error occurred: " + err
