@@ -38,7 +38,10 @@ const MeetingSchema = new mongoose.Schema({
         InviteeId:mongoose.Schema.Types.ObjectId
     }],
     OtherInvitees:String,
-    Attachment:[Buffer]
+    Attachment:{
+        Name: String,
+        Data: Buffer
+    }
 }, {versionKey:false});
 
 const Meeting = mongoose.model("Meeting", MeetingSchema, "MeetingList");

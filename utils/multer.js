@@ -5,20 +5,24 @@ const DEFAULT_PATH = "attachment"
 
 function uploadFile(req, res, next) {
     fs.mkdir("attachment", (err) => {
-        if(err){
+        if (err) {
             console.log(err)
             return;
         }
     })
     let fullPath = path.resolve("attachment");
-    let filename = "";
     let storage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, fullPath);
         },
         filename: (req, file, cb) => {
-            filename = "image.png";
-            cb(null, filename);
+            let fname = file.originalname;
+            req.body.filename = fname
+            let extName = "";
+            if (fname.lastIndexOf(".") != -1) {
+                extName = fname.slice(fname.lastIndexOf("."));
+            }
+            cb(null, file.fieldname + '-' + Date.now() + extName);
         }
     })
 
@@ -37,33 +41,33 @@ function uploadFile(req, res, next) {
 };
 
 
-function deleteMiddlePath(){
-    try{
+function deleteMiddlePath() {
+    try {
         deleteDir(DEFAULT_PATH)
     } catch (err) {
         console.log(err)
     }
 }
 
-function deleteDir(url){
+function deleteDir(url) {
     var files = [];
-        
-    if( fs.existsSync(url) ) {
-           
-        files = fs.readdirSync(url);   
-        files.forEach(function(file,index){
-            var curPath = path.join(url,file);
-                
-            if(fs.statSync(curPath).isDirectory()) { 
+
+    if (fs.existsSync(url)) {
+
+        files = fs.readdirSync(url);
+        files.forEach(function (file, index) {
+            var curPath = path.join(url, file);
+
+            if (fs.statSync(curPath).isDirectory()) {
                 deleteDir(curPath);
-            } else {    
+            } else {
                 fs.unlinkSync(curPath);
             }
-                
+
         });
-           
+
         fs.rmdirSync(url);
-    }else{
+    } else {
         console.log("Error: path not exist!");
     }
 
