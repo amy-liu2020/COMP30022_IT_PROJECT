@@ -522,6 +522,10 @@ function errHandler(error) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
         if (error.response.data.msg) {
+            if (error.response.status === 403) {
+                localStorage.clear();
+                window.location.reload();
+            }
             return error.response.data.msg;
         } else {
             return error.response.data;
@@ -585,13 +589,12 @@ export function GetRegister() {
         return () => {
             source.cancel();
         };
-    },[]);
+    }, []);
 
     return { data, loading, error };
 }
 
 export async function uploadPhoto(photo) {
-
     const data = await axios
         .post("/api/upload", photo)
         .then((res) => res.data.msg)
@@ -682,7 +685,7 @@ export function GetTheme() {
             .then((res) => {
                 setLoading(false);
                 setData(res.data.theme);
-                console.log(res)
+                console.log(res);
             })
             .catch((err) => {
                 setLoading(false);
@@ -691,14 +694,14 @@ export function GetTheme() {
         return () => {
             source.cancel();
         };
-    },[]);
+    }, []);
 
     return { data, loading, error };
 }
 
 export async function ChangeTheme(colorId) {
     let data = await axios
-        .post(`/api/changeColor`, {colorId: colorId})
+        .post(`/api/changeColor`, { colorId: colorId })
         .then((res) => res.data)
         .catch((err) => errHandler(err));
     return data;
