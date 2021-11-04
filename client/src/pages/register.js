@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { RegisterUser, GetRegister } from "../api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller } from "react-hook-form";
+import Loading from "../common/loading"
 
 const Register = () => {
     const Schema = yup.object().shape({
@@ -77,17 +78,13 @@ const Register = () => {
         RegisterUser(data).then((res) => {
             alert(res);
             if (res === "register success") {
-                history.push("/user/login");
+                history.push("/login");
             }
         });
     };
 
-    if (error) {
-        return <p>error</p>;
-    }
-
-    if (loading) {
-        return <p>loading</p>;
+    if (loading || error) {
+        return <Loading />;
     }
 
     return (

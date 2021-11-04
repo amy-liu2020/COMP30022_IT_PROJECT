@@ -45,7 +45,7 @@ function RelatedMeetings({ meetings }) {
     let history = useHistory();
 
     return (
-        <Paper>
+        <Paper sx={{float: "right"}}>
             <Box padding="10px 15px 0px">
                 <Typography variant="h6" gutterBottom>
                     Meetings
@@ -282,19 +282,19 @@ const ContactDetail = () => {
             buttons={
                 viewOnly ? (
                     <>
-                        <Button type="button" onClick={onDelete}>
+                        <Button type="button" onClick={onDelete} sx={{ float: "right" }}>
                             delete
                         </Button>
-                        <Button type="button" onClick={onEdit}>
+                        <Button type="button" onClick={onEdit} sx={{ float: "right" }}>
                             edit
                         </Button>
                     </>
                 ) : (
                     <>
-                        <Button type="button" onClick={onCancel}>
+                        <Button type="button" onClick={onCancel} sx={{ float: "right" }}>
                             cancel
                         </Button>
-                        <Button onClick={handleSubmit(onSubmit)}>save</Button>
+                        <Button onClick={handleSubmit(onSubmit)} sx={{ float: "right" }}>save</Button>
                     </>
                 )
             }
@@ -347,7 +347,7 @@ const ContactCreate = () => {
         <ContactForm
             viewOnly={false}
             control={control}
-            buttons={<Button onClick={handleSubmit(onCreate)}>create</Button>}
+            buttons={<Button onClick={handleSubmit(onCreate)} sx={{ float: "right" }}>create</Button>}
         />
     );
 };
@@ -405,8 +405,8 @@ const ContactRestore = () => {
             control={control}
             buttons={
                 <>
-                    <Button onClick={onDelete}>delete</Button>
-                    <Button onClick={onRestore}>restore</Button>
+                    <Button onClick={onDelete} sx={{ float: "right" }}>delete</Button>
+                    <Button onClick={onRestore} sx={{ float: "right" }}>restore</Button>
                 </>
             }
         />
@@ -416,18 +416,17 @@ const ContactRestore = () => {
 const ContactForm = ({ viewOnly, control, buttons, id, meetings = [] }) => {
     return (
         <Box bgcolor="primary.light" gridArea="main" padding="10px 30px">
-            <Grid container columnSpacing={3}>
-                <Grid item xs={12} md={2} order={{ xs: 1, md: 3 }}>
-                    {buttons}
-                </Grid>
-                <Grid item xs={12} md={3} order={1} minWidth="200px">
+            <Grid container columnSpacing={3} >
+                <Grid item xs={12} md={3} minWidth="220px" order={{ xs: 2, md: 1 }}>
                     {id ? (
                         <ContactPhoto id={id} size="200px" />
                     ) : (
-                        <Avatar sx={{ width: "200px", height: "200px" }} />
+                        <Box width="100%" height="100%">
+                            <Avatar sx={{ width: "200px", height: "200px", alignSelf: "center" }} />
+                        </Box>
                     )}
                 </Grid>
-                <Grid item sx={3} order={2} maxWidth="400px">
+                <Grid item xs={12} md={4} minWidth="390px" maxWidth="400px" order={{ xs: 3, md: 2 }}>
                     <Controller
                         name="FirstName"
                         control={control}
@@ -490,7 +489,10 @@ const ContactForm = ({ viewOnly, control, buttons, id, meetings = [] }) => {
                         type="tel"
                     />
                 </Grid>
-                <Grid item sx={3} order={4}>
+                <Grid item xs={12} md={4} order={{ xs: 1, md: 3 }}>
+                    {buttons}
+                </Grid>
+                <Grid item xs={12} md={5} minWidth="38px" maxWidth="400px" order={4}>
                     <FormRecord
                         control={control}
                         name="Email"
@@ -542,11 +544,11 @@ const ContactForm = ({ viewOnly, control, buttons, id, meetings = [] }) => {
                         )}
                     />
                 </Grid>
-                <Grid item sx={6} order={5}>
-                    <Grid>
-                        <RelatedMeetings meetings={meetings} />
+                {id && (
+                    <Grid item xs={12} md={6} order={5}>
+                            <RelatedMeetings meetings={meetings} />
                     </Grid>
-                </Grid>
+                )}
             </Grid>
         </Box>
     );

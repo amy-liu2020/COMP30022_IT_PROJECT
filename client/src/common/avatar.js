@@ -13,16 +13,32 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Typography,
 } from "@mui/material";
 import { useState, useEffect } from "react";
+
+const FILE_SIZE_LIMIT = 1048576;
 
 // dialog for upload photo
 const UploadPhotoDialog = ({ open, setOpen, id }) => {
     const [photo, setPhoto] = useState(null);
     const [pending, setPending] = useState(false);
     const [preview, setPreview] = useState(null);
+    const [fileTooBig, setFileTooBig] = useState(false);
+
+    // need to limit file size
+    const onChange = (e) => {
+        setPhoto(e.target.files[0])
+
+        if (e.target.files[0].size > FILE_SIZE_LIMIT) {
+            setFileTooBig(true);
+        }else {
+            setFileTooBig(false);
+        }
+    }
 
     const handleCreate = () => {
+
         // reformat data
         const formData = new FormData();
         formData.append("file", photo);
@@ -78,7 +94,7 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
                         id="contained-button-file"
                         type="file"
                         sx={{ display: "none" }}
-                        onChange={(e) => setPhoto(e.target.files[0])}
+                        onChange={onChange}
                     />
                     <Button
                         variant="contained"
@@ -92,11 +108,12 @@ const UploadPhotoDialog = ({ open, setOpen, id }) => {
                     >
                         select photo
                     </Button>
+                    {fileTooBig && <Typography color="DarkRed">file is too big, must less than 1MB</Typography>}
                 </label>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleCreate}>
+                <Button disabled={fileTooBig} onClick={handleCreate}>
                     {pending ? "uploading..." : "upload"}
                 </Button>
             </DialogActions>
