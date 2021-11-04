@@ -6,17 +6,15 @@ import {
     useParams,
 } from "react-router-dom";
 import {
-    GetMeetings,
-    GetMeetingsWithTag,
     GetOneMeeting,
     CreateMeeting,
     EditMeeting,
     DeleteMeeting,
     GetBinList,
-    GetMeetingsBySearch,
     GetBinItem,
     RestoreBinItem,
     GetMeetingsByUrl,
+    DeleteBinItem
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
@@ -399,15 +397,25 @@ const MeetingDetail = () => {
 
 // restore deleted meeting
 const MeetingRestore = () => {
-    let { BinId } = useParams();
+    let { id } = useParams();
     let history = useHistory();
-    const { data, loading, error } = GetBinItem(BinId);
+    const { data, loading, error } = GetBinItem(id);
     const { reset, control } = useForm();
     const inputDisable = true;
     const [invitees, setInvitees] = useState([]);
 
-    const onRestoreHandler = () => {
-        RestoreBinItem(BinId).then((res) => console.log(res));
+    const onRestore = () => {
+        RestoreBinItem(id).then((res) => {
+            console.log(res);
+            history.push("/contact");
+        });
+    };
+
+    const onDelete = () => {
+        DeleteBinItem(id).then((res) => {
+            console.log(res);
+            history.push("/contact/bin");
+        });
     };
 
     const CustomReset = (data) => {
@@ -502,9 +510,8 @@ const MeetingRestore = () => {
                         />
                     </Grid>
                     <Grid item xs="auto">
-                        <Button type="button" onClick={onRestoreHandler}>
-                            restore
-                        </Button>
+                        <Button onClick={onDelete}>delete</Button>
+                        <Button type="button" onClick={onRestore}>restore</Button>
                     </Grid>
                 </Grid>
                 <Divider />
