@@ -228,14 +228,13 @@ const Register = () => {
                 <Box>
                     <Button
                         variant="contained"
-                        sx={{ backgroundColor: "white" }}
                         onClick={() => history.goBack()}
                     >
                         cancel
                     </Button>
                     <Button
                         variant="contained"
-                        sx={{ backgroundColor: "white", float: "right" }}
+                        sx={{ float: "right" }}
                         onClick={handleSubmit(onSubmit)}
                     >
                         register
