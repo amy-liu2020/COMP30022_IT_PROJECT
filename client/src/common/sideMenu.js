@@ -34,7 +34,6 @@ const AddTagDialog = ({ open, setOpen, tagOf }) => {
             if (data === undefined) {
                 alert("error");
             } else {
-                // alert(data.msg);
                 window.location.reload(); // refresh page
             }
         });
@@ -130,7 +129,7 @@ const SideMenu = ({ tagOf }) => {
 
                 <Divider />
                 <Chip
-                    label="all"
+                    label="All"
                     onClick={() => history.push(`/${tab}/`)}
                     sx={{
                         "&": {
@@ -204,7 +203,7 @@ const SideMenu = ({ tagOf }) => {
                 </Button>
                 <Divider />
                 <Chip
-                    label="bin"
+                    label="Bin"
                     onClick={() => history.push(`/${tab}/bin`)}
                     sx={{
                         "&": {

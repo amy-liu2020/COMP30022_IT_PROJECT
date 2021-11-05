@@ -21,15 +21,15 @@ const Login = () => {
         userId: yup
             .string()
             .ensure()
-            .required("userId is required")
-            .min(8, "userId must at least 8 characters")
-            .max(16, "userId must not exceed 16 characters"),
+            .required("User ID is required.")
+            .min(8, "User ID must at least 8 characters.")
+            .max(16, "User ID must not exceed 16 characters."),
         password: yup
             .string()
             .ensure()
-            .required("password is required")
-            .min(8, "password must at least 8 characters")
-            .max(16, "password must not exceed 16 characters"),
+            .required("Password is required.")
+            .min(8, "Password must at least 8 characters.")
+            .max(16, "Password must not exceed 16 characters."),
     });
 
     let history = useHistory();
@@ -74,7 +74,7 @@ const Login = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                         <TextField
-                            placeholder="userId"
+                            placeholder="User ID"
                             fullWidth
                             {...field}
                             error={error !== undefined}
@@ -88,7 +88,7 @@ const Login = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                         <TextField
-                            placeholder="password"
+                            placeholder="Password"
                             fullWidth
                             {...field}
                             error={error !== undefined}

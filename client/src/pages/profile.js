@@ -25,20 +25,20 @@ const Reset = () => {
         OldPassword: yup
             .string()
             .ensure()
-            .required("password is required")
-            .min(8, "password must at least 8 characters")
-            .max(16, "password must not exceed 16 characters"),
+            .required("Password is required.")
+            .min(8, "Password must at least 8 characters.")
+            .max(16, "Password must not exceed 16 characters."),
         NewPassword: yup
             .string()
             .ensure()
-            .required("password is required")
-            .min(8, "password must at least 8 characters")
-            .max(16, "password must not exceed 16 characters"),
+            .required("Password is required")
+            .min(8, "Password must at least 8 characters.")
+            .max(16, "Password must not exceed 16 characters."),
         ConfirmPassword: yup
             .string()
             .test(
                 "passwords-match",
-                "confirm password must match password",
+                "Confirm password must match password.",
                 function (value) {
                     return this.parent.NewPassword === value;
                 }
@@ -75,7 +75,7 @@ const Reset = () => {
 
         changePassword(data).then((res) => {
             alert(res);
-            if (res === "password has been changed successfully") {
+            if (res === "Password has been changed successfully.") {
                 history.push("/user/profile");
             }
         });
@@ -93,14 +93,14 @@ const Reset = () => {
             }}
         >
             <Typography variant="h5" sx={{ marginBottom: "20px" }}>
-                Change password
+                Change Password
             </Typography>
             <Controller
                 name="OldPassword"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                     <TextField
-                        placeholder="OldPassword"
+                        placeholder="Old Password"
                         fullWidth
                         {...field}
                         error={error !== undefined}
@@ -131,7 +131,7 @@ const Reset = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                     <TextField
-                        placeholder="NewPassword"
+                        placeholder="New Password"
                         fullWidth
                         {...field}
                         error={error !== undefined}
@@ -162,7 +162,7 @@ const Reset = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                     <TextField
-                        placeholder="ConfirmPassword"
+                        placeholder="Confirm Password"
                         fullWidth
                         {...field}
                         error={error !== undefined}
@@ -212,9 +212,9 @@ const Detail = () => {
         UserName: yup
             .string()
             .ensure()
-            .required("Username is required")
-            .min(8, "Username must at least 8 characters")
-            .max(16, "Username must not exceed 16 characters"),
+            .required("Username is required.")
+            .min(8, "Username must at least 8 characters.")
+            .max(16, "Username must not exceed 16 characters."),
         Email: yup.string().ensure().email("Invalid email format"),
         PhoneNumber: yup.string().ensure().matches(phoneReg, {
             message: "Invalid phone number format",
@@ -246,7 +246,7 @@ const Detail = () => {
     const onSubmit = (data) => {
         changeDetails(data).then((res) => {
             alert(res);
-            if (res === "Edit user information successfully") {
+            if (res === "Edit user information successfully.") {
                 setViewOnly(true);
             }
         });
@@ -277,8 +277,8 @@ const Detail = () => {
         >
             <ProfilePhoto size="180px" editable={true} />
             <p> </p>
-            <FormRecord name="UserID" viewOnly={true} control={control} />
-            <FormRecord name="UserName" viewOnly={viewOnly} control={control} />
+            <FormRecord name="UserID" label="User ID" viewOnly={true} control={control} />
+            <FormRecord name="UserName" label="User Name" viewOnly={viewOnly} control={control} />
             <FormRecord
                 name="Email"
                 viewOnly={viewOnly}

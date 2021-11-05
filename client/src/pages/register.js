@@ -15,15 +15,15 @@ const Register = () => {
         userId: yup
             .string()
             .ensure()
-            .required("userId is required")
-            .min(8, "userId must at least 8 characters")
-            .max(16, "userId must not exceed 16 characters"),
+            .required("UserId is required.")
+            .min(8, "UserId must at least 8 characters.")
+            .max(16, "UserId must not exceed 16 characters."),
         password: yup
             .string()
             .ensure()
-            .required("password is required")
-            .min(8, "password must at least 8 characters")
-            .max(16, "password must not exceed 16 characters"),
+            .required("Password is required.")
+            .min(8, "Password must at least 8 characters.")
+            .max(16, "Password must not exceed 16 characters."),
         confirmpassword: yup
             .string()
             .test(
@@ -36,17 +36,17 @@ const Register = () => {
         username: yup
             .string()
             .ensure()
-            .required("username is required")
-            .min(8, "username must at least 8 characters")
-            .max(16, "username must not exceed 16 characters"),
+            .required("Username is required.")
+            .min(8, "Username must at least 8 characters.")
+            .max(16, "Isername must not exceed 16 characters."),
         securityQuestion: yup
             .number()
-            .required("need to select one security question"),
+            .required("Need to select a security question."),
         securityAnswer: yup
             .string()
             .ensure()
-            .required("answer is required")
-            .max(40, "answer must not exceed 16 characters"),
+            .required("Answer is required.")
+            .max(40, "Answer must not exceed 40 characters."),
     });
 
     let history = useHistory();
@@ -105,7 +105,7 @@ const Register = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                         <TextField
-                            placeholder="userId"
+                            placeholder="User ID"
                             fullWidth
                             {...field}
                             error={error !== undefined}
@@ -119,7 +119,7 @@ const Register = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                         <TextField
-                            placeholder="password"
+                            placeholder="Password"
                             fullWidth
                             {...field}
                             error={error !== undefined}
@@ -150,7 +150,7 @@ const Register = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                         <TextField
-                            placeholder="confirmpassword"
+                            placeholder="Confirm Password"
                             fullWidth
                             {...field}
                             error={error !== undefined}
@@ -181,7 +181,7 @@ const Register = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                         <TextField
-                            placeholder="username"
+                            placeholder="Username"
                             fullWidth
                             {...field}
                             error={error !== undefined}
@@ -216,7 +216,7 @@ const Register = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                         <TextField
-                            placeholder="answer"
+                            placeholder="Answer"
                             fullWidth
                             {...field}
                             error={error !== undefined}

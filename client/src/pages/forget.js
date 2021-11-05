@@ -34,9 +34,9 @@ const CheckId = ({ setQuestion, setUserId }) => {
         UserID: yup
             .string()
             .ensure()
-            .required("userId is required")
-            .min(8, "userId must at least 8 characters")
-            .max(16, "userId must not exceed 16 characters"),
+            .required("User ID is required.")
+            .min(8, "User ID must at least 8 characters.")
+            .max(16, "User ID must not exceed 16 characters."),
     });
     let history = useHistory();
     const { control, handleSubmit } = useForm({
@@ -60,9 +60,9 @@ const CheckId = ({ setQuestion, setUserId }) => {
     return (
         <CenterBox>
             <Typography variant="h4" sx={{ marginBottom: "20px" }}>
-                Check UserID
+                Check User ID
             </Typography>
-            <FormRecord control={control} name="UserID" viewOnly={false} />
+            <FormRecord control={control} name="UserID" label="User ID" viewOnly={false} />
             <Button variant="contained" onClick={() => history.goBack()}>
                 cancel
             </Button>
@@ -82,25 +82,25 @@ const VerifyAns = ({ setQuestion, question, userId }) => {
         UserID: yup
             .string()
             .ensure()
-            .required("userId is required")
-            .min(8, "userId must at least 8 characters")
-            .max(16, "userId must not exceed 16 characters"),
+            .required("UserId is required.")
+            .min(8, "UserId must at least 8 characters.")
+            .max(16, "UserId must not exceed 16 characters."),
         Answer: yup
             .string()
             .ensure()
-            .required("answer is required")
-            .max(40, "answer must not exceed 40 characters"),
+            .required("Answer is required.")
+            .max(40, "Answer must not exceed 40 characters."),
         NewPassword: yup
             .string()
             .ensure()
-            .required("password is required")
-            .min(8, "password must at least 8 characters")
-            .max(16, "password must not exceed 16 characters"),
+            .required("Password is required.")
+            .min(8, "Password must at least 8 characters.")
+            .max(16, "Password must not exceed 16 characters."),
         ConfirmPassword: yup
             .string()
             .test(
                 "passwords-match",
-                "confirm password must match password",
+                "confirm password must match password.",
                 function (value) {
                     return this.parent.NewPassword === value;
                 }
@@ -123,7 +123,7 @@ const VerifyAns = ({ setQuestion, question, userId }) => {
 
         verifyForgetPass(data).then((res) => {
             alert(res);
-            history.push("/user/login");
+            history.push("/");
         });
     };
 
@@ -132,12 +132,13 @@ const VerifyAns = ({ setQuestion, question, userId }) => {
             <Typography variant="h4" sx={{ marginBottom: "20px" }}>
                 Change password
             </Typography>
-            <FormRecord control={control} name="Question" viewOnly={true} />
-            <FormRecord control={control} name="Answer" viewOnly={false} />
-            <FormRecord control={control} name="NewPassword" viewOnly={false} />
+            <FormRecord control={control} name="Question" label="Question"viewOnly={true} />
+            <FormRecord control={control} name="Answer" label="Answer" viewOnly={false} />
+            <FormRecord control={control} name="NewPassword" label="New Password" viewOnly={false} />
             <FormRecord
                 control={control}
                 name="ConfirmPassword"
+                label="Confirm Password"
                 viewOnly={false}
                 labelWidth="280px"
             />
