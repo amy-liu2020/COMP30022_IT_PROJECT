@@ -690,7 +690,6 @@ export async function ChangeTheme(colorId) {
     return data;
 }
 
-
 // handle error
 function errHandler(error) {
     if (error.response) {

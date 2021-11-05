@@ -117,13 +117,11 @@ const MeetingDetail = () => {
     const { data, loading, error } = GetOneMeeting(id);
     const [isDisabled, setIsDisable] = useState(true);
     const [invitees, setInvitees] = useState([]);
-    const [attachment, setAttachment] = useState(null);
-    const [attachmentURL, setAttachmentURL] = useState(null);
     const {
         reset,
         handleSubmit,
         control,
-        formState: { isDirty, isSubmitting },
+        formState: {isSubmitting },
     } = useForm({
         defaultValues: [],
     });
@@ -158,16 +156,6 @@ const MeetingDetail = () => {
         // send data to server
         EditMeeting(data, id).then((res) => alert(res.msg));
 
-        if (attachment) {
-            // reform attachment data
-            const formData = new FormData();
-            formData.append("file", attachment);
-            UploadAttachment(formData, id).then((res) => alert(res.msg));
-
-            // refresh page
-            window.location.reload();
-        }
-
         // switch to view mode
         setIsDisable(true);
     };
@@ -198,16 +186,6 @@ const MeetingDetail = () => {
                 )
             );
         }
-
-        if (defaultValue.Attachment) {
-            setAttachment(
-                defaultValue.Attachment
-            );
-            var f = new File(defaultValue.Attachment, "foo");
-            defaultValue.Attachment = f;
-            setAttachmentURL(URL.createObjectURL(f));
-            console.log(attachmentURL);
-        }
         // reset defaultValue
         reset(defaultValue);
     };
@@ -226,12 +204,6 @@ const MeetingDetail = () => {
         CustomReset(data);
         setIsDisable(!isDisabled);
     };
-
-    const changeHandler = (event) => {
-		setAttachment(URL.createObjectURL(event.target.files[0]));
-        console.log(event.target.files[0]);
-        console.log(attachment);
-	};
 
     useEffect(() => {
         CustomReset(data);
@@ -338,31 +310,6 @@ const MeetingDetail = () => {
                             label="URL"
                             type="url"
                         />
-
-                        
-                        <div>
-                            <TextField
-                                sx = {{
-                                    position: "static",
-                                    display: "flex",
-                                    marginTop: "30px",
-                                    marginBottom: "20px"
-                                }}
-                                name="Attachment"
-                                control={control}
-                                disabled={isDisabled}
-                                onChange={changeHandler}
-                                type="file"
-                            />
-                            {attachment ? (
-                                <div>
-                                    <a href={attachmentURL} download>Click to download attachment</a>
-                                </div>
-                            ) : (
-                                <p>Select a file to store</p>
-                            )}
-                            
-                        </ div>
                         
                     </Grid>
                     <Grid item xs="auto" marginTop="25px" maxWidth="300px">
@@ -490,6 +437,7 @@ const MeetingRestore = () => {
     );
 };
 
+// meeting form
 const MeetingForm = ({ inputDisable, control, buttons, invitees = [], setInvitees }) => {
     return (
         <Box
@@ -646,12 +594,6 @@ const MeetingCreate = () => {
     });
 
     const [invitees, setInvitees] = useState([]);
-    const [attachment, setAttachment] = useState(null);
-
-    // const changeHandler = (event) => {
-	// 	setAttachment(event.target.files[0]);
-    //     console.log(event.target.files[0]);
-	// };
 
     // handle user input data
     const onSubmitHandler = (data) => {
@@ -679,16 +621,6 @@ const MeetingCreate = () => {
         if (invitees) {
             data.InviteeIds = invitees;
         }
-
-        // if (attachment) {
-        //     // reform attachment data
-        //     const formData = new FormData();
-        //     formData.append("file", attachment);
-        //     UploadAttachment(formData, id).then((res) => alert(res.msg));
-
-        //     // refresh page
-        //     window.location.reload();
-        // }
 
         CreateMeeting(data).then((res) => {
             alert(res.msg);

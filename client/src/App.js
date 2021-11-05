@@ -16,6 +16,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NotFound } from "./pages/404";
 import { UnAuth } from "./pages/unAuth";
 import { GetTheme } from "./api";
+import { useEffect, useState} from "react"
 
 const green = createTheme({
     palette: {
@@ -53,10 +54,31 @@ function PrivateRoute({ children, ...rest }) {
 
 function App() {
     const { data } = GetTheme();
+    const [url, setUrl] = useState(null);
+
+    useEffect(() => {
+        fetch("/api/testSendFile", {
+            headers: {
+                "authorization": localStorage.getItem("token")
+            },
+        })
+            .then((res) => res.blob())
+            .then(
+                (result) => {
+                    // var f = new File(result, "test.pdf");
+                    const objectUrl = URL.createObjectURL(result);
+                    setUrl(objectUrl);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+    }, []);
 
     return (
         <ThemeProvider theme={data ? createTheme(data) : green}>
             <Router>
+            <a href={url} download>Click to download attachment</a>
                 <Switch>
                     <PrivateRoute path="/contact">
                         <Contact />
