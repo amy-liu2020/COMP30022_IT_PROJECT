@@ -2,7 +2,7 @@ const Bin = require("../models/bin");
 const Meeting = require("../models/meeting");
 const Tag = require("../models/tag")
 const Contact = require("../models/contact");
-
+const path = require("path")
 const fs = require('fs');
 const mongoose = require("mongoose")
 
@@ -385,6 +385,34 @@ const assignTag = async (req, res) => {
     })
 }
 
+const getAttachment = async (req, res) =>{
+    let mid = req.params.id
+    let meeting = await Meeting.findById(mid, "Attachment")
+    let attachment = meeting.Attachment
+    
+
+    fs.writeFile("./uploads/" + attachment.Name, attachment.Data, (err) => {
+        if(err){
+            console.log(err)
+        }
+    })
+
+    var options = {
+        root: path.join(__dirname, '../uploads')
+    };
+     
+    var fileName = attachment.Name;
+    
+    
+    res.sendFile(fileName,options,(err)=>{
+        if(err){
+            console.log(err)
+        }else{
+            console.log(fileName)
+        }
+    });
+}
+
 module.exports = {
     getFullMeeting,
     getMeetingsByTag,
@@ -394,5 +422,6 @@ module.exports = {
     meetingDelete,
     fuzzySearch,
     uploadAttachment,
-    assignTag
+    assignTag,
+    getAttachment
 }
