@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const key = '0123456789abcdef'
 const iv = 'fedcba9876543210'
 
+// encrypt message to cipher
 function encrypt(str){
     try{
         const cipher = crypto.createCipheriv('aes-128-cbc', key, iv)
@@ -12,6 +13,7 @@ function encrypt(str){
     }
 }
 
+// decrypt cipher to message
 function decrypt(str){
     try{
         const decipher = crypto.createDecipheriv('aes-128-cbc', key, iv)

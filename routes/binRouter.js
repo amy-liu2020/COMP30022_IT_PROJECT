@@ -30,11 +30,8 @@ binRouter.post("/clear",ensureAuthorized, (req,res) => {
     binController.clearAll(req,res)
 });
 
-// present the searching results 
-binRouter.get("/fuzzySearch/:keyword",ensureAuthorized, (req,res) =>
-    binController.fuzzySearch(req,res)
-);
 
+// automatically delete items that is expired in bin at midnight
 let rule = new schedule.RecurrenceRule();
 rule.second = 0;
 rule.minute = 0;

@@ -8,23 +8,21 @@ const {uploadFile, deleteMiddlePath} = require('../utils/multer.js')
 
 
 // user login
-userRouter.get("/", (req, res) => {
-    userController.userLogin(req, res)
-});
-
 userRouter.post("/login", (req, res) => {
     userController.doLogin(req, res)
 });
 
-// new user registration
+// get preferred color setting of user
 userRouter.get("/userPreferredColor", ensureAuthorized, (req, res)=>{
     userController.userPreferredColor(req, res)
 });
 
+// get security question during registration
 userRouter.get("/register", (req, res) => {
     userController.getQuestionList(req, res)
 });
 
+// new user registration
 userRouter.post("/doRegister", (req, res) => {
     userController.userDoRegister(req, res)
 });
@@ -39,14 +37,15 @@ userRouter.get("/getPhoto", ensureAuthorized, (req, res) => {
     userController.getPhoto(req, res)
 });
 
+// upload photo
 userRouter.post("/upload", uploadFile, ensureAuthorized, (req, res) => {
     userController.savePhoto(req, res, deleteMiddlePath);
 });
 
+// change user preferred color setting
 userRouter.post("/changeColor", ensureAuthorized, (req, res) => {
     userController.userChangePreferredColor(req, res)
 });
-
 
 // user change password
 userRouter.post("/changePassword", ensureAuthorized, (req, res) => {

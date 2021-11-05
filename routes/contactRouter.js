@@ -40,9 +40,11 @@ contactRouter.post("/uploadPhoto/:id", uploadFile, (req, res) =>
     contactController.savePhoto(req, res, deleteMiddlePath)
 );
 
-contactRouter.delete("/delete/:id", ensureAuthorized, (req, res) => {
-    contactController.contactDelete(req, res);
-});
+// delete the contact
+contactRouter.delete("/delete/:id", ensureAuthorized, (req,res)=>{
+    contactController.contactDelete(req,res)
+})
+
 
 // present the searching results
 contactRouter.get("/fuzzySearch/:keyword", ensureAuthorized, (req, res) => {
