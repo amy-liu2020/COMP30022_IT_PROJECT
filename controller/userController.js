@@ -384,7 +384,7 @@ const changePassword = async (req, res) => {
                 return;
 
             }
-        );
+        });
 
         res.status(200).json({
             msg: "password has been changed successfully",
@@ -445,7 +445,6 @@ const changeDetails = (req, res) => {
 };
 
 module.exports = {
-    userLogin,
     doLogin,
     getQuestionList,
     userDoRegister,

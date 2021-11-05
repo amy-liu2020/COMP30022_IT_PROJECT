@@ -84,6 +84,24 @@ app.use("/api/bin", binRouter);
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
+
+
+app.get("/api/testSendFile",(req,res)=>{
+    var options = {
+        root: __dirname+"/test/"
+    };
+     
+    var fileName = 'Assignment3_experimentation_1124594.pdf';
+    
+    res.sendFile(fileName,options,(err)=>{
+        if(err){
+            console.log(err)
+        }else{
+            console.log(fileName)
+        }
+    });
+})
+
 app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
     console.log(req.url);

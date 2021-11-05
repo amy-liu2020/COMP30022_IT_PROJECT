@@ -51,7 +51,7 @@ const getBinList = async (req, res) => {
     }
 };
 
-}
+
 
 
 // send detail of single bin item 
@@ -286,6 +286,5 @@ module.exports = {
     deleteBinItem,
     restoreBinItem,
     clearAll,
-    autoDeleteItems,
-    fuzzySearch,
+    autoDeleteItems
 };
