@@ -322,37 +322,6 @@ const fuzzySearch = async (req, res) => {
     });
 };
 
-// upload attachment to meeting
-const uploadAttachment = async (req, res, cb) => {
-    try {
-        let attachment = req.body.file;
-        let attachmentName = req.body.filename
-        let attachmentData = fs.readFileSync(attachment.path)
-
-
-        let mid = req.params.id
-        Meeting.findByIdAndUpdate(mid, { Attachment : {Data: attachmentData, Name: attachmentName}}, (err) => {
-            if (err) {
-                res.status(400).json({
-                    msg: "Error occurred: " + err
-                })
-                return;
-            }
-        })
-
-        cb();
-
-        res.status(200).json({
-            msg: "Attachment uploaded successfully"
-        })
-    } catch (err) {
-        console.log(err)
-        cb();
-        res.status(400).json({
-            msg: "Error occurred: " + err
-        })
-    }
-}
 
 // assign a tag to meeting
 const assignTag = async (req, res) => {
@@ -385,33 +354,6 @@ const assignTag = async (req, res) => {
     })
 }
 
-const getAttachment = async (req, res) =>{
-    let mid = req.params.id
-    let meeting = await Meeting.findById(mid, "Attachment")
-    let attachment = meeting.Attachment
-    
-
-    fs.writeFile("./uploads/" + attachment.Name, attachment.Data, (err) => {
-        if(err){
-            console.log(err)
-        }
-    })
-
-    var options = {
-        root: path.join(__dirname, '../uploads')
-    };
-     
-    var fileName = attachment.Name;
-    
-    
-    res.sendFile(fileName,options,(err)=>{
-        if(err){
-            console.log(err)
-        }else{
-            console.log(fileName)
-        }
-    });
-}
 
 module.exports = {
     getFullMeeting,
@@ -421,7 +363,5 @@ module.exports = {
     meetingEdit,
     meetingDelete,
     fuzzySearch,
-    uploadAttachment,
-    assignTag,
-    getAttachment
+    assignTag
 }

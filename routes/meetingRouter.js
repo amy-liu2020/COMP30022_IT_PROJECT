@@ -40,20 +40,10 @@ meetingRouter.get("/fuzzySearch/:keyword",ensureAuthorized, (req,res) =>
     meetingController.fuzzySearch(req,res)
 );
 
-// upload attachment to meeting
-meetingRouter.post("/upload/:id", uploadFile, ensureAuthorized, (req, res) => {
-    meetingController.uploadAttachment(req, res, deleteMiddlePath)
-});
-
 // assign tag to this contact
 meetingRouter.post("/addTag/:id", ensureAuthorized, (req,res) => {
     meetingController.assignTag(req,res)
 });
-
-// get attachment from database
-meetingRouter.get("/getAttachment/:id", ensureAuthorized, (req, res)=>{
-    meetingController.getAttachment(req,res)
-})
 
 //export the router
 module.exports = meetingRouter;

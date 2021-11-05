@@ -87,10 +87,10 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 
 app.get("/api/testSendFile",(req,res)=>{
+    
     var options = {
-        root: __dirname+"/test/"
+        root: path.join(__dirname, './test')
     };
-     
     var fileName = 'Assignment3_experimentation_1124594.pdf';
     
     res.sendFile(fileName,options,(err)=>{
