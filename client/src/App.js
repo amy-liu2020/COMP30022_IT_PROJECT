@@ -16,7 +16,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NotFound } from "./pages/404";
 import { UnAuth } from "./pages/unAuth";
 import { GetTheme } from "./api";
-import { useEffect, useState} from "react"
 
 const green = createTheme({
     palette: {
