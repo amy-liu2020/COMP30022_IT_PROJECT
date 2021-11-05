@@ -41,6 +41,7 @@ contactRouter.post("/uploadPhoto/:id", (req,res) =>
 
 );
 
+// delete the contact
 contactRouter.delete("/delete/:id", ensureAuthorized, (req,res)=>{
     contactController.contactDelete(req,res)
 })

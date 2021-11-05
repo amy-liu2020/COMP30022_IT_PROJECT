@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const PRIVATE_KEY = "APriVatekEy"
 const EXPIRESD = 60 * 60 * 24
 
+//get user id information from web token
 function ensureAuthorized(req, res, next) {
     var bearerHeader = req.headers.authorization;
   

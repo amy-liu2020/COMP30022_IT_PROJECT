@@ -5,6 +5,7 @@ const Tag = require("../models/tag");
 const mongoose = require("mongoose");
 const fs = require("fs");
 
+// send a list of contacts
 const getFullContact = async (req, res) => {
     try {
         let uid = req.token.userId;
@@ -32,6 +33,7 @@ const getFullContact = async (req, res) => {
     }
 };
 
+// send a list of contacts with specific tags
 const getContactsByTag = async (req, res) => {
     try {
         let uid = req.token.userId;
@@ -64,6 +66,7 @@ const getContactsByTag = async (req, res) => {
     }
 };
 
+// send details of specific contact
 const getSingleContact = async (req, res) => {
     try {
         let cid = req.params.id;
@@ -104,6 +107,7 @@ const getSingleContact = async (req, res) => {
     }
 };
 
+// edit contact information
 const contactEdit = async (req, res) => {
     let {
         FirstName,
@@ -171,6 +175,7 @@ const contactEdit = async (req, res) => {
     });
 };
 
+// create a new contact
 const contactCreate = async (req, res) => {
     let {
         FirstName,
@@ -237,6 +242,7 @@ const contactCreate = async (req, res) => {
     });
 };
 
+// delete specific contact
 const contactDelete = async (req, res) => {
     let cid = req.params.id;
     let uid = req.token.userId;
@@ -274,6 +280,7 @@ const contactDelete = async (req, res) => {
     });
 };
 
+// search in contacts with a rough keyword
 const fuzzySearch = async (req, res) => {
     let keyword = req.params.keyword;
     let uid = req.token.userId;
@@ -311,6 +318,7 @@ const fuzzySearch = async (req, res) => {
     });
 };
 
+// add contact to specific meeting
 const addToMeeting = async (req, res) => {
     let mids = req.body.mids;
     let cid = req.params.id;
@@ -385,6 +393,7 @@ const addToMeeting = async (req, res) => {
     });
 };
 
+// send photo of contact
 const getPhoto = async (req, res) => {
     try {
         let cid = req.params.id;
@@ -408,6 +417,7 @@ const getPhoto = async (req, res) => {
     }
 };
 
+// upload photo to specific contact
 const savePhoto = async (req, res, cb) => {
     try {
         let photoFile = req.body.file;
@@ -436,6 +446,8 @@ const savePhoto = async (req, res, cb) => {
         });
     }
 };
+
+// assign specific tag to contact 
 const assignTag = async (req, res) => {
     let { tagName } = req.body;
     let uid = req.token.userId;

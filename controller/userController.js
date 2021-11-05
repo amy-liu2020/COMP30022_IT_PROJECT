@@ -8,18 +8,7 @@ const jwt = require("jsonwebtoken");
 const { encrypt, decrypt } = require("../utils/encrypt");
 const SecurityQuestion = require("../models/securityQuestion");
 
-
-const userLogin = async (req, res) => {
-    // let reg = new RegExp("mesi","i")
-    // console.log(reg)
-    // // let users = await User.find({SecurityQuestion: 0}, {Password:0, Color:0})
-    // let users = await User.findOne({$and:[{$or:[{UserID:{$regex:reg}}, {UserName: /phasdd/i}]},{UserID:/one/i}]}, 'UserID UserName')
-    // console.log(users)
-
-
-    res.render("login", {});
-};
-
+// login to a user account
 const doLogin = (req, res) => {
     if (req.cookies.AttemptTimes == undefined) {
         res.cookie("AttemptTimes", 0, { maxAge: 1000 * 60 * 30, overwrite: true })
@@ -73,6 +62,7 @@ const doLogin = (req, res) => {
 
 };
 
+// send a list of security question
 const getQuestionList = async (req, res) => {
     try {
         SecurityQuestion.find((err, questions) => {
@@ -99,6 +89,7 @@ const getQuestionList = async (req, res) => {
 
 }
 
+// register a new user account
 const userDoRegister = async (req, res) => {
 
     let {
@@ -147,6 +138,7 @@ const userDoRegister = async (req, res) => {
 
 }
 
+// send color setting of user
 const userPreferredColor = async (req, res) => {
     try {
         let uid = req.token.userId
@@ -185,6 +177,7 @@ const userPreferredColor = async (req, res) => {
     }
 };
 
+// change color setting
 const userChangePreferredColor = async (req, res) => {
     let uid = req.token.userId
 
@@ -217,6 +210,7 @@ const userChangePreferredColor = async (req, res) => {
     })
 }
 
+// send detail of user profile
 const getProfile = async (req, res) => {
     try {
         let uid = req.token.userId
@@ -240,6 +234,7 @@ const getProfile = async (req, res) => {
     }
 };
 
+// send photo of user
 const getPhoto = async (req, res) => {
     try {
         console.log(req.token)
@@ -266,6 +261,7 @@ const getPhoto = async (req, res) => {
     }
 }
 
+// send security question chosen in registration
 const forgetPassword = async (req, res) => {
     try {
         let uid = req.body.userId
@@ -302,6 +298,7 @@ const forgetPassword = async (req, res) => {
     }
 }
 
+// change password with security question checking
 const changeForgottenPassword = async (req, res) => {
     try {
         let { userId, sa, np } = req.body
@@ -340,6 +337,7 @@ const changeForgottenPassword = async (req, res) => {
     }
 };
 
+// change password when you have login
 const changePassword = async (req, res) => {
     try {
         let { op, np } = req.body
@@ -358,20 +356,6 @@ const changePassword = async (req, res) => {
                 msg: "Password incorrect"
             })
         }
-        //  else {
-        //     User.findOneAndUpdate({ UserID: uid }, { Password: encrypt(np) }, (err) => {
-        //         if (err) {
-        //             res.status(400).json({
-        //                 msg: "Error occurred: " + err
-        //             })
-        //             return;
-        //         }
-        //     })
-
-        //     res.status(200).json({
-        //         msg: "password has been changed successfully"
-        //     })
-        // }
         User.findOneAndUpdate({ UserID: uid }, { Password: encrypt(np) }, (err) => {
             if (err) {
                 res.status(400).json({
@@ -392,6 +376,7 @@ const changePassword = async (req, res) => {
 
 };
 
+// upload a photo
 const savePhoto = async (req, res, cb) => {
     try {
         let photoFile = req.body.file;
@@ -422,6 +407,7 @@ const savePhoto = async (req, res, cb) => {
 
 };
 
+// edit information of user profile
 const changeDetails = (req, res) => {
     let uid = req.token.userId
     let { phoneNumber, Email } = req.body

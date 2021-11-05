@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require("fs")
 const DEFAULT_PATH = "attachment"
 
+// upload file to server
 function uploadFile(req, res, next) {
     fs.mkdir("attachment", (err) => {
         if (err) {
@@ -40,7 +41,7 @@ function uploadFile(req, res, next) {
 
 };
 
-
+// delete middle path of uploading file
 function deleteMiddlePath() {
     try {
         deleteDir(DEFAULT_PATH)
@@ -49,6 +50,7 @@ function deleteMiddlePath() {
     }
 }
 
+// delete the path
 function deleteDir(url) {
     var files = [];
 

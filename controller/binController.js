@@ -1,8 +1,9 @@
 const Bin = require("../models/bin")
 const Contact = require("../models/contact");
 const Meeting = require("../models/meeting");
-const DEFAULT_MAX_PREVERVING_DATE = 24;
+const DEFAULT_MAX_PREVERVING_DAYS = 24;
 
+// send a list of bin items to front end
 const getBinList = async (req, res) => {
     try {
         let uid = req.token.userId
@@ -52,7 +53,7 @@ const getBinList = async (req, res) => {
 }
 
 
-
+// send detail of single bin item 
 const getBinItem = async (req,res) => {
 
     let bid = req.params.id;
@@ -121,7 +122,7 @@ const getBinItem = async (req,res) => {
     }
 }
 
-
+// delete specific bin item
 const deleteBinItem = async (req, res) => {
     let bid = req.params.id
     const item = await Bin.findById(bid, (err) => {
@@ -170,7 +171,7 @@ const deleteBinItem = async (req, res) => {
     }
 }
 
-
+// restore specific bin item
 const restoreBinItem = async (req, res) => {
     let bid = req.params.id;
 
@@ -221,7 +222,7 @@ const restoreBinItem = async (req, res) => {
     }
 }
 
-
+// clear all item in bin
 const clearAll = async (req, res) => {
     let uid = req.token.userId
 
@@ -238,6 +239,7 @@ const clearAll = async (req, res) => {
     })
 }
 
+// automatically delete items that is over maximum preverving days
 const autoDeleteItems = async (req, res) => {
     const binList = await Bin.find({}, (err) => {
         if (err) {
@@ -251,7 +253,7 @@ const autoDeleteItems = async (req, res) => {
     binList.forEach((item) => {
         let DelDate = item.DeleteDate;
         let curDate = new Date();
-        if ((curDate - DelDate) / 24 / 3600 / 1000 >= DEFAULT_MAX_PREVERVING_DATE) {
+        if ((curDate - DelDate) / 24 / 3600 / 1000 >= DEFAULT_MAX_PREVERVING_DAYS) {
             Bin.findByIdAndDelete(item._id, (err) => {
                 if (err) {
                     res.status(503).json({
@@ -264,25 +266,6 @@ const autoDeleteItems = async (req, res) => {
         console.log("Auto delete success")
     })
 }
-
-const fuzzySearch = async (req, res) => {
-    let keyword = req.params.keyword
-    let uid = req.token.userId
-    let reg = new RegExp(keyword, "i")
-    const searchResult = await Bin.find(
-        {Name: reg, AccountID: uid }, (err) => {
-    if (err) {
-        res.status(400).json({
-            msg: "Error occurred: " + err
-        })
-        return;
-    }
-}).lean()
-res.status(200).json({
-    msg: "Search bin successfully",
-    searchResult: searchResult
-});
-};
 
 
 module.exports = {

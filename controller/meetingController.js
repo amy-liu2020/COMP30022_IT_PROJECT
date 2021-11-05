@@ -5,6 +5,8 @@ const Contact = require("../models/contact");
 
 const fs = require('fs');
 const mongoose = require("mongoose")
+
+// send a list of all meeting
 const getFullMeeting = async (req, res) => {
     try {
         let uid = req.token.userId
@@ -29,6 +31,7 @@ const getFullMeeting = async (req, res) => {
     }
 };
 
+// send a list of meeitng with specific tag
 const getMeetingsByTag = async (req, res) => {
     try {
         let uid = req.token.userId
@@ -54,7 +57,7 @@ const getMeetingsByTag = async (req, res) => {
     }
 };
 
-
+// send details of single meeting
 const getSingleMeeting = async (req, res) => {
     try {
         let mid = req.params.id
@@ -79,7 +82,7 @@ const getSingleMeeting = async (req, res) => {
     }
 };
 
-
+// create a new meeting
 const meetingCreate = async (req, res) => {
     let {
         Title,
@@ -163,6 +166,7 @@ const meetingCreate = async (req, res) => {
 
 };
 
+// edit meeting information
 const meetingEdit = async (req, res) => {
     try {
         let {
@@ -248,6 +252,7 @@ const meetingEdit = async (req, res) => {
     }
 };
 
+// delete a meeting
 const meetingDelete = async (req, res) => {
     let mid = req.params.id
     let uid = req.token.userId
@@ -281,6 +286,7 @@ const meetingDelete = async (req, res) => {
     });
 }
 
+// seach meeting with a rough keyword
 const fuzzySearch = async (req, res) => {
     let keyword = req.params.keyword
     let uid = req.token.userId
@@ -316,7 +322,7 @@ const fuzzySearch = async (req, res) => {
     });
 };
 
-
+// upload attachment to meeting
 const uploadAttachment = async (req, res, cb) => {
     try {
         let attachment = req.body.file;
@@ -348,6 +354,7 @@ const uploadAttachment = async (req, res, cb) => {
     }
 }
 
+// assign a tag to meeting
 const assignTag = async (req, res) => {
     let { tagName } = req.body
     let uid = req.token.userId

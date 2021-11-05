@@ -2,6 +2,7 @@ const Tag = require("../models/tag")
 const Contact = require("../models/contact");
 const Meeting = require("../models/meeting");
 
+// create a new tag
 const addTag = async (req, res) => {
     try {
         let { tagName, tagOf } = req.body
@@ -49,6 +50,7 @@ const addTag = async (req, res) => {
     }
 }
 
+// delete a existent tag
 const deleteTag = async function (req, res) {
     try {
         let { tagName, tagOf } = req.body
@@ -117,6 +119,7 @@ const deleteTag = async function (req, res) {
     }
 }
 
+// send a list of all tag
 const getTagList = async (req, res) => {
     try {
         let tagOf = req.params.tagOf
