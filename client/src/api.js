@@ -13,77 +13,24 @@ axios.interceptors.request.use(
     }
 );
 
-// component for handling user login
-export async function loginUser(user) {
-    const endpoint = `/api/login`;
-
-    // POST the email and password to FoodBuddy API to
-    // authenticate user and receive the token explicitly
-    // i.e. data = token
-    user.withCredentials = true;
-    let data = await axios({
-        url: endpoint,
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: JSON.stringify(
-            {
-                userId: user.userId,
-                password: user.password,
-            },
-            { withCredentials: true } // IMPORTANT
-        ),
-    })
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
-    // put token ourselves in the local storage, we will
-    // send the token in the request header to the API server
-
-    if (data !== undefined) {
-        console.log(data);
-
-        // set token
-        localStorage.setItem("token", "Bearer " + data.token);
-
-        // create url for profile image
-        if (data.Photo) {
-            console.log(data.Photo);
-            localStorage.setItem(
-                "avatar",
-                URL.createObjectURL(new Blob(data.Photo.data))
-            );
-        }
-    }
-
+export async function LoginUser(user) {
+    const data = await axios
+        .post("/api/login", user)
+        .then((res) => {
+            localStorage.setItem("token", "Bearer " + res.data.token);
+            return "login success";
+        })
+        .catch((err) => errHandler(err));
     return data;
-    // return data;
 }
 
-export async function registerUser(user) {
-    // define the route which the FoodBuddy API is handling
-    // login/authentication
-    const endpoint = `/api/doRegister`;
-
-    // POST the email and password to FoodBuddy API to
-    // authenticate user and receive the token explicitly
-    // i.e. data = token
-    user.withCredentials = true;
-    let data = await axios({
-        url: endpoint,
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: JSON.stringify(
-            user,
-            { withCredentials: true } // IMPORTANT
-        ),
-    })
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-
+export async function RegisterUser(user) {
+    const data = await axios
+        .post("/api/doRegister", user)
+        .then((res) => {
+            return "register success";
+        })
+        .catch((err) => errHandler(err));
     return data;
 }
 
@@ -197,7 +144,7 @@ export function GetBinItem(id) {
 
 export async function DeleteBinItem(id) {
     let data = await axios
-        .post(`/api/bin/delete/:id`, [])
+        .post(`/api/bin/delete/${id}`, [])
         .then((res) => res.data)
         .catch((err) => errHandler(err));
 
@@ -206,7 +153,7 @@ export async function DeleteBinItem(id) {
 
 export async function RestoreBinItem(id) {
     let data = await axios
-        .post(`/api/bin/restore/:id`, [])
+        .post(`/api/bin/restore/${id}`, [])
         .then((res) => res.data)
         .catch((err) => errHandler(err));
 
@@ -230,9 +177,9 @@ export function GetContactPhoto(id) {
     const [error, setError] = useState(null);
 
     const arrayBufferToBase64 = (buffer) => {
-        var binary = '';
+        var binary = "";
         var bytes = [].slice.call(new Uint8Array(buffer));
-        bytes.forEach((b) => binary += String.fromCharCode(b));
+        bytes.forEach((b) => (binary += String.fromCharCode(b)));
         return window.btoa(binary);
     };
 
@@ -246,7 +193,7 @@ export function GetContactPhoto(id) {
                 setLoading(false);
                 console.log(res.data);
 
-                var base64Flag = 'data:image/jpeg;base64,';
+                var base64Flag = "data:image/jpeg;base64,";
                 var imageStr = arrayBufferToBase64(res.data.photo.data);
                 res.data && setPhoto(base64Flag + imageStr);
             })
@@ -287,6 +234,7 @@ export function GetOneContact(id) {
                 setLoading(false);
                 console.log(res.data);
                 res.data && setContact(res.data.contact);
+                res.data && setMeetings(res.data.relatedMeeting);
                 setContact((values) => ({
                     ...values,
                     DOB: values.DOB && values.DOB.slice(0, 10),
@@ -320,6 +268,7 @@ export function GetContacts() {
             .then((res) => {
                 setLoading(false);
                 res.data && setContacts(res.data.contacts);
+                console.log(res.data);
             })
             .catch((err) => {
                 setLoading(false);
@@ -334,15 +283,20 @@ export function GetContacts() {
     return { contacts, loading, error };
 }
 
-export function GetContactsByTag(tagName) {
+export function GetContactsByUrl(tagName, keyword) {
     const [contacts, setContacts] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const source = axios.CancelToken.source();
+        const url = tagName
+            ? `/api/contact/getByTag/${tagName}`
+            : keyword
+            ? `/api/contact/fuzzySearch/${keyword}`
+            : "/api/contact";
         axios
-            .get(`/api/contact/getByTag/${tagName}`, {
+            .get(url, {
                 cancelToken: source.token,
             })
             .then((res) => {
@@ -353,41 +307,12 @@ export function GetContactsByTag(tagName) {
             .catch((err) => {
                 setLoading(false);
                 errHandler(err);
-                setError("An error occured.");
+                setError("An error occured. Please enter valid characters.");
             });
         return () => {
             source.cancel();
         };
-    }, [tagName]);
-
-    return { contacts, loading, error };
-}
-
-export function GetContactsBySearch(keyword) {
-    const [contacts, setContacts] = useState([]);
-    const [loading, setLoading] = useState("loading...");
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios
-            .get(`/api/contact/fuzzySearch/${keyword}`, {
-                cancelToken: source.token,
-            })
-            .then((res) => {
-                setLoading(false);
-                res.data && setContacts(res.data.searchResult);
-                console.log(res.data);
-            })
-            .catch((err) => {
-                setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
-            });
-        return () => {
-            source.cancel();
-        };
-    }, [keyword]);
+    }, [tagName, keyword]);
 
     return { contacts, loading, error };
 }
@@ -417,7 +342,6 @@ export async function DeleteContact(id) {
         .catch((err) => errHandler(err));
     return data;
 }
-
 
 // meeting section -------------------------
 
@@ -477,6 +401,40 @@ export function GetMeetings() {
     return { meetings, loading, error };
 }
 
+export function GetMeetingsByUrl(tagName, keyword) {
+    const [meetings, setMeetings] = useState([]);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        const url = tagName
+            ? `/api/meeting/getByTag/${tagName}`
+            : keyword
+            ? `/api/meeting/fuzzySearch/${keyword}`
+            : "/api/meeting";
+        axios
+            .get(url, {
+                cancelToken: source.token,
+            })
+            .then((res) => {
+                setLoading(false);
+                res.data && setMeetings(res.data.meetings);
+                console.log(res.data);
+            })
+            .catch((err) => {
+                setLoading(false);
+                errHandler(err);
+                setError("An error occured. Please enter valid characters.");
+            });
+        return () => {
+            source.cancel();
+        };
+    }, [tagName, keyword]);
+
+    return { meetings, loading, error };
+}
+
 export function GetMeetingsWithTag(tagName) {
     const [meetings, setMeetings] = useState([]);
     const [loading, setLoading] = useState("loading...");
@@ -525,7 +483,7 @@ export function GetMeetingsBySearch(keyword) {
             .catch((err) => {
                 setLoading(false);
                 errHandler(err);
-                setError("An error occured.wkoks");
+                setError("An error occured. Please enter valid characters.");
             });
         return () => {
             source.cancel();
@@ -551,6 +509,14 @@ export async function EditMeeting(meeting, id) {
     return data;
 }
 
+export async function UploadAttachment(file, id) {
+    let data = await axios
+        .post(`/api/meeting/upload/${id}`, file)
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
 export async function DeleteMeeting(id) {
     const data = await axios
         .delete(`/api/meeting/delete/${id}`)
@@ -559,24 +525,7 @@ export async function DeleteMeeting(id) {
     return data;
 }
 
-function errHandler(error) {
-    if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.log(error.response.data);
-        console.log(error.response.status);
-    } else if (error.request) {
-        // The request was made but no response was received
-        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-        // http.ClientRequest in node.js
-        console.log(error.request);
-    } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log("Error", error.message);
-    }
-}
-
-//zhengtian lu
+// User
 
 export function Getprofile() {
     const [data, setData] = useState([]);
@@ -590,12 +539,10 @@ export function Getprofile() {
             .then((res) => {
                 setLoading(false);
                 res.data && setData(res.data.info);
-                console.log(res);
             })
             .catch((err) => {
                 setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
+                setError(errHandler(err));
             });
         return () => {
             source.cancel();
@@ -605,7 +552,7 @@ export function Getprofile() {
     return { data, loading, error };
 }
 
-export function GetRegister(register) {
+export function GetRegister() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
@@ -616,13 +563,11 @@ export function GetRegister(register) {
             .get(`/api/register`, { cancelToken: source.token })
             .then((res) => {
                 setLoading(false);
-                res.data && setData(res.data);
-                console.log(res);
+                res.data && setData(res.data.questions);
             })
             .catch((err) => {
                 setLoading(false);
-                errHandler(err);
-                setError("An error occured.");
+                setError(errHandler(err));
             });
         return () => {
             source.cancel();
@@ -632,58 +577,142 @@ export function GetRegister(register) {
     return { data, loading, error };
 }
 
-export function uploadPhoto(formdata) {
-    const source = axios.CancelToken.source();
-    axios
-        .post(`/api/upload`, formdata, { cancelToken: source.token })
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => {
-            errHandler(err);
-        });
+export async function uploadPhoto(photo) {
+    const data = await axios
+        .post("/api/upload", photo)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
 }
 
 export function GetPhoto() {
-    const [photo, setPhoto] = useState([]);
+    const [photo, setPhoto] = useState(null);
+    const [loading, setLoading] = useState("loading...");
     const [error, setError] = useState(null);
+
+    const arrayBufferToBase64 = (buffer) => {
+        var binary = "";
+        var bytes = [].slice.call(new Uint8Array(buffer));
+        bytes.forEach((b) => (binary += String.fromCharCode(b)));
+        return window.btoa(binary);
+    };
 
     useEffect(() => {
         const source = axios.CancelToken.source();
         axios
-            .get(`/api/getPhoto`, { cancelToken: source.token })
+            .get(`/api/getPhoto`, {
+                cancelToken: source.token,
+            })
             .then((res) => {
-                res.data && setPhoto(res.data.photo);
-                console.log(res);
+                setLoading(false);
+                console.log(res.data);
+
+                var base64Flag = "data:image/jpeg;base64,";
+                var imageStr = arrayBufferToBase64(res.data.photo.data);
+                res.data && setPhoto(base64Flag + imageStr);
             })
             .catch((err) => {
-                errHandler(err);
-                setError("An error occured.");
+                setLoading(false);
+                setError(errHandler(err));
             });
         return () => {
             source.cancel();
         };
     }, []);
 
-    return { photo, error };
+    return { photo, loading, error };
 }
 
 export async function changeDetails(details) {
     let data = await axios
         .post(`/api/changeDetails`, details)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+export async function changePassword(pass) {
+    let data = await axios
+        .post(`/api/changePassword`, pass)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+export async function getSecurityQuestion(userid) {
+    let data = await axios
+        .post(`/api/forgetPassword`, userid)
         .then((res) => res.data)
         .catch((err) => errHandler(err));
     return data;
 }
 
-export function changePassword(data) {
-    const source = axios.CancelToken.source();
-    axios
-        .post(`/api/changePassword`, data, { cancelToken: source.token })
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => {
-            errHandler(err);
-        });
+export async function verifyForgetPass(change) {
+    let data = await axios
+        .post(`/api/doChangeForgottenPassword`, change)
+        .then((res) => res.data.msg)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+// setting
+export function GetTheme() {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState("loading...");
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        axios
+            .get(`/api/userPreferredColor`, { cancelToken: source.token })
+            .then((res) => {
+                setLoading(false);
+                setData(res.data.theme);
+                console.log(res);
+            })
+            .catch((err) => {
+                setLoading(false);
+                setError(errHandler(err));
+            });
+        return () => {
+            source.cancel();
+        };
+    }, []);
+
+    return { data, loading, error };
+}
+
+export async function ChangeTheme(colorId) {
+    let data = await axios
+        .post(`/api/changeColor`, { colorId: colorId })
+        .then((res) => res.data)
+        .catch((err) => errHandler(err));
+    return data;
+}
+
+
+// handle error
+function errHandler(error) {
+    if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        if (error.response.data.msg) {
+            if (error.response.status === 403) {
+                localStorage.clear();
+                window.location.reload();
+            }
+            return error.response.data.msg;
+        } else {
+            return error.response.data;
+        }
+    } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        // console.log(error.request);
+        return "timeout";
+    } else {
+        // Something happened in setting up the request that triggered an Error
+        return error.message;
+    }
 }

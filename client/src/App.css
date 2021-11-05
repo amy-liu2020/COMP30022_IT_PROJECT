@@ -21,11 +21,6 @@ body {
         "sideM content";
 }
 
-#addTagButton {
-    background-color: var(--sideM-bg-color);
-    color: black;
-}
-
 .two-part-layout {
     display: grid;
     width: 100vw;

@@ -1,9 +1,6 @@
 // navigation bar which contains logo, tabs, search bar, setting and profile photo
-import { MdSettings } from "react-icons/md";
 import Logo from "./logo";
-import Avatar from "@mui/material/Avatar";
-import { Link, useHistory } from "react-router-dom";
-// import { useState } from "react/cjs/react.development";
+import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -17,9 +14,9 @@ import MenuList from "@mui/material/MenuList";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { Paper } from "@mui/material";
 import { useForm } from "react-hook-form";
-import ProfilePhoto from "./avatar";
+import { ProfilePhoto } from "./avatar";
 
-const Search = ({tab}) => {
+const Search = ({ tab }) => {
     const { register, handleSubmit } = useForm();
     let history = useHistory();
 
@@ -34,7 +31,6 @@ const Search = ({tab}) => {
     return (
         <Box
             sx={{
-                marginLeft: "auto",
                 paddingLeft: "20px",
                 borderRadius: "20px",
                 bgcolor: "#ffffff",
@@ -43,26 +39,27 @@ const Search = ({tab}) => {
                     opacity: 0.7,
                 },
             }}
-        ><form onSubmit={handleSubmit(onSubmitHandler)}>
-            <TextField
-                variant="standard"
-                placeholder="search..."
-                color="secondary"
-                {...register("keyword", {
-                    required: true,
-                })}
-                type="search"
-                sx={{ margin: "5px" }}
-            />
-            <IconButton type="submit">
-                <SearchIcon color="secondary" />
-            </IconButton>
+        >
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
+                <TextField
+                    variant="standard"
+                    placeholder="search..."
+                    color="secondary"
+                    {...register("keyword", {
+                        required: true,
+                    })}
+                    type="search"
+                    sx={{ margin: "5px" }}
+                />
+                <IconButton type="submit">
+                    <SearchIcon color="secondary" />
+                </IconButton>
             </form>
         </Box>
     );
 };
 
-export const Nav = ({tab}) => {
+export const Nav = ({ tab }) => {
     let history = useHistory();
     const [anchorEl, setAnchorEl] = useState(false);
     const open = Boolean(anchorEl);
@@ -79,13 +76,13 @@ export const Nav = ({tab}) => {
         <Box
             sx={{
                 gridArea: "header",
-                bgcolor: "#8BE8DA",
+                bgcolor: "primary.dark",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "flex-start",
                 alignItems: "center",
                 columnGap: "20px",
-                paddingLeft: "40px",
+                paddingLeft: "20px",
             }}
         >
             <Logo width={70} />
@@ -103,17 +100,19 @@ export const Nav = ({tab}) => {
             >
                 Meeting
             </Button>
-            <Search tab={tab} />
-            <IconButton onClick={() => history.push("/user/setting")}>
+            {tab && <Search tab={tab} />}
+            <IconButton
+                onClick={() => history.push("/setting")}
+                sx={{ marginLeft: "auto" }}
+            >
                 <SettingsIcon color="secondary" sx={{ fontSize: 30 }} />
             </IconButton>
-            <Button
-                disableRipple
+            <IconButton
                 sx={{ marginRight: "20px" }}
                 onClick={(e) => setAnchorEl(anchorEl ? null : e.currentTarget)}
             >
-                <ProfilePhoto size="40px"/>
-            </Button>
+                <ProfilePhoto size="40px" />
+            </IconButton>
             <Popper open={open} anchorEl={anchorEl} placement="bottom-end">
                 <Paper>
                     <ClickAwayListener
@@ -123,7 +122,7 @@ export const Nav = ({tab}) => {
                     >
                         <MenuList autoFocusItem={open}>
                             <MenuItem
-                                onClick={() => history.push("/user/profile")}
+                                onClick={() => history.push("/profile")}
                             >
                                 Profile
                             </MenuItem>
@@ -134,6 +133,23 @@ export const Nav = ({tab}) => {
                     </ClickAwayListener>
                 </Paper>
             </Popper>
+        </Box>
+    );
+};
+
+// header that just has logo
+export const NavJustLogo = () => {
+    return (
+        <Box
+            sx={{
+                gridArea: "header",
+                bgcolor: "primary.main",
+                display: "flex",
+                alignItems: "center",
+                paddingLeft: "20px",
+            }}
+        >
+            <Logo width={70} />
         </Box>
     );
 };

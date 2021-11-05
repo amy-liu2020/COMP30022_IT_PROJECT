@@ -7,15 +7,20 @@ import {
 } from "react-router-dom";
 import Contact from "./pages/contact";
 import Meeting from "./pages/meeting";
-import User from "./pages/user";
+import Profile from "./pages/profile";
+import Forget from "./pages/forget";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import Setting from "./pages/setting";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import axios from "axios";
-import {useState} from "react"
+import { NotFound } from "./pages/404";
+import { UnAuth } from "./pages/unAuth";
+import { GetTheme } from "./api";
 
-const dark = createTheme({
+const green = createTheme({
     palette: {
         primary: {
-            main: "#77CFC3",
+            main: "#77CFC0",
             light: "#EBF8F6",
             dark: "#8BE8DA",
         },
@@ -25,25 +30,63 @@ const dark = createTheme({
     },
 });
 
-function App() {
+function PrivateRoute({ children, ...rest }) {
+    let token = localStorage.getItem("token");
     return (
-        <ThemeProvider theme={dark}>
+        <Route
+            {...rest}
+            render={({ location }) =>
+                token ? (
+                    children
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: "/unAuth",
+                            state: { from: location },
+                        }}
+                    />
+                )
+            }
+        />
+    );
+}
+
+function App() {
+    const { data } = GetTheme();
+
+    return (
+        <ThemeProvider theme={data ? createTheme(data) : green}>
             <Router>
                 <Switch>
-                    <Route path="/contact">
+                    <PrivateRoute path="/contact">
                         <Contact />
-                    </Route>
-                    <Route path="/meeting">
+                    </PrivateRoute>
+                    <PrivateRoute path="/meeting">
                         <Meeting />
+                    </PrivateRoute>
+                    <PrivateRoute path="/profile">
+                        <Profile />
+                    </PrivateRoute>
+                    <PrivateRoute path="/setting">
+                        <Setting />
+                    </PrivateRoute>
+                    <Route exact path="/login">
+                        <Login />
                     </Route>
-                    <Route path="/user">
-                        <User />
+                    <Route exact path="/register">
+                        <Register />
+                    </Route>
+                    <Route exact path="/forget">
+                        <Forget />
                     </Route>
                     <Route exact path="/">
-                        <Redirect to="/user/login" />
+                        <Redirect to="/login" />
                     </Route>
-                    <Route path="/">
-                        <p>404 not found</p>
+                    <Route exact path="/unAuth">
+                        <UnAuth />
+                    </Route>
+                    <Route path={["/notFound", "*"]}>
+                        <NotFound />
                     </Route>
                 </Switch>
             </Router>

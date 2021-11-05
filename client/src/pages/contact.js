@@ -1,24 +1,16 @@
 import {
-    GetContacts,
     GetOneContact,
     DeleteContact,
     CreateContact,
     EditContact,
-    GetContactsByTag,
+    GetContactsByUrl,
     GetBinList,
-    GetContactsBySearch,
     GetBinItem,
     RestoreBinItem,
-    UploadContactPhoto,
+    DeleteBinItem,
 } from "../api";
-import {
-    Switch,
-    Route,
-    useRouteMatch,
-    useHistory,
-    useParams,
-} from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Switch, Route, useHistory, useParams } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
 import { Controller, useForm } from "react-hook-form";
@@ -30,248 +22,30 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TablePagination,
     TableCell,
     Button,
     TextField,
     Typography,
-    Divider,
     Paper,
     Avatar,
     Grid,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
-import InputField from "../common/inputField";
 import { ContactPhoto } from "../common/avatar";
 
-const Div = styled("div")(({ theme }) => ({
-    ...theme.typography.h4,
-    gridArea: "main",
-    padding: theme.spacing(1),
-    margin: "auto",
-}));
+import { BaseTable } from "../common/table";
+import { ErrorModal } from "../common/errorModal";
 
-function BasicTable({ contacts }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    let history = useHistory();
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormRecord } from "../common/inputField";
+import * as yup from "yup";
 
-    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - contacts.length);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    return (
-        <>
-            {contacts.length ? (
-                <Box
-                    sx={{
-                        gridArea: "main",
-                    }}
-                >
-                    <TableContainer>
-                        <Table sx={{ minWidth: 400 }} aria-label="simple table">
-                            <colgroup>
-                                <col width="40%" />
-                                <col width="30%" />
-                                <col width="30%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Name
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Phone Number
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Email
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {contacts
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row._id}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/contact/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <TableCell>
-                                                {row.FirstName +
-                                                    " " +
-                                                    row.LastName}
-                                            </TableCell>
-                                            <TableCell>
-                                                {row.MobileNo}
-                                            </TableCell>
-                                            <TableCell>{row.Email}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={contacts.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
-            ) : (
-                <Div>no record found.</Div>
-            )}
-        </>
-    );
-}
-
-function BinTable({ contacts }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    let history = useHistory();
-
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - contacts.length) : 0;
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    return (
-        <>
-            {contacts.length ? (
-                <Box
-                    sx={{
-                        gridArea: "main",
-                    }}
-                >
-                    <TableContainer>
-                        <Table sx={{ minWidth: 400 }}>
-                            <colgroup>
-                                <col width="50%" />
-                                <col width="50%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Name
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Delete Date
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {contacts
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row.name}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/contact/bin/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <TableCell>{row.Name}</TableCell>
-                                            <TableCell>
-                                                {row.DeleteDate.slice(0, 10)}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={contacts.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
-            ) : (
-                <Div>no record found.</Div>
-            )}
-        </>
-    );
-}
-
+// related meetings
 function RelatedMeetings({ meetings }) {
     let history = useHistory();
 
     return (
-        <Paper>
+        <Paper sx={{float: "right"}}>
             <Box padding="10px 15px 0px">
                 <Typography variant="h6" gutterBottom>
                     Meetings
@@ -323,77 +97,116 @@ function RelatedMeetings({ meetings }) {
     );
 }
 
-// show all active contacts
-const ContactAll = () => {
-    const { contacts, loading, error } = GetContacts();
+/**
+ * Display active contacts in table.
+ */
+export const ContactTable = () => {
+    let { tagName, keyword } = useParams(); // use to filter contacts
+    const { contacts, loading, error } = GetContactsByUrl(tagName, keyword);
+
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Name",
+                accessor: (row) => row.FirstName + " " + row.LastName,
+            },
+            {
+                Header: "Phone Number",
+                accessor: "MobileNo",
+            },
+            {
+                Header: "Email",
+                accessor: "Email",
+            },
+        ],
+        []
+    );
 
     if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <ErrorModal error={error} />;
     }
 
-    return <BasicTable contacts={contacts} />;
+    return <BaseTable columns={columns} data={contacts} path="/contact/" />;
 };
 
-// show contact with specific tag
-const ContactWithTag = () => {
-    let { tagName } = useParams();
-    const { contacts, loading, error } = GetContactsByTag(tagName);
-
-    if (loading) {
-        return <Loading />;
-    }
-    if (error) {
-        return <p>{error}</p>;
-    }
-
-    return <BasicTable contacts={contacts} />;
-};
-
-// show all deleted contacts
-const ContactBin = () => {
+/**
+ * Display deleted contacts in table.
+ */
+export const ContactBin = () => {
     const { data, loading, error } = GetBinList("C");
 
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Name",
+                accessor: "Name",
+            },
+            {
+                Header: "Delete Date",
+                accessor: (row) => row.DeleteDate.slice(0, 10),
+            },
+        ],
+        []
+    );
+
     if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <ErrorModal error={error} />;
     }
-    return <BinTable contacts={data} />;
+
+    return <BaseTable columns={columns} data={data} path="/contact/bin/" />;
 };
 
-// show all from search keyword
-const ContactSearch = () => {
-    let { keyword } = useParams();
-    const { contacts, loading, error } = GetContactsBySearch(keyword);
+const phoneReg =
+    /^((\+61\s?)?(\((0|02|03|04|07|08)\))?)?\s?\d{1,4}\s?\d{1,4}\s?\d{0,4}$/;
 
-    if (loading) {
-        return <Loading />;
-    }
+const ContactSchema = yup.object().shape({
+    FirstName: yup
+        .string()
+        .ensure()
+        .required("Firstname is required")
+        .max(20, "Firstname must not exceed 20 characters"),
+    LastName: yup
+        .string()
+        .ensure()
+        .required("Lastname is required")
+        .max(40, "Lastname must not exceed 40 characters"),
+    MobileNo: yup.string().ensure().matches(phoneReg, {
+        message: "Invalid phone number format",
+        excludeEmptyString: true,
+    }),
+    HomeNo: yup.string().ensure().matches(phoneReg, {
+        message: "Invalid phone number format",
+        excludeEmptyString: true,
+    }),
+    Email: yup.string().ensure().email("Invalid email format"),
+    Company: yup.string().ensure(),
+    JobTitle: yup.string().ensure(),
+    DOB: yup.date().max(new Date()),
+    Relationship: yup.string().ensure(),
+    Address: yup.string().ensure(),
+    Notes: yup
+        .string()
+        .ensure()
+        .max(140, "Notes must not exceed 140 characters"),
+    Tags: yup.array().ensure(),
+});
 
-    if (error) {
-        return <p>{error}</p>;
-    }
-    return <BasicTable contacts={contacts} />;
-};
-
-// show details of specific contact
 const ContactDetail = () => {
-    let { contactId } = useParams();
+    let { id } = useParams();
     let history = useHistory();
-    const { contact, meetings, loading, error } = GetOneContact(contactId);
-    const {
-        reset,
-        control,
-        handleSubmit,
-        formState: { isDirty, isSubmitting },
-    } = useForm();
-    const [inputDisable, setInputDisable] = useState(true);
+    const { contact, meetings, loading, error } = GetOneContact(id);
+    const [viewOnly, setViewOnly] = useState(true);
+    const { control, handleSubmit, reset } = useForm({
+        resolver: yupResolver(ContactSchema),
+    });
 
     const customReset = (contact) => {
         let defa = JSON.parse(JSON.stringify(contact)); // clone tags
@@ -402,37 +215,21 @@ const ContactDetail = () => {
             defa.Tags.map((opt) => {
                 opt.value = opt.TagId;
                 opt.label = opt.TagName;
+                return opt;
             });
+            defa.TagIds = defa.Tags.map((opt) => opt.TagId);
         }
 
         reset(defa);
     };
 
-    const onSubmitHandler = (data) => {
-        // check if there is any change
-        if (isDirty) {
-            if (data.Tags) {
-                data.TagIds = data.Tags.map((opt) => opt.TagId);
-            }
-
-            // send data to server
-            EditContact(data, contactId).then((data) => {
-                if (data === undefined) {
-                    alert("error");
-                } else {
-                    alert(data.msg);
-                    window.location.reload(); // refresh page
-                }
-            });
-        }
-
-        // switch to view mode
-        setInputDisable(true);
+    const onEdit = () => {
+        setViewOnly(false);
     };
 
-    const onDeleteHandler = () => {
+    const onDelete = () => {
         // send request to server
-        DeleteContact(contactId).then((res) => {
+        DeleteContact(id).then((res) => {
             console.log(res);
         });
 
@@ -440,218 +237,79 @@ const ContactDetail = () => {
         history.push("/contact");
     };
 
-    const onChangeMode = () => {
+    const onCancel = () => {
         customReset(contact);
-        setInputDisable(!inputDisable);
+        setViewOnly(true);
+    };
+
+    const onSubmit = (data) => {
+        if (data.Tags) {
+            data.TagIds = data.Tags.map((opt) => opt.TagId);
+        }
+        data.Photo = undefined;
+
+        // send data to server
+        EditContact(data, id).then((res) => {
+            if (res) {
+                alert(res.msg);
+            } else {
+                alert(res);
+            }
+        });
+
+        // switch to view mode
+        setViewOnly(true);
     };
 
     useEffect(() => {
         customReset(contact);
     }, [contact]);
 
-    if (loading || isSubmitting) {
+    if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <p>error</p>;
     }
 
     return (
-        <Box
-            sx={{
-                gridArea: "main",
-                bgcolor: "primary.light",
-                padding: "10px 25px",
-            }}
-        >
-            <form onSubmit={handleSubmit(onSubmitHandler)}>
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="start"
-                    spacing={4}
-                    marginBottom="35px"
-                >
-                    <Grid item xs="auto">
-                        <ContactPhoto size="200px" id={contactId} />
-                    </Grid>
-                    <Grid item xs>
-                        <Box
-                            height="170px"
-                            width="360px"
-                            sx={{
-                                paddingTop: "30px",
-                                display: "flex",
-                                justifyContent: "space-evenly",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <Box marginBottom="20px">
-                                <Controller
-                                    name="FirstName"
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({
-                                        field,
-                                        fieldState: { error },
-                                    }) => (
-                                        <TextField
-                                            placeholder="Firstname"
-                                            {...field}
-                                            error={error}
-                                            variant="standard"
-                                            disabled={inputDisable}
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: 30,
-                                                    width: "170px",
-                                                },
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <Controller
-                                    name="LastName"
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({
-                                        field,
-                                        fieldState: { error },
-                                    }) => (
-                                        <TextField
-                                            placeholder="Lastname"
-                                            {...field}
-                                            error={error}
-                                            variant="standard"
-                                            disabled={inputDisable}
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: 30,
-                                                    width: "170px",
-                                                },
-                                            }}
-                                            sx={{ float: "right" }}
-                                        />
-                                    )}
-                                />
-                            </Box>
-                            <SelectTags
-                                control={control}
-                                tagOf="C"
-                                isDisabled={inputDisable}
-                            />
-                            <InputField
-                                name="MobileNo"
-                                label="Mobile Number"
-                                control={control}
-                                disabled={inputDisable}
-                                type="tel"
-                            />
-                            <InputField
-                                name="HomeNo"
-                                label="Home Number"
-                                control={control}
-                                disabled={inputDisable}
-                                type="tel"
-                            />
-                        </Box>
-                    </Grid>
-                    <Grid item xs="auto">
-                        <Button type="button" onClick={onChangeMode}>
-                            {inputDisable ? "edit" : "cancel"}
+        <ContactForm
+            viewOnly={viewOnly}
+            control={control}
+            id={id}
+            meetings={meetings}
+            buttons={
+                viewOnly ? (
+                    <>
+                        <Button type="button" onClick={onDelete} sx={{ float: "right" }}>
+                            delete
                         </Button>
-                        {inputDisable ? (
-                            <Button type="button" onClick={onDeleteHandler}>
-                                delete
-                            </Button>
-                        ) : (
-                            <Button type="submit">save</Button>
-                        )}
-                    </Grid>
-                </Grid>
-                <Divider />
-                <Grid container direction="row" spacing={12}>
-                    <Grid item xs={8} maxWidth="500px">
-                        <InputField
-                            name="Email"
-                            label="Email"
-                            control={control}
-                            disabled={inputDisable}
-                            type="email"
-                        />
-                        <InputField
-                            name="JobTitle"
-                            label="Job title"
-                            disabled={inputDisable}
-                            control={control}
-                        />
-                        <InputField
-                            name="Company"
-                            label="Company"
-                            disabled={inputDisable}
-                            control={control}
-                        />
-                        <InputField
-                            name="DOB"
-                            label="Date of birth"
-                            disabled={inputDisable}
-                            control={control}
-                            type="date"
-                        />
-                        <InputField
-                            name="Relationship"
-                            label="Relationship"
-                            disabled={inputDisable}
-                            control={control}
-                        />
-                        <Controller
-                            name="Notes"
-                            control={control}
-                            render={({ field }) => (
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        marginTop: "15px",
-                                    }}
-                                >
-                                    <TextField
-                                        {...field}
-                                        label="Notes"
-                                        multiline
-                                        maxRows={3}
-                                        placeholder="Write something..."
-                                        fullWidth
-                                        margin="normal"
-                                        variant="filled"
-                                        disabled={inputDisable}
-                                    />
-                                </Box>
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={4} marginTop="20px">
-                        <RelatedMeetings meetings={meetings} />
-                    </Grid>
-                </Grid>
-            </form>
-        </Box>
+                        <Button type="button" onClick={onEdit} sx={{ float: "right" }}>
+                            edit
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <Button type="button" onClick={onCancel} sx={{ float: "right" }}>
+                            cancel
+                        </Button>
+                        <Button onClick={handleSubmit(onSubmit)} sx={{ float: "right" }}>save</Button>
+                    </>
+                )
+            }
+        />
     );
 };
 
-// create a new contact
 const ContactCreate = () => {
     let history = useHistory();
-
     const {
-        handleSubmit,
         control,
-        formState: { isDirty},
+        handleSubmit,
+        formState: { isDirty },
     } = useForm({
+        resolver: yupResolver(ContactSchema),
         defaultValues: {
             FirstName: "",
             LastName: "",
@@ -660,7 +318,7 @@ const ContactCreate = () => {
             Email: "",
             Company: "",
             JobTitle: "",
-            DOB: "",
+            DOB: undefined,
             Relationship: "",
             Address: "",
             Notes: "",
@@ -668,8 +326,9 @@ const ContactCreate = () => {
         },
     });
 
-    const onSubmitHandler = (data) => {
-        // check if there any input
+    const onCreate = (data) => {
+        console.log(data);
+
         if (isDirty) {
             // add tags to contact
             if (data.Tags) {
@@ -684,189 +343,35 @@ const ContactCreate = () => {
         history.push("/contact");
     };
 
-
-
     return (
-        <Box
-            sx={{
-                gridArea: "main",
-                bgcolor: "primary.light",
-                padding: "10px 25px",
-            }}
-        >
-            <form onSubmit={handleSubmit(onSubmitHandler)}>
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="start"
-                    spacing={4}
-                    marginBottom="35px"
-                >
-                    <Grid item xs="auto">
-                        <Avatar
-                            sx={{
-                                width: "200px",
-                                height: "200px",
-                                cursor: "pointer",
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs>
-                        <Box
-                            height="170px"
-                            width="360px"
-                            sx={{
-                                paddingTop: "30px",
-                                display: "flex",
-                                justifyContent: "space-evenly",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <Box marginBottom="10px">
-                                <Controller
-                                    name="FirstName"
-                                    control={control}
-                                    rules={{ required: "This field is required." }}
-                                    render={({
-                                        field,
-                                        fieldState: { error },
-                                    }) => (
-                                        <TextField
-                                            placeholder="Firstname"
-                                            {...field}
-                                            error={error}
-                                            variant="standard"
-                                            helperText={error ? error.message : " "}
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: 30,
-                                                    width: "170px",
-                                                },
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <Controller
-                                    name="LastName"
-                                    control={control}
-                                    rules={{ required: "This field is required." }}
-                                    render={({
-                                        field,
-                                        fieldState: { error },
-                                    }) => (
-                                        <TextField
-                                            placeholder="Lastname"
-                                            {...field}
-                                            error={error}
-                                            variant="standard"
-                                            helperText={error ? error.message : " "}
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: 30,
-                                                    width: "170px",
-                                                },
-                                            }}
-                                            sx={{ float: "right" }}
-                                        />
-                                    )}
-                                />
-                            </Box>
-                            <SelectTags control={control} tagOf="C" />
-                            <InputField
-                                name="MobileNo"
-                                label="Mobile Number"
-                                control={control}
-                                type="tel"
-                            />
-                            <InputField
-                                name="HomeNo"
-                                label="Home Number"
-                                control={control}
-                                type="tel"
-                            />
-                        </Box>
-                    </Grid>
-                    <Grid item xs="auto">
-                        <Button type="button" onClick={() => history.goBack()}>
-                            cancel
-                        </Button>
-                        <Button type="submit">create</Button>
-                    </Grid>
-                </Grid>
-                <Divider />
-                <Grid container direction="row">
-                    <Grid item xs maxWidth="400px">
-                        <InputField
-                            name="Email"
-                            label="Email"
-                            control={control}
-                            type="email"
-                        />
-                        <InputField
-                            name="JobTitle"
-                            label="Job title"
-                            control={control}
-                        />
-                        <InputField
-                            name="Company"
-                            label="Company"
-                            control={control}
-                        />
-                        <InputField
-                            name="DOB"
-                            label="Date of birth"
-                            control={control}
-                            type="date"
-                        />
-                        <InputField
-                            name="Relationship"
-                            label="Relationship"
-                            control={control}
-                        />
-                        <Controller
-                            name="Notes"
-                            control={control}
-                            render={({ field }) => (
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        marginTop: "15px",
-                                    }}
-                                >
-                                    <TextField
-                                        {...field}
-                                        label="Notes"
-                                        multiline
-                                        maxRows={3}
-                                        placeholder="Write something..."
-                                        fullWidth
-                                        margin="normal"
-                                        variant="filled"
-                                    />
-                                </Box>
-                            )}
-                        />
-                    </Grid>
-                </Grid>
-            </form>
-        </Box>
+        <ContactForm
+            viewOnly={false}
+            control={control}
+            buttons={<Button onClick={handleSubmit(onCreate)} sx={{ float: "right" }}>create</Button>}
+        />
     );
 };
 
-// restore deleted Contact
 const ContactRestore = () => {
-    let { BinId } = useParams();
+    let { id } = useParams();
     let history = useHistory();
-    const { data, loading, error } = GetBinItem(BinId);
-    const { reset, control } = useForm();
-    const inputDisable = true;
+    const { data, loading, error } = GetBinItem(id);
+    const { reset, control } = useForm({
+        resolver: yupResolver(ContactSchema),
+    });
 
-    const onRestoreHandler = () => {
-        RestoreBinItem(BinId).then((res) => console.log(res));
+    const onRestore = () => {
+        RestoreBinItem(id).then((res) => {
+            console.log(res);
+            history.push("/contact");
+        });
+    };
+
+    const onDelete = () => {
+        DeleteBinItem(id).then((res) => {
+            console.log(res);
+            history.push("/contact/bin");
+        });
     };
 
     const customReset = (data) => {
@@ -891,195 +396,166 @@ const ContactRestore = () => {
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <ErrorModal error={error} />;
     }
 
     return (
-        <Box
-            sx={{
-                gridArea: "main",
-                bgcolor: "primary.light",
-                padding: "10px 25px",
-            }}
-        >
-            <form>
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="start"
-                    spacing={4}
-                    marginBottom="35px"
-                >
-                    <Grid item xs="auto">
-                        <Avatar
-                            sx={{
-                                width: "200px",
-                                height: "200px",
-                                cursor: "pointer",
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs>
-                        <Box
-                            height="170px"
-                            width="380px"
-                            sx={{
-                                paddingTop: "30px",
-                                display: "flex",
-                                justifyContent: "space-evenly",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <Box marginBottom="20px">
-                                <Controller
-                                    name="FirstName"
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({
-                                        field,
-                                        fieldState: { error },
-                                    }) => (
-                                        <TextField
-                                            placeholder="Firstname"
-                                            {...field}
-                                            error={error}
-                                            variant="standard"
-                                            disabled={inputDisable}
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: 30,
-                                                    width: "180px",
-                                                },
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <Controller
-                                    name="LastName"
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({
-                                        field,
-                                        fieldState: { error },
-                                    }) => (
-                                        <TextField
-                                            placeholder="Lastname"
-                                            {...field}
-                                            error={error}
-                                            variant="standard"
-                                            disabled={inputDisable}
-                                            inputProps={{
-                                                style: {
-                                                    fontSize: 30,
-                                                    width: "180px",
-                                                },
-                                            }}
-                                            sx={{ float: "right" }}
-                                        />
-                                    )}
-                                />
-                            </Box>
-                            <SelectTags
-                                control={control}
-                                tagOf="C"
-                                isDisabled={inputDisable}
-                            />
-                            <InputField
-                                name="MobileNo"
-                                label="Mobile Number"
-                                control={control}
-                                disabled={inputDisable}
-                                type="tel"
-                            />
-                            <InputField
-                                name="HomeNo"
-                                label="Home Number"
-                                control={control}
-                                disabled={inputDisable}
-                                type="tel"
-                            />
+        <ContactForm
+            viewOnly={true}
+            control={control}
+            buttons={
+                <>
+                    <Button onClick={onDelete} sx={{ float: "right" }}>delete</Button>
+                    <Button onClick={onRestore} sx={{ float: "right" }}>restore</Button>
+                </>
+            }
+        />
+    );
+};
+
+const ContactForm = ({ viewOnly, control, buttons, id, meetings = [] }) => {
+    return (
+        <Box bgcolor="primary.light" gridArea="main" padding="10px 30px">
+            <Grid container columnSpacing={3} >
+                <Grid item xs={12} md={3} minWidth="220px" order={{ xs: 2, md: 1 }}>
+                    {id ? (
+                        <ContactPhoto id={id} size="200px" />
+                    ) : (
+                        <Box width="100%" height="100%">
+                            <Avatar sx={{ width: "200px", height: "200px", alignSelf: "center" }} />
                         </Box>
-                    </Grid>
-                    <Grid item xs="auto">
-                        <Button type="button" onClick={onRestoreHandler}>
-                            restore
-                        </Button>
-                    </Grid>
+                    )}
                 </Grid>
-                <Divider />
-                <Grid container direction="row" spacing={12}>
-                    <Grid item xs={8} maxWidth="500px">
-                        <InputField
-                            name="Email"
-                            label="Email"
-                            control={control}
-                            disabled={inputDisable}
-                            type="email"
-                        />
-                        <InputField
-                            name="JobTitle"
-                            label="Job title"
-                            disabled={inputDisable}
-                            control={control}
-                        />
-                        <InputField
-                            name="Company"
-                            label="Company"
-                            disabled={inputDisable}
-                            control={control}
-                        />
-                        <InputField
-                            name="DOB"
-                            label="Date of birth"
-                            disabled={inputDisable}
-                            control={control}
-                            type="date"
-                        />
-                        <InputField
-                            name="Relationship"
-                            label="Relationship"
-                            disabled={inputDisable}
-                            control={control}
-                        />
-                        <Controller
-                            name="Notes"
-                            control={control}
-                            render={({ field }) => (
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        marginTop: "15px",
-                                    }}
-                                >
-                                    <TextField
-                                        {...field}
-                                        label="Notes"
-                                        multiline
-                                        maxRows={3}
-                                        placeholder="Write something..."
-                                        fullWidth
-                                        margin="normal"
-                                        variant="filled"
-                                        disabled={inputDisable}
-                                    />
-                                </Box>
-                            )}
-                        />
-                    </Grid>
+                <Grid item xs={12} md={4} minWidth="390px" maxWidth="400px" order={{ xs: 3, md: 2 }}>
+                    <Controller
+                        name="FirstName"
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                            <TextField
+                                placeholder="Firstname"
+                                {...field}
+                                error={error}
+                                helperText={error ? error.message : " "}
+                                variant="standard"
+                                inputProps={{
+                                    readOnly: viewOnly,
+                                    style: {
+                                        fontSize: 30,
+                                        width: "180px",
+                                    },
+                                }}
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="LastName"
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                            <TextField
+                                placeholder="Lastname"
+                                {...field}
+                                error={error}
+                                helperText={error ? error.message : " "}
+                                variant="standard"
+                                inputProps={{
+                                    readOnly: viewOnly,
+                                    style: {
+                                        fontSize: 30,
+                                        width: "180px",
+                                    },
+                                }}
+                            />
+                        )}
+                    />
+                    <SelectTags
+                        control={control}
+                        tagOf="C"
+                        isDisabled={viewOnly}
+                    />
+                    <FormRecord
+                        control={control}
+                        name="MobileNo"
+                        label="Mobile Number"
+                        viewOnly={viewOnly}
+                        labelWidth="280px"
+                        type="tel"
+                    />
+                    <FormRecord
+                        control={control}
+                        name="HomeNo"
+                        label="Home Number"
+                        viewOnly={viewOnly}
+                        labelWidth="280px"
+                        type="tel"
+                    />
                 </Grid>
-            </form>
+                <Grid item xs={12} md={4} order={{ xs: 1, md: 3 }}>
+                    {buttons}
+                </Grid>
+                <Grid item xs={12} md={5} minWidth="38px" maxWidth="400px" order={4}>
+                    <FormRecord
+                        control={control}
+                        name="Email"
+                        viewOnly={viewOnly}
+                    />
+                    <FormRecord
+                        control={control}
+                        name="Company"
+                        viewOnly={viewOnly}
+                    />
+                    <FormRecord
+                        control={control}
+                        name="JobTitle"
+                        viewOnly={viewOnly}
+                    />
+                    <FormRecord
+                        control={control}
+                        name="DOB"
+                        viewOnly={viewOnly}
+                        type="date"
+                    />
+                    <FormRecord
+                        control={control}
+                        name="Relationship"
+                        viewOnly={viewOnly}
+                    />
+                    <FormRecord
+                        control={control}
+                        name="Address"
+                        viewOnly={viewOnly}
+                    />
+                    <Controller
+                        name="Notes"
+                        control={control}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label="Notes"
+                                multiline
+                                maxRows={3}
+                                placeholder="Write something..."
+                                fullWidth
+                                margin="normal"
+                                variant="filled"
+                                InputProps={{
+                                    readOnly: viewOnly,
+                                }}
+                            />
+                        )}
+                    />
+                </Grid>
+                {id && (
+                    <Grid item xs={12} md={6} order={5}>
+                            <RelatedMeetings meetings={meetings} />
+                    </Grid>
+                )}
+            </Grid>
         </Box>
     );
 };
 
-// decide which subPage will be render based on path
-export const Contact = () => {
-    let { path } = useRouteMatch();
-
+// router
+const Contact = () => {
     return (
         <Box
             sx={{
@@ -1094,26 +570,27 @@ export const Contact = () => {
             <Nav tab="contact" />
             <SideMenu tagOf="C" />
             <Switch>
-                <Route path={`${path}/create`}>
-                    <ContactCreate />
-                </Route>
-                <Route path={`${path}/bin/:BinId`}>
-                    <ContactRestore />
-                </Route>
-                <Route path={`${path}/bin`}>
+                <Route exact path={"/contact/bin"}>
                     <ContactBin />
                 </Route>
-                <Route path={`${path}/tag/:tagName`}>
-                    <ContactWithTag />
+                <Route exact path={"/contact/bin/:id"}>
+                    <ContactRestore />
                 </Route>
-                <Route path={`${path}/search/:keyword`}>
-                    <ContactSearch />
+                <Route
+                    exact
+                    path={[
+                        "/contact/search/:keyword",
+                        "/contact/tag/:tagName",
+                        "/contact/",
+                    ]}
+                >
+                    <ContactTable />
                 </Route>
-                <Route path={`${path}/:contactId`}>
+                <Route exact path={"/contact/create"}>
+                    <ContactCreate />
+                </Route>
+                <Route exact path={"/contact/:id"}>
                     <ContactDetail />
-                </Route>
-                <Route exact path={path}>
-                    <ContactAll />
                 </Route>
             </Switch>
         </Box>

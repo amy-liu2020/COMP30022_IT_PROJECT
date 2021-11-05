@@ -6,33 +6,25 @@ import {
     useParams,
 } from "react-router-dom";
 import {
-    GetMeetings,
-    GetMeetingsWithTag,
     GetOneMeeting,
     CreateMeeting,
     EditMeeting,
     DeleteMeeting,
     GetBinList,
-    GetMeetingsBySearch,
     GetBinItem,
     RestoreBinItem,
+    GetMeetingsByUrl,
+    DeleteBinItem,
+    UploadAttachment
 } from "../api";
 import SideMenu from "../common/sideMenu";
 import { Nav } from "../common/nav";
 import { Controller, useForm } from "react-hook-form";
 import SelectTags from "../common/tag";
-import { useState, useEffect } from "react";
-
-import { tableCellClasses } from "@mui/material/TableCell";
+import { useState, useEffect, useMemo } from "react";
 import Loading from "../common/loading";
 
 import {
-    Table,
-    TableBody,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
     TableCell,
     Button,
     TextField,
@@ -42,299 +34,82 @@ import {
     Grid,
     Input,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import InputField from "../common/inputField";
 import { InviteesTable } from "../common/inviteesTable";
+import { BaseTable } from "../common/table";
+import { ErrorModal } from "../common/errorModal";
 
-const StyledTableCell = styled(TableCell)(() => ({
-    [`&.${tableCellClasses.head}`]: {
-        fontSize: 18,
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
-}));
+/**
+ * Display active meetings in table.
+ */
+ export const MeetingTable = () => {
+    let { tagName, keyword } = useParams(); // use to filter contacts
+    const { meetings, loading, error } = GetMeetingsByUrl(tagName, keyword);
 
-const Div = styled("div")(({ theme }) => ({
-    ...theme.typography.h4,
-    padding: theme.spacing(1),
-    margin: "auto",
-    gridArea: "main",
-}));
-
-function BasicTable({ meetings }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    let history = useHistory();
-
-    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - meetings.length);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    return (
-        <>
-            {meetings.length ? (
-                <Box
-                    sx={{
-                        gridArea: "main",
-                    }}
-                >
-                    <TableContainer>
-                        <Table sx={{ minWidth: 400 }}>
-                            <colgroup>
-                                <col width="40%" />
-                                <col width="30%" />
-                                <col width="30%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Title
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Location
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Date
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {meetings
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row._id}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/meeting/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <TableCell>{row.Title}</TableCell>
-                                            <TableCell>
-                                                {row.Location}
-                                            </TableCell>
-                                            <TableCell>
-                                                {row.StartTime &&
-                                                    row.StartTime.slice(0, 10)}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <StyledTableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={meetings.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
-            ) : (
-                <Div>no record found.</Div>
-            )}
-        </>
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Title",
+                accessor: "Title",
+            },
+            {
+                Header: "Location",
+                accessor: "Location",
+            },
+            {
+                Header: "Time",
+                accessor: (row) => row.StartTime.slice(0, 10),
+            },
+        ],
+        []
     );
-}
-
-function BinTable({ meetings }) {
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    let history = useHistory();
-
-    const emptyRows = Math.max(0, (1 + page) * rowsPerPage - meetings.length);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    return (
-        <>
-            {meetings.length ? (
-                <Box
-                    sx={{
-                        gridArea: "main",
-                    }}
-                >
-                    <TableContainer>
-                        <Table sx={{ minWidth: 400 }}>
-                            <colgroup>
-                                <col width="50%" />
-                                <col width="50%" />
-                            </colgroup>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Name
-                                    </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            backgroundColor: "primary.light",
-                                            fontSize: 18,
-                                        }}
-                                    >
-                                        Delete Date
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {meetings
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row) => (
-                                        <TableRow
-                                            key={row.name}
-                                            sx={{
-                                                "&:hover": {
-                                                    background: "#ddd",
-                                                    cursor: "pointer",
-                                                },
-                                            }}
-                                            onClick={() =>
-                                                history.push(
-                                                    `/meeting/bin/${row._id}`
-                                                )
-                                            }
-                                        >
-                                            <TableCell>{row.Name}</TableCell>
-                                            <TableCell>
-                                                {row.DeleteDate.slice(0, 10)}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={3} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[]}
-                        component="div"
-                        count={meetings.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                    />
-                </Box>
-            ) : (
-                <Div>no record found.</Div>
-            )}
-        </>
-    );
-}
-
-// show all active meetings
-const MeetingAll = () => {
-    const { meetings, loading, error } = GetMeetings();
 
     if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <ErrorModal error={error} />;
     }
 
-    return <BasicTable meetings={meetings} />;
+    return <BaseTable columns={columns} data={meetings} path="/meeting/" />;
 };
 
-// show meeting with specific tag
-const MeetingWithTag = () => {
-    let { tagName } = useParams();
-    const { meetings, loading, error } = GetMeetingsWithTag(tagName);
 
-    if (loading) {
-        return <Loading />;
-    }
-
-    if (error) {
-        return <p>{error}</p>;
-    }
-
-    return <BasicTable meetings={meetings} />;
-};
-
-// show all deleted meetings
-const MeetingBin = () => {
+/**
+ * Display deleted meetings in table.
+ */
+ export const MeetingBin = () => {
     const { data, loading, error } = GetBinList("M");
 
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Title",
+                accessor: "Name",
+            },
+            {
+                Header: "Delete Date",
+                accessor: (row) => row.DeleteDate.slice(0, 10),
+            },
+        ],
+        []
+    );
+
     if (loading) {
         return <Loading />;
     }
 
     if (error) {
-        return <p>{error}</p>;
+        return <ErrorModal error={error} />;
     }
-    return <BinTable meetings={data} />;
+
+    return <BaseTable columns={columns} data={data} path="/meeting/bin/" />;
 };
 
-// show all from search keyword
-const MeetingSearch = () => {
-    let { keyword } = useParams();
-    const { meetings, loading, error } = GetMeetingsBySearch(keyword);
 
-    if (loading) {
-        return <Loading />;
-    }
 
-    if (error) {
-        return <p>{error}</p>;
-    }
-    return <BasicTable meetings={meetings} />;
-};
 
 const MeetingDetail = () => {
     let history = useHistory();
@@ -342,6 +117,8 @@ const MeetingDetail = () => {
     const { data, loading, error } = GetOneMeeting(id);
     const [isDisabled, setIsDisable] = useState(true);
     const [invitees, setInvitees] = useState([]);
+    const [attachment, setAttachment] = useState(null);
+    const [attachmentURL, setAttachmentURL] = useState(null);
     const {
         reset,
         handleSubmit,
@@ -379,8 +156,17 @@ const MeetingDetail = () => {
         }
 
         // send data to server
-        data.Attachment = []; // need to be update later
         EditMeeting(data, id).then((res) => alert(res.msg));
+
+        if (attachment) {
+            // reform attachment data
+            const formData = new FormData();
+            formData.append("file", attachment);
+            UploadAttachment(formData, id).then((res) => alert(res.msg));
+
+            // refresh page
+            window.location.reload();
+        }
 
         // switch to view mode
         setIsDisable(true);
@@ -389,7 +175,7 @@ const MeetingDetail = () => {
     const CustomReset = (data) => {
         let defaultValue = JSON.parse(JSON.stringify(data));
         // re-format data
-        defaultValue.Attachment = undefined;
+
         if (defaultValue.StartTime) {
             defaultValue.Date = defaultValue.StartTime.slice(0, 10);
             defaultValue.StartTime = defaultValue.StartTime.slice(11, 16);
@@ -412,6 +198,16 @@ const MeetingDetail = () => {
                 )
             );
         }
+
+        if (defaultValue.Attachment) {
+            setAttachment(
+                defaultValue.Attachment
+            );
+            var f = new File(defaultValue.Attachment, "foo");
+            defaultValue.Attachment = f;
+            setAttachmentURL(URL.createObjectURL(f));
+            console.log(attachmentURL);
+        }
         // reset defaultValue
         reset(defaultValue);
     };
@@ -430,6 +226,12 @@ const MeetingDetail = () => {
         CustomReset(data);
         setIsDisable(!isDisabled);
     };
+
+    const changeHandler = (event) => {
+		setAttachment(URL.createObjectURL(event.target.files[0]));
+        console.log(event.target.files[0]);
+        console.log(attachment);
+	};
 
     useEffect(() => {
         CustomReset(data);
@@ -536,13 +338,32 @@ const MeetingDetail = () => {
                             label="URL"
                             type="url"
                         />
-                        <InputField
-                            name="Attachment"
-                            control={control}
-                            disabled={isDisabled}
-                            label="Attachment"
-                            type="file"
-                        />
+
+                        
+                        <div>
+                            <TextField
+                                sx = {{
+                                    position: "static",
+                                    display: "flex",
+                                    marginTop: "30px",
+                                    marginBottom: "20px"
+                                }}
+                                name="Attachment"
+                                control={control}
+                                disabled={isDisabled}
+                                onChange={changeHandler}
+                                type="file"
+                            />
+                            {attachment ? (
+                                <div>
+                                    <a href={attachmentURL} download>Click to download attachment</a>
+                                </div>
+                            ) : (
+                                <p>Select a file to store</p>
+                            )}
+                            
+                        </ div>
+                        
                     </Grid>
                     <Grid item xs="auto" marginTop="25px" maxWidth="300px">
                         <Box component={Paper} padding="10px">
@@ -583,23 +404,34 @@ const MeetingDetail = () => {
     );
 };
 
+
+
 // restore deleted meeting
 const MeetingRestore = () => {
-    let { BinId } = useParams();
+    let { id } = useParams();
     let history = useHistory();
-    const { data, loading, error } = GetBinItem(BinId);
+    const { data, loading, error } = GetBinItem(id);
     const { reset, control } = useForm();
-    const inputDisable = true;
     const [invitees, setInvitees] = useState([]);
+    const [attachment, setAttachment] = useState(null);
 
-    const onRestoreHandler = () => {
-        RestoreBinItem(BinId).then((res) => console.log(res));
+    const onRestore = () => {
+        RestoreBinItem(id).then((res) => {
+            console.log(res);
+            history.push("/meeting");
+        });
+    };
+
+    const onDelete = () => {
+        DeleteBinItem(id).then((res) => {
+            console.log(res);
+            history.push("/meeting/bin");
+        });
     };
 
     const CustomReset = (data) => {
         let defaultValue = JSON.parse(JSON.stringify(data));
         // re-format data
-        defaultValue.Attachment = undefined;
         if (defaultValue.StartTime) {
             defaultValue.Date = defaultValue.StartTime.slice(0, 10);
             defaultValue.StartTime = defaultValue.StartTime.slice(11, 16);
@@ -622,6 +454,10 @@ const MeetingRestore = () => {
                 )
             );
         }
+
+        if (defaultValue.Attachment) {
+            setAttachment(attachment);
+        }
         // reset defaultValue
         reset(defaultValue);
     };
@@ -638,6 +474,23 @@ const MeetingRestore = () => {
         return <p>{error}</p>;
     }
 
+    return (
+        <MeetingForm
+        inputDisable={true}
+        control={control}
+        invitees={invitees}
+        setInvitees={setInvitees}
+        buttons={
+            <>
+                <Button onClick={onDelete}>delete</Button>
+                <Button onClick={onRestore}>restore</Button>
+            </>
+        }
+        />
+    );
+};
+
+const MeetingForm = ({ inputDisable, control, buttons, invitees = [], setInvitees }) => {
     return (
         <Box
             sx={{
@@ -688,9 +541,7 @@ const MeetingRestore = () => {
                         />
                     </Grid>
                     <Grid item xs="auto">
-                        <Button type="button" onClick={onRestoreHandler}>
-                            restore
-                        </Button>
+                        {buttons}
                     </Grid>
                 </Grid>
                 <Divider />
@@ -790,11 +641,17 @@ const MeetingCreate = () => {
             Tags: [],
             Invitees: [],
             OtherInvitees: "",
-            Attachment: [],
+            // Attachment: null,
         },
     });
 
     const [invitees, setInvitees] = useState([]);
+    const [attachment, setAttachment] = useState(null);
+
+    // const changeHandler = (event) => {
+	// 	setAttachment(event.target.files[0]);
+    //     console.log(event.target.files[0]);
+	// };
 
     // handle user input data
     const onSubmitHandler = (data) => {
@@ -823,8 +680,15 @@ const MeetingCreate = () => {
             data.InviteeIds = invitees;
         }
 
-        // send data to server
-        data.Attachment = []; // need to be update later
+        // if (attachment) {
+        //     // reform attachment data
+        //     const formData = new FormData();
+        //     formData.append("file", attachment);
+        //     UploadAttachment(formData, id).then((res) => alert(res.msg));
+
+        //     // refresh page
+        //     window.location.reload();
+        // }
 
         CreateMeeting(data).then((res) => {
             alert(res.msg);
@@ -930,12 +794,13 @@ const MeetingCreate = () => {
                             label="URL"
                             type="url"
                         />
-                        <InputField
+                        {/* <InputField
                             name="Attachment"
                             control={control}
                             label="Attachment"
                             type="file"
-                        />
+                            onChange={changeHandler}
+                        /> */}
                     </Grid>
                     <Grid item xs="auto" marginTop="25px" maxWidth="300px">
                         <Box component={Paper} padding="10px">
@@ -995,23 +860,24 @@ export const Meeting = () => {
                 <Route path={`${path}/create`}>
                     <MeetingCreate />
                 </Route>
-                <Route path={`${path}/bin/:BinId`}>
+                <Route path={`${path}/bin/:id`}>
                     <MeetingRestore />
                 </Route>
                 <Route path={`${path}/bin`}>
                     <MeetingBin />
                 </Route>
-                <Route path={`${path}/tag/:tagName`}>
-                    <MeetingWithTag />
-                </Route>
-                <Route path={`${path}/search/:keyword`}>
-                    <MeetingSearch />
+                <Route
+                    exact
+                    path={[
+                        "/meeting/search/:keyword",
+                        "/meeting/tag/:tagName",
+                        "/meeting/",
+                    ]}
+                >
+                    <MeetingTable />
                 </Route>
                 <Route path={`${path}/:id`}>
                     <MeetingDetail />
-                </Route>
-                <Route exact path={path}>
-                    <MeetingAll />
                 </Route>
                 
             </Switch>
