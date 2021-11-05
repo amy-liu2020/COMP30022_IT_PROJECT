@@ -1,31 +1,31 @@
 const mongoose = require("mongoose");
 
 const ThemeSchema = new mongoose.Schema({
-    Palette: {
-        Primary: {
-            Main: {
+    palette: {
+        primary: {
+            main: {
                 type:String,
                 required:true
             },
-            Darker: {
+            darker: {
                 type:String,
                 required:true
             },
-            Lighter: {
+            lighter: {
                 type:String,
                 required:true
             }
         },
-        Secondary: {
-            Main: {
+        secondary: {
+            main: {
                 type:String,
                 required:true
             },
-            Darker: {
+            darker: {
                 type:String,
                 required:true
             },
-            Lighter: {
+            lighter: {
                 type:String,
                 required:true
             }
