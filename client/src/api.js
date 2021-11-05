@@ -509,14 +509,6 @@ export async function EditMeeting(meeting, id) {
     return data;
 }
 
-export async function UploadAttachment(file, id) {
-    let data = await axios
-        .post(`/api/meeting/upload/${id}`, file)
-        .then((res) => res.data)
-        .catch((err) => errHandler(err));
-    return data;
-}
-
 export async function DeleteMeeting(id) {
     const data = await axios
         .delete(`/api/meeting/delete/${id}`)
