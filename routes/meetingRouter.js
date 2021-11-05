@@ -50,7 +50,10 @@ meetingRouter.post("/addTag/:id", ensureAuthorized, (req,res) => {
     meetingController.assignTag(req,res)
 });
 
-
+// get attachment from database
+meetingRouter.get("/getAttachment/:id", ensureAuthorized, (req, res)=>{
+    meetingController.getAttachment(req,res)
+})
 
 //export the router
 module.exports = meetingRouter;
